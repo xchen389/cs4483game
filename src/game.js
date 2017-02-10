@@ -9,6 +9,8 @@ function preload() {
 
 var player;
 var cursors;
+var bubbles;
+var camels;
 
 function create() {
 
@@ -31,7 +33,7 @@ function create() {
     game.physics.p2.updateBoundsCollisionGroup();
 
     //bubbles group
-    var bubbles = game.add.group();
+    bubbles = game.add.group();
     bubbles.enableBody = true;
     bubbles.physicsBodyType = Phaser.Physics.P2JS;
 
@@ -44,7 +46,7 @@ function create() {
     }
 
     //camels group
-    var camels = game.add.group();
+    camels = game.add.group();
     camels.enableBody = true;
     camels.physicsBodyType = Phaser.Physics.P2JS;
 
@@ -75,15 +77,16 @@ function create() {
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
-
 }
 
 function bumpBubble(body1, body2) {
 
-    //  body1 is the space player (as it's the body that owns the callback)
-    //  body2 is the body it impacted with, in this case our panda
+    //  body1 is the player (as it's the body that owns the callback)
+    //  body2 is the body it impacted with, its the body of the bubble 
     //  As body2 is a Phaser.Physics.P2.Body object, you access its own (the sprite) via the sprite property:
-    body2.sprite.alpha -= 0.1;
+    //KILL THE SPRITE IN GROUP 
+    body2.sprite.alive = false;
+    body2.sprite.pendingDestroy = true;
 }
 
 function update() {
@@ -111,7 +114,5 @@ function update() {
 }
 
 function render() {
-
-    game.debug.text('Collide with the bubbles!', 32, 32);
-
+    game.debug.text("Bubbles: " + bubbles.countLiving() + " Camels: " + camels.countLiving(), 32, 32);
 }
