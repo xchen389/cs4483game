@@ -14,28 +14,28 @@ function create() {
 
     game.stage.backgroundColor = '#DE9C04';
 
-    //  Enable P2
+    //Enable P2 Physics
     game.physics.startSystem(Phaser.Physics.P2JS);
 
     //  Turn on impact events for the world, without this we get no collision callbacks
     game.physics.p2.setImpactEvents(true);
-
     game.physics.p2.restitution = 0.8;
 
-    //  Create our collision groups. One for the player, one for the bubbles
+    //  Create our collision groups. One for the player, one for the bubbles, one for the camels
     var playerCollisionGroup = game.physics.p2.createCollisionGroup();
     var bubbleCollisionGroup = game.physics.p2.createCollisionGroup();
+    var camelCollisionGroup = game.physics.p2.createCollisionGroup();
 
     //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
     //  (which we do) - what this does is adjust the bounds to use its own collision group.
     game.physics.p2.updateBoundsCollisionGroup();
 
+    //bubbles group
     var bubbles = game.add.group();
     bubbles.enableBody = true;
     bubbles.physicsBodyType = Phaser.Physics.P2JS;
 
-    for (var i = 0; i < 4; i++)
-    {
+    for (var i = 0; i < 10; i++){
         var bubble = bubbles.create(game.world.randomX, game.world.randomY, 'bubble');
         bubble.scale.set(0.3);
         bubble.body.setCircle(24);
@@ -66,7 +66,7 @@ function create() {
 
     //  The player will collide with the bubbles, and when it strikes one the hitPanda callback will fire, causing it to alpha out a bit
     //  When bubbles collide with each other, nothing happens to them.
-    player.body.collides(bubbleCollisionGroup, hitBubble, this);
+    player.body.collides(bubbleCollisionGroup, bumpBubble, this);
 
     game.camera.follow(player);
 
@@ -74,13 +74,12 @@ function create() {
 
 }
 
-function hitBubble(body1, body2) {
+function bumpBubble(body1, body2) {
 
     //  body1 is the space player (as it's the body that owns the callback)
     //  body2 is the body it impacted with, in this case our panda
     //  As body2 is a Phaser.Physics.P2.Body object, you access its own (the sprite) via the sprite property:
     body2.sprite.alpha -= 0.1;
-
 }
 
 function update() {
