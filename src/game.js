@@ -19,7 +19,7 @@ function create() {
 
     //  Turn on impact events for the world, without this we get no collision callbacks
     game.physics.p2.setImpactEvents(true);
-    game.physics.p2.restitution = 0.8;
+    game.physics.p2.restitution = 0;
 
     //  Create our collision groups. One for the player, one for the bubbles, one for the camels
     var playerCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -39,23 +39,27 @@ function create() {
         var bubble = bubbles.create(game.world.randomX, game.world.randomY, 'bubble');
         bubble.scale.set(0.3);
         bubble.body.setCircle(24);
-
-        //  Tell the panda to use the pandaCollisionGroup 
         bubble.body.setCollisionGroup(bubbleCollisionGroup);
+        bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
+    }
 
-        //  bubbles will collide against themselves and the player
-        //  If you don't set this they'll not collide with anything.
-        //  The first parameter is either an array or a single collision group.
-        bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup]);
+    //camels group
+    var camels = game.add.group();
+    camels.enableBody = true;
+    camels.physicsBodyType = Phaser.Physics.P2JS;
+
+    for (var i = 0; i < 5; i++){
+    	var camel = camels.create(game.world.RandomX,game.world.RandomX,'camel');
+    	camel.scale.setTo(0.5);
+    	camel.body.setRectangle(40);
+    	camel.body.setCollisionGroup(camelCollisionGroup);
+    	camel.body.fixedRotation = true;
+    	camel.body.collides([camelCollisionGroup, bubbleCollisionGroup, playerCollisionGroup]);
     }
 
     //  Create our player sprite
     player = game.add.sprite(200, 200, 'player');
     player.scale.set(0.1);
-
-    camel = game.add.sprite(400,300,'camel');
-    camel.scale.setTo(0.5);
-
 
     game.physics.p2.enable(player, false);
     player.body.setCircle(24);
