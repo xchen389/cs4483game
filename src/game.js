@@ -1,93 +1,114 @@
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game1', { preload: preload, create: create, update: update, render: render});
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
-function preload () {
-	game.load.image("bubble", "./assets/images/bubble.png");
-	game.load.image("human", "./assets/images/human.png");
-	game.load.image("camel", "./assets/images/single_camel.gif");
+function preload() {
+    game.load.image('player', './assets/images/player.png');
+    game.load.image('bubble', './assets/images/bubble.png');
+    game.load.image('camel', './assets/images/single_camel.gif');
 }
 
 var player;
 var cursors;
-var camel;
 
-function create () {
+function create() {
 
-    //stage background color
     game.stage.backgroundColor = '#DE9C04';
 
-    //enable p2 physics
+    //  Enable P2
     game.physics.startSystem(Phaser.Physics.P2JS);
+
+    //  Turn on impact events for the world, without this we get no collision callbacks
     game.physics.p2.setImpactEvents(true);
+
     game.physics.p2.restitution = 0.8;
 
-    //create collision groups. One for player, one for camel, one for bubbles
+    //  Create our collision groups. One for the player, one for the bubbles
     var playerCollisionGroup = game.physics.p2.createCollisionGroup();
-    var camelCollisionGroup = game.physics.p2.createCollisionGroup();
     var bubbleCollisionGroup = game.physics.p2.createCollisionGroup();
 
+    //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
+    //  (which we do) - what this does is adjust the bounds to use its own collision group.
     game.physics.p2.updateBoundsCollisionGroup();
-    		
+
     var bubbles = game.add.group();
     bubbles.enableBody = true;
     bubbles.physicsBodyType = Phaser.Physics.P2JS;
 
-    for (var i = 0; i < 4; i++){
-    	//generate the bubbles
-    	var bubble = bubbles.create(game.world.randomX, game.world.randomY, 'bubble');
-    	bubble.body.setRectange(40,40);
-    	//put bubble in its collision group, and tell it that it colldies with camels and player
-    	bubble.body.setCollisionGroup(bubbleCollisionGroup);
-    	bubble.body.collides([playerCollisionGroup, camelCollisionGroup, bubbleCollisionGroup]);	
-   	}
+    for (var i = 0; i < 4; i++)
+    {
+        var bubble = bubbles.create(game.world.randomX, game.world.randomY, 'bubble');
+        bubble.scale.set(0.3);
+        bubble.body.setCircle(24);
 
-    //create camel and player
+        //  Tell the panda to use the pandaCollisionGroup 
+        bubble.body.setCollisionGroup(bubbleCollisionGroup);
+
+        //  bubbles will collide against themselves and the player
+        //  If you don't set this they'll not collide with anything.
+        //  The first parameter is either an array or a single collision group.
+        bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup]);
+    }
+
+    //  Create our player sprite
+    player = game.add.sprite(200, 200, 'player');
+    player.scale.set(0.1);
+
     camel = game.add.sprite(400,300,'camel');
-    player = game.add.sprite(500,300,'human');
-    player.scale.setTo(0.1,0.1);
-    camel.scale.setTo(0.5,0.5);
+    camel.scale.setTo(0.5);
 
-    game.physics.p2.enable(player);
-    player.body.setRectange(40,40);
+
+    game.physics.p2.enable(player, false);
+    player.body.setCircle(24);
+    player.body.fixedRotation = true;
+
+    //  Set the players collision group
     player.body.setCollisionGroup(playerCollisionGroup);
 
-    game.physics.p2.enable(camel);
-    camel.body.setRectange(40,40);
-    camel.body.setCollisionGroup(camelCollisionGroup);
+    //  The player will collide with the bubbles, and when it strikes one the hitPanda callback will fire, causing it to alpha out a bit
+    //  When bubbles collide with each other, nothing happens to them.
+    player.body.collides(bubbleCollisionGroup, hitBubble, this);
 
-    player.body.collides(bubbleCollisionGroup, popBubble, this);
+    game.camera.follow(player);
 
-    //game.camera.follow(player);
-
-    //Arrow Key Movement
     cursors = game.input.keyboard.createCursorKeys();
+
+}
+
+function hitBubble(body1, body2) {
+
+    //  body1 is the space player (as it's the body that owns the callback)
+    //  body2 is the body it impacted with, in this case our panda
+    //  As body2 is a Phaser.Physics.P2.Body object, you access its own (the sprite) via the sprite property:
+    body2.sprite.alpha -= 0.1;
+
+}
+
+function update() {
+
+    player.body.setZeroVelocity();
+
+    if (cursors.left.isDown)
+    {
+        player.body.moveLeft(200);
+    }
+    else if (cursors.right.isDown)
+    {
+        player.body.moveRight(200);
     }
 
-    function popBubble(player,bubble){
-       	bubble.sprite.alpha -= 0.1;
+    if (cursors.up.isDown)
+    {
+        player.body.moveUp(200);
+    }
+    else if (cursors.down.isDown)
+    {
+        player.body.moveDown(200);
     }
 
-    function update(){
+}
 
-        player.body.setZeroVelocity();
+function render() {
 
-        if (cursors.left.isDown){
-        	player.body.moveLeft(300);
-        }
-        else if (cursors.right.isDown){
-        	player.body.moveRight(300);
-        }
+    game.debug.text('Collide with the bubbles!', 32, 32);
 
-        if (cursors.up.isDown){
-        	player.body.moveUp(300);
-        }
-        else if (cursors.down.isDown){
-        	player.body.moveDown(300);
-        }
-    }
-
-    function render(){
-        game.debug.text('Collide with the bubbles', 32,32);
-    }
-
-
+}
