@@ -1,6 +1,7 @@
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
+//These are loaded to the cache so we can use them in the game
 function preload() {
     game.load.image('player', './assets/images/player.png');
     game.load.image('bubble', './assets/images/bubble.png');
@@ -12,7 +13,7 @@ function preload() {
     game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
 }
 
-//music (so we adjust valume in functions later)
+//music 
 var music;
 var popSound;
 var ouchSound;
@@ -22,15 +23,17 @@ var FXButton; //TO-DO
 
 var player;
 var cursors;
+
+//change these depending on how many bubbles and want
 var numBubbles = 15;
 var numCamels = 5;
 
-//bubble physics group
+// sprite groups (only done for when there is more than one sprite in each group)
 var bubblesGroup;
 var camelsGroup;
 var fullBubbleGroup;
 
-//bubble collision groups
+//collision groups
 var playerCollisionGroup;
 var bubbleCollisionGroup;
 var camelCollisionGroup;
@@ -40,6 +43,7 @@ var fullBubbleCollisionGroup;
 var bubbles = [numBubbles];
 var camels= [numCamels];
 
+// runs a single time when the game instance is created
 function create() {
 	//background 
     game.stage.backgroundColor = '#DE9C04';
@@ -180,6 +184,8 @@ function bumpFullBubble(playerBody, fullBubbleBody){
     new_camel.body.collides(bubbleCollisionGroup, camelBubbleHit, this);
 }
 
+
+//runs continuously. 
 function update() {
 
     player.body.setZeroVelocity();
@@ -204,6 +210,7 @@ function update() {
 
 }
 
+//runs continously
 function render() {
     game.debug.text("Bubbles: " + bubblesGroup.countLiving() + " camels: " + camelsGroup.countLiving(), 32, 32);
 }
