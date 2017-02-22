@@ -26,7 +26,7 @@ var cursors;
 
 //change these depending on how many bubbles and want
 var numBubbles = 15;
-var numCamels = 5;
+var numCamels = 4;
 
 // sprite groups (only done for when there is more than one sprite in each group)
 var bubblesGroup;
@@ -98,13 +98,16 @@ function create() {
     camelsGroup.physicsBodyType = Phaser.Physics.P2JS;
 
     for (var i = 0; i < numCamels; i++){
-    	camels[i] = camelsGroup.create(game.world.randomX/2,game.world.randomY/2,'camel');
+    	camels[i] = camelsGroup.create(Math.random() * (450 - 200) + 200,Math.random() * (350 - 150) + 150,'camel');
     	camels[i].scale.setTo(0.5);
     	camels[i].body.setRectangle(40);
     	camels[i].body.setCollisionGroup(camelCollisionGroup);
     	camels[i].body.fixedRotation = true;
         camels[i].body.collides(bubbleCollisionGroup, camelBubbleHit, this);
     	}
+
+    // Camel movements
+    game.time.events.loop(Phaser.Timer.SECOND * 2.5, moveCamels, this); 
 
     // Create our player sprite
     player = game.add.sprite(200, 200, 'player');
@@ -209,6 +212,47 @@ function update() {
     }
 
 }
+
+function moveCamels() {
+
+	for(var i=0 ; i<numCamels ; i++){
+		camels[i].body.setZeroVelocity();
+		// randomise the movement	
+		CamelsMover = game.rnd.integerInRange(1, 5);	
+		// simple if statement to choose if and which way the baddie moves	
+		if (CamelsMover == 1) {
+			if(camels[i].x < 350)		
+			camels[i].body.velocity.x = 50;
+			else		
+				camels[i].body.velocity.x = -50;
+			
+		}	
+		else if(CamelsMover == 2) 
+		{
+			if(camels[i].x > 450)		
+			camels[i].body.velocity.x = -50;
+			else
+				camels[i].body.velocity.x = 50;
+		}	
+		else if (CamelsMover == 3) {
+			if(camels[i].y < 225)
+			camels[i].body.velocity.y = 50;
+			else
+				camels[i].body.velocity.y = -50;	
+		}	
+		else if (CamelsMover == 4) {
+			if(camels[i].y > 300)		
+			camels[i].body.velocity.y = -50;
+			else
+				camels[i].body.velocity.y = 50;
+		}	
+		else {		
+			camels[i].body.velocity.x = 0;		
+			
+		}
+	}
+}	
+		
 
 //runs continously
 function render() {
