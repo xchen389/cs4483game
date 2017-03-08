@@ -1,9 +1,11 @@
 
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'main_game', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game("100%", "100%", Phaser.CANVAS, 'main_game', { preload: preload, create: create, update: update, render: render });
 
 //These are loaded to the cache so we can use them in the game
 function preload() {
+
+
     game.load.image('player', './assets/images/player.png');
     game.load.image('bubble', './assets/images/bubble.png');
     game.load.image('camel', './assets/images/single_camel.gif');
@@ -24,6 +26,7 @@ var FXButton; //TO-DO
 
 var player;
 var cursors;
+var wasd;
 
 //change these depending on how many bubbles and want
 var numBubbles = 15;
@@ -124,6 +127,19 @@ function create() {
 
     // controls
     cursors = game.input.keyboard.createCursorKeys();
+    
+    wasd = {
+        left:game.input.keyboard.addKey(Phaser.Keyboard.A),
+        right:game.input.keyboard.addKey(Phaser.Keyboard.D),
+        up:game.input.keyboard.addKey(Phaser.Keyboard.W),
+        down:game.input.keyboard.addKey(Phaser.Keyboard.S)
+    };
+
+    // remove key capture so they don't flood to browser
+    game.input.keyboard.removeKeyCapture(Phaser.Keyboard.A);
+    game.input.keyboard.removeKeyCapture(Phaser.Keyboard.D);
+    game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
+    game.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
 }
 
 // body1 is the player (as it's the body that owns the callback)
@@ -191,20 +207,20 @@ function update() {
 
     player.body.setZeroVelocity();
 
-    if (cursors.left.isDown)
+    if (cursors.left.isDown || wasd.left.isDown)
     {
         player.body.moveLeft(200);
     }
-    else if (cursors.right.isDown)
+    else if (cursors.right.isDown || wasd.right.isDown)
     {
         player.body.moveRight(200);
     }
 
-    if (cursors.up.isDown)
+    if (cursors.up.isDown || wasd.up.isDown)
     {
         player.body.moveUp(200);
     }
-    else if (cursors.down.isDown)
+    else if (cursors.down.isDown || wasd.down.isDown)
     {
         player.body.moveDown(200);
     }
