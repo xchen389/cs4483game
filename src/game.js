@@ -1,6 +1,6 @@
 
 
-var game = new Phaser.Game("100%", "100%", Phaser.CANVAS, 'main_game', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game("98%", "98%", Phaser.CANVAS, 'main_game', { preload: preload, create: create, update: update, render: render });
 
 //These are loaded to the cache so we can use them in the game
 function preload() {
@@ -42,6 +42,7 @@ var playerCollisionGroup;
 var bubbleCollisionGroup;
 var camelCollisionGroup;
 var fullBubbleCollisionGroup;
+var customBounds;
 
 //array of bubble and camel sprites
 var bubbles = [numBubbles];
@@ -60,12 +61,26 @@ function create() {
     popSound = game.add.audio('pop');
     ouchSound = game.add.audio('camel_ouch');
 
+    // for earthquake effect, add margin to the world, so the camera can move
+    var margin = 50;
+    // and set the world's bounds according to the given margin
+    var x = -margin;
+    var y = -margin;
+    var w = game.world.width + margin * 2;
+    var h = game.world.height + margin * 2;
+    game.world.setBounds(x, y, w, h);
+    // make sure camera at 0
+    game.world.camera.position.set(0);
+
     //Enable P2 Physics
     game.physics.startSystem(Phaser.Physics.P2JS);
 
     //  Turn on impact events for the world, without this we get no collision callbacks
     game.physics.p2.setImpactEvents(true);
     game.physics.p2.restitution = 0;
+
+    //  The bounds of centre camel playground
+    var bounds = new Phaser.Rectangle(game.width/4, game.height/4, game.width/2, game.height/2);
 
     //  Create our collision groups. One for the player, one for the bubblesGroup, one for the camelsGroup
     playerCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -102,13 +117,14 @@ function create() {
     camelsGroup.physicsBodyType = Phaser.Physics.P2JS;
 
     for (var i = 0; i < numCamels; i++){
-    	camels[i] = camelsGroup.create(game.world.randomX/2,game.world.randomY/2,'camel');
+    	//camels[i] = camelsGroup.create(game.world.randomX/2,game.world.randomY/2,'camel');
+        camels[i] = camelsGroup.create(bounds.randomX, bounds.randomY, 'camel');
     	camels[i].scale.setTo(0.5);
     	camels[i].body.setRectangle(40);
     	camels[i].body.setCollisionGroup(camelCollisionGroup);
     	camels[i].body.fixedRotation = true;
         camels[i].body.collides(bubbleCollisionGroup, camelBubbleHit, this);
-    	}
+    }
 
     // Create our player sprite
     player = game.add.sprite(200, 200, 'player');
@@ -124,6 +140,16 @@ function create() {
     // The player will collide with the bubblesGroup, and when it strikes one the hitPanda callback will fire, causing it to alpha out a bit
     // When bubblesGroup collide with each other, nothing happens to them.
     player.body.collides(bubbleCollisionGroup, bumpBubble, this);
+
+    //  Create a new custom sized bounds, within the world bounds
+    customBounds = { left: null, right: null, top: null, bottom: null };
+
+    createPreviewBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+
+    //  Just to display the inner bounds
+    var graphics = game.add.graphics(bounds.x, bounds.y);
+    graphics.lineStyle(4, 0xff0000, 1);
+    graphics.drawRect(0, 0, bounds.width, bounds.height);
 
     // controls
     cursors = game.input.keyboard.createCursorKeys();
@@ -158,6 +184,8 @@ function musicToggle(){
 // body 2 is the bubble
 // trigger event to put create camel inside bubble sprite, and pull towards corners
 function camelBubbleHit(camelBody, bubbleBody){
+    // add earthquake effect
+    addQuake();
 
     // create full_bubble sprite
     fullBubble = fullBubbleGroup.create(bubbleBody.sprite.position.x, bubbleBody.sprite.position.y, 'fullBubble');
@@ -172,10 +200,10 @@ function camelBubbleHit(camelBody, bubbleBody){
     camelBody.sprite.pendingDestroy = true;
 
     ouchSound.play();
-    
+
     // create and enable full_bubble collisions/functions etc
 
-    fullBubble.enableBody = true;;
+    fullBubble.enableBody = true;
     fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
     player.body.collides(fullBubbleCollisionGroup, bumpFullBubble,this);
 
@@ -201,6 +229,33 @@ function bumpFullBubble(playerBody, fullBubbleBody){
     new_camel.body.collides(bubbleCollisionGroup, camelBubbleHit, this);
 }
 
+
+function createPreviewBounds(x,y,w,h)
+{
+    var sim = game.physics.p2;
+    var mask = sim.boundsCollisionGroup.mask;
+
+    customBounds.left = new p2.Body({ mass: 0, position: [ sim.pxmi(x), sim.pxmi(y) ], angle: 1.5707963267948966 });
+    customBounds.left.addShape(new p2.Plane());
+    // customBounds.left.shapes[0].collisionGroup = mask;
+
+    customBounds.right = new p2.Body({ mass: 0, position: [ sim.pxmi(x + w), sim.pxmi(y) ], angle: -1.5707963267948966 });
+    customBounds.right.addShape(new p2.Plane());
+    // customBounds.right.shapes[0].collisionGroup = mask;
+
+    customBounds.top = new p2.Body({ mass: 0, position: [ sim.pxmi(x), sim.pxmi(y) ], angle: -3.141592653589793 });
+    customBounds.top.addShape(new p2.Plane());
+    // customBounds.top.shapes[0].collisionGroup = mask;
+
+    customBounds.bottom = new p2.Body({ mass: 0, position: [ sim.pxmi(x), sim.pxmi(y + h) ] });
+    customBounds.bottom.addShape(new p2.Plane());
+    // customBounds.bottom.shapes[0].collisionGroup = mask;
+
+    sim.world.addBody(customBounds.left);
+    sim.world.addBody(customBounds.right);
+    sim.world.addBody(customBounds.top);
+    sim.world.addBody(customBounds.bottom);
+}
 
 //runs continuously. 
 function update() {
@@ -230,4 +285,33 @@ function update() {
 //runs continously
 function render() {
     game.debug.text("Bubbles: " + bubblesGroup.countLiving() + " camels: " + camelsGroup.countLiving(), 32, 32);
+}
+
+function addQuake() {
+  
+  // define the camera offset for the quake
+  var rumbleOffset = 7;
+  
+  // we need to move according to the camera's current position
+  var properties = {
+    x: game.camera.x - rumbleOffset
+  };
+  
+  // we make it a relly fast movement
+  var duration = 50;
+  // because it will repeat
+  var repeat = 2;
+  // we use bounce in-out to soften it a little bit
+  var ease = Phaser.Easing.Bounce.InOut;
+  var autoStart = false;
+  // no delay because we will run it only once
+  var delay = 0;
+  // we want to go back to the original position
+  var yoyo = true;
+  
+  var quake = game.add.tween(game.camera)
+    .to(properties, duration, ease, autoStart, delay, 4, yoyo);
+  
+  // let the earthquake begins
+  quake.start();
 }
