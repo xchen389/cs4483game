@@ -37,7 +37,7 @@ var bubblesGroup;
 var camelsGroup;
 var fullBubbleGroup;
 
-//collision groups
+//collision groups (Full Bubble = bubble with camel inside)
 var playerCollisionGroup;
 var bubbleCollisionGroup;
 var camelCollisionGroup;
@@ -117,14 +117,13 @@ function create() {
     camelsGroup.physicsBodyType = Phaser.Physics.P2JS;
 
     for (var i = 0; i < numCamels; i++){
-    	//camels[i] = camelsGroup.create(game.world.randomX/2,game.world.randomY/2,'camel');
         camels[i] = camelsGroup.create(bounds.randomX, bounds.randomY, 'camel');
     	camels[i].scale.setTo(0.5);
     	camels[i].body.setRectangle(40);
     	camels[i].body.setCollisionGroup(camelCollisionGroup);
     	camels[i].body.fixedRotation = true;
         camels[i].body.collides(bubbleCollisionGroup, camelBubbleHit, this);
-    }
+   		}
 
     // Create our player sprite
     player = game.add.sprite(200, 200, 'player');
@@ -137,9 +136,9 @@ function create() {
     // Set the players collision group
     player.body.setCollisionGroup(playerCollisionGroup);
 
-    // The player will collide with the bubblesGroup, and when it strikes one the hitPanda callback will fire, causing it to alpha out a bit
-    // When bubblesGroup collide with each other, nothing happens to them.
+    // When player colides with bubbles or fullbubbles, the function in second parameter is called. 
     player.body.collides(bubbleCollisionGroup, bumpBubble, this);
+    player.body.collides(fullBubbleCollisionGroup, bumpFullBubble, this);
 
     //  Create a new custom sized bounds, within the world bounds
     customBounds = { left: null, right: null, top: null, bottom: null };
@@ -186,8 +185,9 @@ function musicToggle(){
 function camelBubbleHit(camelBody, bubbleBody){
     // add earthquake effect
     addQuake();
+    ouchSound.play();
 
-    // create full_bubble sprite
+    // create full_bubble sprite where original bubble was
     fullBubble = fullBubbleGroup.create(bubbleBody.sprite.position.x, bubbleBody.sprite.position.y, 'fullBubble');
     fullBubble.scale.set(0.5);
 
@@ -199,14 +199,12 @@ function camelBubbleHit(camelBody, bubbleBody){
     camelBody.sprite.alive = false;
     camelBody.sprite.pendingDestroy = true;
 
-    ouchSound.play();
-
-    // create and enable full_bubble collisions/functions etc
+    // create and enable full_bubble collisions/functions etc, add it to it's collision group
 
     fullBubble.enableBody = true;
+    fullBubble.body.setCircle(24);
     fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
-    player.body.collides(fullBubbleCollisionGroup, bumpFullBubble,this);
-
+    fullBubble.body.collides([playerCollisionGroup]);
 }
 
 // body 1 is the player
@@ -214,6 +212,7 @@ function camelBubbleHit(camelBody, bubbleBody){
 // method should destroy fullBubble, and put camel back
 function bumpFullBubble(playerBody, fullBubbleBody){
 
+	console.log('got here');
     // create new camel to camel group
     new_camel = camelsGroup.create(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y, 'camel');
     new_camel.scale.setTo(0.5);
