@@ -211,8 +211,7 @@ function camelBubbleHit(camelBody, bubbleBody){
 // body 2 is the full bubble
 // method should destroy fullBubble, and put camel back
 function bumpFullBubble(playerBody, fullBubbleBody){
-
-	console.log('got here');
+	
     // create new camel to camel group
     new_camel = camelsGroup.create(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y, 'camel');
     new_camel.scale.setTo(0.5);
