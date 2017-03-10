@@ -123,7 +123,7 @@ function create() {
     	camels[i].body.setCollisionGroup(camelCollisionGroup);
     	camels[i].body.fixedRotation = true;
         camels[i].body.collides(bubbleCollisionGroup, camelBubbleHit, this);
-   		}
+   	}
 
     // Create our player sprite
     player = game.add.sprite(200, 200, 'player');
@@ -211,7 +211,7 @@ function camelBubbleHit(camelBody, bubbleBody){
 // body 2 is the full bubble
 // method should destroy fullBubble, and put camel back
 function bumpFullBubble(playerBody, fullBubbleBody){
-	
+
     // create new camel to camel group
     new_camel = camelsGroup.create(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y, 'camel');
     new_camel.scale.setTo(0.5);
@@ -225,6 +225,8 @@ function bumpFullBubble(playerBody, fullBubbleBody){
     new_camel.body.setCollisionGroup(camelCollisionGroup);
     new_camel.body.fixedRotation = true;
     new_camel.body.collides(bubbleCollisionGroup, camelBubbleHit, this);
+
+    popSound.play();
 }
 
 
@@ -278,11 +280,20 @@ function update() {
         player.body.moveDown(200);
     }
 
+    //winning condition - exit game
+    if((bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) == 0){
+    	console.log('YOU WON!');
+    }
+
+    //if camels are ever 0, game over - exit game
+    if(camelsGroup.countLiving() == 0){
+    	console.log('Game Over!');
+    }
 }
 
 //runs continously
 function render() {
-    game.debug.text("Bubbles: " + bubblesGroup.countLiving() + " camels: " + camelsGroup.countLiving(), 32, 32);
+    game.debug.text("Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + camelsGroup.countLiving(), 32, 32);
 }
 
 function addQuake() {
