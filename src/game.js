@@ -1,11 +1,8 @@
 
-
 var game = new Phaser.Game("98%", "98%", Phaser.CANVAS, 'main_game', { preload: preload, create: create, update: update, render: render });
 
 //These are loaded to the cache so we can use them in the game
 function preload() {
-
-
     game.load.image('player', './assets/images/player.png');
     game.load.image('bubble', './assets/images/bubble.png');
     game.load.image('camel', './assets/images/single_camel.gif');
