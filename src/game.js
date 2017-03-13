@@ -28,7 +28,7 @@ var customBounds;
 
 //array of bubble and camel sprites
 var bubbles = [numBubbles];
-var camels= [numCamels];
+var camels = [numCamels];
 
 //game object definiton
 var game = {
@@ -185,11 +185,11 @@ var game = {
             player.body.moveDown(200);
         }
 
-        /*winning condition - exit game
+        //winning condition - go to shop
         if((bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) == 0)
-        	//winning condition
+        	game.state.start('shop');
 
-        //if camels are ever 0, game over - exit game
+        /* if camels are ever 0, game over - exit game
         if(camelsGroup.countLiving() == 0)
         	//losing condition
         */
