@@ -8,10 +8,10 @@ var menu = {
 	},
 
 	create: function(){
-		this.add.sprite(0,0,'menuScreen');
-		this.add.button(140,260,'newGameButton',this.startGame, this);
-		this.add.button(140,370, 'loadGameButton', this.loadGame, this);
-		this.add.button(140,480, 'creditsButton', this.loadCredits,this);
+		this.add.tileSprite(0,0, 1280, 800, 'menuScreen');
+		this.add.button(140,240,'newGameButton',this.startGame, this);
+		this.add.button(140,350, 'loadGameButton', this.loadGame, this);
+		this.add.button(140,460, 'creditsButton', this.loadCredits,this);
 	},
 
 		startGame: function(){

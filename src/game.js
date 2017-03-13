@@ -41,6 +41,7 @@ var game = {
         game.load.image('fullBubble', './assets/images/full_bubble.png');
         game.load.image('musicButton', './assets/images/musicToggle.png');
         game.load.image('exitButton', './assets/images/exit_button.png');
+        game.load.image('background', './assets/images/game_background.png');
         game.load.audio('intro', './assets/sounds/introMusic.ogg');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
@@ -53,10 +54,11 @@ var game = {
     // runs a single time when the game instance is created
     create:function() {
 
-        game.add.button(900,20, 'exitButton', game.exitButtonClicked, this);
+	    //background 
+        //game.stage.backgroundColor = '#DE9C04';
+        game.add.tileSprite(0,0, 1280, 800, 'background');
 
-	   //background 
-        game.stage.backgroundColor = '#DE9C04';
+        game.add.button(900,20, 'exitButton', game.exitButtonClicked, this);
 
         //music
         music = game.add.audio('intro');
