@@ -1,5 +1,5 @@
 
-var game = new Phaser.Game("98%", "98%", Phaser.CANVAS, 'main_game', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(1280, 800, Phaser.CANVAS, 'main_game', { preload: preload, create: create, update: update, render: render });
 
 //These are loaded to the cache so we can use them in the game
 function preload() {
