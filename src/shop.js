@@ -14,7 +14,7 @@ var shop = {
 		//nextButton.height = 100;
 
 		var exitButton = this.add.button(1070,670, 'exitButton', this.loadMenu,this);
-		exitbutton.width = 100;
+		exitButton.width = 100;
 		exitButton.height = 80;
 	},
 
