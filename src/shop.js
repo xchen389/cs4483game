@@ -9,8 +9,13 @@ var shop = {
 	create: function(){
 		this.add.tileSprite(0,0, 1280, 800, 'shopScreen');
 		//make buttons smaller later 
-		this.add.button(580,650, 'nextButton', this.loadGame,this);
-		this.add.button(920,650, 'exitButton', this.loadMenu,this);
+		var nextButton = this.add.button(690,670, 'nextButton', this.loadGame,this);
+		//nextButton.width = 200;
+		//nextButton.height = 100;
+
+		var exitButton = this.add.button(1070,670, 'exitButton', this.loadMenu,this);
+		exitbutton.width = 100;
+		exitButton.height = 80;
 	},
 
 	loadGame: function(){

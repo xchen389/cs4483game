@@ -9,4 +9,5 @@ main.state.add('menu', menu);
 main.state.add('credits', credits);
 main.state.add('shop', shop);
 
+//start main menu state
 main.state.start('menu');

@@ -193,7 +193,7 @@ var game = {
         if((bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) == 0)
         	game.state.start('shop');
 
-        /* if camels are ever 0, game over - exit game
+        /* if camels are ever 0, game over - exit game, go game over screen
         if(camelsGroup.countLiving() == 0)
         	//losing condition
         */
@@ -201,8 +201,8 @@ var game = {
     },
 
     //runs continously
-    render:function() {
-        // game.debug.text("Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + camelsGroup.countLiving(), 32, 32);
+    render: function() {
+        //game.debug.text("Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + camelsGroup.countLiving(), 40, 40);
     }
 
 }
