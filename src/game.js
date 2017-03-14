@@ -188,7 +188,7 @@ function camelBubbleHit(camelBody, bubbleBody){
 
 function createfullBubble(x,y){
 	fullBubble = fullBubbleGroup.create(x,y, 'fullBubble');
-    fullBubble.scale.set(0.5);
+    fullBubble.scale.set(0.37);
 	fullBubble.enableBody = true;
     fullBubble.body.setCircle(24);
     fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
