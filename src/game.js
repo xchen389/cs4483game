@@ -1,18 +1,3 @@
-
-var game = new Phaser.Game(1280, 800, Phaser.CANVAS, 'main_game', { preload: preload, create: create, update: update, render: render });
-
-//These are loaded to the cache so we can use them in the game
-function preload() {
-    game.load.image('player', './assets/images/player.png');
-    game.load.image('bubble', './assets/images/bubble.png');
-    game.load.image('camel', './assets/images/single_camel.gif');
-    game.load.image('fullBubble', './assets/images/full_bubble.png');
-    game.load.image('musicButton', './assets/images/musicToggle.png');
-    game.load.audio('intro', './assets/sounds/introMusic.ogg');
-    game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
-    game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
-}
-
 //music 
 var music;
 var popSound;
@@ -40,118 +25,215 @@ var bubbleCollisionGroup;
 var camelCollisionGroup;
 var fullBubbleCollisionGroup;
 var customBounds;
+var bounds;
 
 //array of bubble and camel sprites
-var bubbles = [numBubbles];
-var camels= [numCamels];
 
-// runs a single time when the game instance is created
-function create() {
-	//background 
-    game.stage.backgroundColor = '#DE9C04';
+//game object definiton
+var game = {
 
-    //music
-    music = game.add.audio('intro');
-    
-    //music.play();
+    //These are loaded to the cache so we can use them in the game
+    preload:function() {
+        game.load.image('player', './assets/images/player.png');
+        game.load.image('bubble', './assets/images/bubble.png');
+        game.load.image('camel', './assets/images/single_camel.gif');
+        game.load.image('fullBubble', './assets/images/full_bubble.png');
+        game.load.image('musicButton', './assets/images/musicToggle.png');
+        game.load.image('exitButton', './assets/images/exit_button.png');
+        game.load.image('background', './assets/images/game_background.png');
+        game.load.audio('intro', './assets/sounds/introMusic.ogg');
+        game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
+        game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
+    },
 
-    popSound = game.add.audio('pop');
-    ouchSound = game.add.audio('camel_ouch');
+   exitButtonClicked:function() {
+        game.state.start('menu')
+    },
 
-    // for earthquake effect, add margin to the world, so the camera can move
-    var margin = 50;
-    // and set the world's bounds according to the given margin
-    var x = -margin;
-    var y = -margin;
-    var w = game.world.width + margin * 2;
-    var h = game.world.height + margin * 2;
-    game.world.setBounds(x, y, w, h);
-    // make sure camera at 0
-    game.world.camera.position.set(0);
+    // runs a single time when the game instance is created
+    create:function() {
 
-    //Enable P2 Physics
-    game.physics.startSystem(Phaser.Physics.P2JS);
+	    //background 
+        //game.stage.backgroundColor = '#DE9C04';
+        game.add.tileSprite(0,0, 1280, 800, 'background');
 
-    //  Turn on impact events for the world, without this we get no collision callbacks
-    game.physics.p2.setImpactEvents(true);
-    game.physics.p2.restitution = 0;
+        exitButton = game.add.button(1130,15, 'exitButton', game.exitButtonClicked, this);
+        exitButton.width = 130;
+        exitButton.height = 60;
 
-    //  The bounds of centre camel playground
-    var bounds = new Phaser.Rectangle(game.width/4, game.height/4, game.width/2, game.height/2);
+        //music
+        music = game.add.audio('intro');
+        
+        //music.play();
 
-    //  Create our collision groups. One for the player, one for the bubblesGroup, one for the camelsGroup
-    playerCollisionGroup = game.physics.p2.createCollisionGroup();
-    bubbleCollisionGroup = game.physics.p2.createCollisionGroup();
-    camelCollisionGroup = game.physics.p2.createCollisionGroup();
-    fullBubbleCollisionGroup = game.physics.p2.createCollisionGroup();
+        popSound = game.add.audio('pop');
+        ouchSound = game.add.audio('camel_ouch');
 
-    //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
-    //  (which we do) - what this does is adjust the bounds to use its own collision group.
-    game.physics.p2.updateBoundsCollisionGroup();
+        /*
+        // for earthquake effect, add margin to the world, so the camera can move
+        var margin = 50;
+        // and set the world's bounds according to the given margin
+        var x = -margin;
+        var y = -margin;
+        var w = game.world.width + margin * 2;
+        var h = game.world.height + margin * 2;
+        game.world.setBounds(x, y, w, h);
+        // make sure camera at 0
+        game.world.camera.position.set(0);
+		*/
 
-    // full bubble group
-    fullBubbleGroup = game.add.group();
-    fullBubbleGroup.enableBody = true;
-    fullBubbleGroup.physicsBodyType = Phaser.Physics.P2JS;
+        //Enable P2 Physics
+        game.physics.startSystem(Phaser.Physics.P2JS);
 
-    // bubbles group
-    bubblesGroup = game.add.group();
-    bubblesGroup.enableBody = true;
-    bubblesGroup.physicsBodyType = Phaser.Physics.P2JS;
+        //  Turn on impact events for the world, without this we get no collision callbacks
+        game.physics.p2.setImpactEvents(true);
+        game.physics.p2.restitution = 0;
 
-    for (var i = 0; i < numBubbles; i++){
-        bubbles[i] = createBubble(game.world.randomX, game.world.randomY);
-   	}
+        //  The bounds of centre camel playground
+        // the width and height are wrong from game.world.width after adding quake effect
+        bounds = new Phaser.Rectangle(1280/4, 800/4, 1280/2, 800/2);
 
-    //camels group
-    camelsGroup = game.add.group();
-    camelsGroup.enableBody = true;
-    camelsGroup.physicsBodyType = Phaser.Physics.P2JS;
+        //  Create our collision groups. One for the player, one for the bubblesGroup, one for the camelsGroup
+        playerCollisionGroup = game.physics.p2.createCollisionGroup();
+        bubbleCollisionGroup = game.physics.p2.createCollisionGroup();
+        camelCollisionGroup = game.physics.p2.createCollisionGroup();
+        fullBubbleCollisionGroup = game.physics.p2.createCollisionGroup();
 
-    for (var i = 0; i < numCamels; i++){
-    	camels[i] = createCamel(bounds.randomX, bounds.randomY);
-   	}
+        //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
+        //  (which we do) - what this does is adjust the bounds to use its own collision group.
+        game.physics.p2.updateBoundsCollisionGroup();
 
-    // Create our player sprite
-    player = game.add.sprite(200, 200, 'player');
-    player.scale.set(0.1);
+        // full bubble group
+        fullBubbleGroup = game.add.group();
+        fullBubbleGroup.enableBody = true;
+        fullBubbleGroup.physicsBodyType = Phaser.Physics.P2JS;
 
-    game.physics.p2.enable(player, false);
-    player.body.setCircle(24);
-    player.body.fixedRotation = true;
+        // bubbles group
+        bubblesGroup = game.add.group();
+        bubblesGroup.enableBody = true;
+        bubblesGroup.physicsBodyType = Phaser.Physics.P2JS;
 
-    // Set the players collision group
-    player.body.setCollisionGroup(playerCollisionGroup);
+        for (var i = 0; i < numBubbles; i++)
+            createBubble(game.world.randomX, game.world.randomY);
 
-    // When player colides with bubbles or fullbubbles, the function in second parameter is called. 
-    player.body.collides(bubbleCollisionGroup, bumpBubble, this);
-    player.body.collides(fullBubbleCollisionGroup, bumpFullBubble, this);
+        //camels group
+        camelsGroup = game.add.group();
+        camelsGroup.enableBody = true;
+        camelsGroup.physicsBodyType = Phaser.Physics.P2JS;
 
-    //  Create a new custom sized bounds, within the world bounds
-    customBounds = { left: null, right: null, top: null, bottom: null };
+        for (var i = 0; i < numCamels; i++)
+        	createCamel(bounds.randomX, bounds.randomY);
 
-    createPreviewBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+        // Create our player sprite
+        player = game.add.sprite(200, 200, 'player');
+        player.scale.set(0.1);
 
-    //  Just to display the inner bounds
-    var graphics = game.add.graphics(bounds.x, bounds.y);
-    graphics.lineStyle(4, 0xff0000, 1);
-    graphics.drawRect(0, 0, bounds.width, bounds.height);
+        game.physics.p2.enable(player, false);
+        player.body.setCircle(24);
+        player.body.fixedRotation = true;
 
-    // controls
-    cursors = game.input.keyboard.createCursorKeys();
-    
-    wasd = {
-        left:game.input.keyboard.addKey(Phaser.Keyboard.A),
-        right:game.input.keyboard.addKey(Phaser.Keyboard.D),
-        up:game.input.keyboard.addKey(Phaser.Keyboard.W),
-        down:game.input.keyboard.addKey(Phaser.Keyboard.S)
-    };
+        // Set the players collision group
+        player.body.setCollisionGroup(playerCollisionGroup);
 
-    // remove key capture so they don't flood to browser
-    game.input.keyboard.removeKeyCapture(Phaser.Keyboard.A);
-    game.input.keyboard.removeKeyCapture(Phaser.Keyboard.D);
-    game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
-    game.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
+        // When player colides with bubbles or fullbubbles, the function in second parameter is called. 
+        player.body.collides(bubbleCollisionGroup, bumpBubble, this);
+        player.body.collides(fullBubbleCollisionGroup, bumpFullBubble, this);
+
+        //  Create a new custom sized bounds, within the world bounds
+        customBounds = { left: null, right: null, top: null, bottom: null };
+
+        createPreviewBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+
+        //  Just to display the inner bounds
+        var graphics = game.add.graphics(bounds.x, bounds.y);
+        graphics.lineStyle(4, 0xff0000, 1);
+        graphics.drawRect(0, 0, bounds.width, bounds.height);
+
+        // controls
+        cursors = game.input.keyboard.createCursorKeys();
+        
+        wasd = {
+            left:game.input.keyboard.addKey(Phaser.Keyboard.A),
+            right:game.input.keyboard.addKey(Phaser.Keyboard.D),
+            up:game.input.keyboard.addKey(Phaser.Keyboard.W),
+            down:game.input.keyboard.addKey(Phaser.Keyboard.S)
+        };
+
+        // remove key capture so they don't flood to browser
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.A);
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.D);
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
+    },
+
+    //runs continuously. 
+    update:function() {
+
+        player.body.setZeroVelocity();
+
+        if (cursors.left.isDown || wasd.left.isDown)
+        {
+            player.body.moveLeft(200);
+        }
+        else if (cursors.right.isDown || wasd.right.isDown)
+        {
+            player.body.moveRight(200);
+        }
+
+        if (cursors.up.isDown || wasd.up.isDown)
+        {
+            player.body.moveUp(200);
+        }
+        else if (cursors.down.isDown || wasd.down.isDown)
+        {
+            player.body.moveDown(200);
+        }
+
+        //winning condition - go to shop
+        if((bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) == 0)
+        	game.state.start('shop');
+
+        /* if camels are ever 0, game over - exit game, go game over screen
+        if(camelsGroup.countLiving() == 0)
+        	//losing condition
+        */
+
+    },
+
+    //runs continously
+    render: function() {
+        //game.debug.text("Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + camelsGroup.countLiving(), 40, 40);
+    }
+
+}
+
+//Helper Methods
+
+function addQuake() {
+
+  // define the camera offset for the quake
+  var rumbleOffset = 7;
+  
+  // we need to move according to the camera's current position
+  var properties = { x: game.camera.x - rumbleOffset};
+
+  // we make it a relly fast movement
+  var duration = 50;
+  // because it will repeat
+  var repeat = 2;
+  // we use bounce in-out to soften it a little bit
+  var ease = Phaser.Easing.Bounce.InOut;
+  var autoStart = false;
+  // no delay because we will run it only once
+  var delay = 0;
+  // we want to go back to the original position
+  var yoyo = true;
+  
+  var quake = game.add.tween(game.camera)
+  .to(properties, duration, ease, autoStart, delay, 4, yoyo);
+  
+  // let the earthquake begins
+  quake.start();
 }
 
 // body1 is the player (as it's the body that owns the callback)
@@ -178,7 +260,7 @@ function camelBubbleHit(camelBody, bubbleBody){
     fullBubble = createfullBubble(bubbleBody.sprite.position.x, bubbleBody.sprite.position.y);
 
     //destroy bubble
-	bubbleBody.sprite.alive = false;
+    bubbleBody.sprite.alive = false;
     bubbleBody.sprite.pendingDestroy = true;
 
     //destroy camel
@@ -187,23 +269,25 @@ function camelBubbleHit(camelBody, bubbleBody){
 }
 
 function createfullBubble(x,y){
-	fullBubble = fullBubbleGroup.create(x,y, 'fullBubble');
+    fullBubble = fullBubbleGroup.create(x,y, 'fullBubble');
     fullBubble.scale.set(0.37);
-	fullBubble.enableBody = true;
+    fullBubble.enableBody = true;
     fullBubble.body.setCircle(24);
     fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
     fullBubble.body.collides([playerCollisionGroup]);
+    fullBubble.body.collideWorldBounds=true;
     return fullBubble;
 }
 
 function createBubble(x,y){
-	new_bubble = bubblesGroup.create(x, y, 'bubble');
-	new_bubble.scale.set(0.3);
+    new_bubble = bubblesGroup.create(x, y, 'bubble');
+    new_bubble.scale.set(0.3);
     new_bubble.body.setCircle(24);
     new_bubble.body.setCollisionGroup(bubbleCollisionGroup);
     new_bubble.body.fixedRotation = true;
-   	new_bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
-   	return new_bubble;
+    new_bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
+    new_bubble.body.collideWorldBounds=true;
+    return new_bubble;
 }
 
 // body 1 is the player
@@ -211,7 +295,7 @@ function createBubble(x,y){
 // method should destroy fullBubble, and put camel back
 function bumpFullBubble(playerBody, fullBubbleBody){
 
-	//create new camel at where fullBubble was
+    //create new camel at where fullBubble was
     new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
 
     // destroy full-bubble sprite
@@ -221,12 +305,13 @@ function bumpFullBubble(playerBody, fullBubbleBody){
 }
 
 function createCamel(x,y){
-	new_camel = camelsGroup.create(x, y, 'camel');
+    new_camel = camelsGroup.create(x, y, 'camel');
     new_camel.scale.setTo(0.5);
     new_camel.body.setRectangle(40);
     new_camel.body.setCollisionGroup(camelCollisionGroup);
     new_camel.body.fixedRotation = true;
     new_camel.body.collides(bubbleCollisionGroup, camelBubbleHit, this);
+    new_camel.body.collideWorldBounds=true;
     return new_camel;
 }
 
@@ -255,72 +340,4 @@ function createPreviewBounds(x,y,w,h){
     sim.world.addBody(customBounds.right);
     sim.world.addBody(customBounds.top);
     sim.world.addBody(customBounds.bottom);
-}
-
-//runs continuously. 
-function update() {
-
-    player.body.setZeroVelocity();
-
-    if (cursors.left.isDown || wasd.left.isDown)
-    {
-        player.body.moveLeft(200);
-    }
-    else if (cursors.right.isDown || wasd.right.isDown)
-    {
-        player.body.moveRight(200);
-    }
-
-    if (cursors.up.isDown || wasd.up.isDown)
-    {
-        player.body.moveUp(200);
-    }
-    else if (cursors.down.isDown || wasd.down.isDown)
-    {
-        player.body.moveDown(200);
-    }
-
-    //winning condition - exit game
-    if((bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) == 0){
-    	console.log('YOU WON!');
-    }
-
-    //if camels are ever 0, game over - exit game
-    if(camelsGroup.countLiving() == 0){
-    	console.log('Game Over!');
-    }
-}
-
-//runs continously
-function render() {
-    game.debug.text("Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + camelsGroup.countLiving(), 32, 32);
-}
-
-function addQuake() {
-  
-  // define the camera offset for the quake
-  var rumbleOffset = 7;
-  
-  // we need to move according to the camera's current position
-  var properties = {
-    x: game.camera.x - rumbleOffset
-  };
-  
-  // we make it a relly fast movement
-  var duration = 50;
-  // because it will repeat
-  var repeat = 2;
-  // we use bounce in-out to soften it a little bit
-  var ease = Phaser.Easing.Bounce.InOut;
-  var autoStart = false;
-  // no delay because we will run it only once
-  var delay = 0;
-  // we want to go back to the original position
-  var yoyo = true;
-  
-  var quake = game.add.tween(game.camera)
-    .to(properties, duration, ease, autoStart, delay, 4, yoyo);
-  
-  // let the earthquake begins
-  quake.start();
 }
