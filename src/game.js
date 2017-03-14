@@ -11,8 +11,11 @@ var cursors;
 var wasd;
 
 //change these depending on how many bubbles and want
-var numBubbles = 15;
+var numBubbles = 0;
 var numCamels = 5;
+var numFullBubbles = 0;
+
+var time = 100;
 
 // sprite groups (only done for when there is more than one sprite in each group)
 var bubblesGroup;
@@ -109,16 +112,32 @@ var game = {
         bubblesGroup.enableBody = true;
         bubblesGroup.physicsBodyType = Phaser.Physics.P2JS;
 
-        for (var i = 0; i < numBubbles; i++)
-            bubbles[i] = createBubble(game.world.randomX, game.world.randomY);
+        createBubble(game.world.randomX, game.world.randomY);
 
         //camels group
         camelsGroup = game.add.group();
         camelsGroup.enableBody = true;
         camelsGroup.physicsBodyType = Phaser.Physics.P2JS;
 
-        for (var i = 0; i < numCamels; i++)
-        	camels[i] = createCamel(bounds.randomX, bounds.randomY);
+        for (var i = 0; i < numCamels; i++){
+        	// Camel spawn positions
+        	CSx = Math.random() * (850 - 450) + 450;
+        	CSy = Math.random() * (550 - 350) + 350;
+        	createCamel(CSx, CSy);
+        }
+
+        //To move camels
+        game.time.events.loop(Phaser.Timer.SECOND * 1.5, moveCamels, this); 
+
+        //To move full bubbles
+        game.time.events.loop(Phaser.Timer.SECOND * 0.5, moveBubbles, this); 
+
+        //To move full bubbles
+        game.time.events.loop(Phaser.Timer.SECOND * 0.5, moveFullBubbles, this); 
+
+        //To move full bubbles
+        game.time.events.loop(Phaser.Timer.SECOND * 4, createBubbles, this); 
+
 
         // Create our player sprite
         player = game.add.sprite(200, 200, 'player');
@@ -186,7 +205,7 @@ var game = {
         }
 
         //winning condition - go to shop
-        if((bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) == 0)
+        if(time == 0)
         	game.state.start('shop');
 
         /* if camels are ever 0, game over - exit game
@@ -239,6 +258,7 @@ function addQuake() {
 function bumpBubble(playerBody, bubbleBody) {
     bubbleBody.sprite.alive = false;
     bubbleBody.sprite.pendingDestroy = true;
+    numBubbles--;
     popSound.play();
 }
 
@@ -255,15 +275,19 @@ function camelBubbleHit(camelBody, bubbleBody){
     ouchSound.play();
 
     // create full_bubble sprite where original bubble was
-    fullBubble = createfullBubble(bubbleBody.sprite.position.x, bubbleBody.sprite.position.y);
+    createfullBubble(bubbleBody.sprite.position.x, bubbleBody.sprite.position.y);
 
     //destroy bubble
     bubbleBody.sprite.alive = false;
     bubbleBody.sprite.pendingDestroy = true;
+    bubblesGroup.remove(bubbleBody);
+    numBubbles--;
 
     //destroy camel
     camelBody.sprite.alive = false;
     camelBody.sprite.pendingDestroy = true;
+    camelsGroup.remove(camelBody);
+    numCamels--;
 }
 
 function createfullBubble(x,y){
@@ -273,7 +297,7 @@ function createfullBubble(x,y){
     fullBubble.body.setCircle(24);
     fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
     fullBubble.body.collides([playerCollisionGroup]);
-    return fullBubble;
+    numFullBubbles++;
 }
 
 function createBubble(x,y){
@@ -283,7 +307,7 @@ function createBubble(x,y){
     new_bubble.body.setCollisionGroup(bubbleCollisionGroup);
     new_bubble.body.fixedRotation = true;
     new_bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
-    return new_bubble;
+    numBubbles++;
 }
 
 // body 1 is the player
@@ -293,10 +317,14 @@ function bumpFullBubble(playerBody, fullBubbleBody){
 
     //create new camel at where fullBubble was
     new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
+    numCamels++;
 
     // destroy full-bubble sprite
+    numFullBubbles--;
     fullBubbleBody.sprite.alive = false;
     fullBubbleBody.sprite.pendingDestroy = true;
+    fullBubbleGroup.remove(fullBubbleBody);
+
     popSound.play();
 }
 
@@ -307,8 +335,83 @@ function createCamel(x,y){
     new_camel.body.setCollisionGroup(camelCollisionGroup);
     new_camel.body.fixedRotation = true;
     new_camel.body.collides(bubbleCollisionGroup, camelBubbleHit, this);
-    return new_camel;
 }
+
+function createBubbles(){
+	x = game.rnd.integerInRange(0, 1000);
+	y = game.rnd.integerInRange(0, 800);
+    createBubble(x, y);	
+}
+
+
+function moveCamels() {
+
+	for(var i=0 ; i<numCamels ; i++){
+		camelsGroup.getAt(i).body.setZeroVelocity();
+        // randomise the movement   
+        CamelsMover = game.rnd.integerInRange(1, 7);    
+        // simple if statement to choose if and which way the baddie moves  
+        if (CamelsMover == 1) {
+            if(camelsGroup.getAt(i).x < 450)        
+            camelsGroup.getAt(i).body.velocity.x = 80;
+            else        
+                camelsGroup.getAt(i).body.velocity.x = -80;
+            
+        }   
+        else if(CamelsMover == 2) 
+        {
+            if(camelsGroup.getAt(i).x > 850)        
+            camelsGroup.getAt(i).body.velocity.x = -80;
+            else
+                camelsGroup.getAt(i).body.velocity.x = 80;
+        }   
+        else if (CamelsMover == 3) {
+            if(camelsGroup.getAt(i).y < 350)
+            camelsGroup.getAt(i).body.velocity.y = 80;
+            else
+                camelsGroup.getAt(i).body.velocity.y = -80; 
+        }   
+        else if (CamelsMover == 4) {
+            if(camelsGroup.getAt(i).y > 550)        
+            camelsGroup.getAt(i).body.velocity.y = -80;
+            else
+                camelsGroup.getAt(i).body.velocity.y = 80;
+        }   
+        else {      
+            camelsGroup.getAt(i).body.velocity.x = 0;       
+            
+        }
+	}
+}	
+
+
+function moveFullBubbles() {
+	for(var i=0 ; i<numFullBubbles ; i++){
+		fullBubbleGroup.getAt(i).body.velocity.y = 80;
+	}
+}	
+
+function moveBubbles() {
+	for(var i=0 ; i<numBubbles ; i++){
+		if(bubblesGroup.getAt(i).x>800 && bubblesGroup.getAt(i).y>500){
+			bubblesGroup.getAt(i).body.velocity.y = -80;
+			bubblesGroup.getAt(i).body.velocity.x = -80;
+		}
+		else if (bubblesGroup.getAt(i).x>800 && bubblesGroup.getAt(i).y<500){
+			bubblesGroup.getAt(i).body.velocity.y = 80;
+			bubblesGroup.getAt(i).body.velocity.x = -80;
+		}
+		else if (bubblesGroup.getAt(i).x<800 && bubblesGroup.getAt(i).y>500){
+			bubblesGroup.getAt(i).body.velocity.y = -80;
+			bubblesGroup.getAt(i).body.velocity.x = 80;
+		}
+		else{
+			bubblesGroup.getAt(i).body.velocity.y = 80;
+			bubblesGroup.getAt(i).body.velocity.x = 80;
+		}
+
+	}
+}	
 
 
 function createPreviewBounds(x,y,w,h){
