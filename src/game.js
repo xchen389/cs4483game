@@ -25,10 +25,9 @@ var bubbleCollisionGroup;
 var camelCollisionGroup;
 var fullBubbleCollisionGroup;
 var customBounds;
+var bounds;
 
 //array of bubble and camel sprites
-var bubbles = [numBubbles];
-var camels = [numCamels];
 
 //game object definiton
 var game = {
@@ -58,7 +57,9 @@ var game = {
         //game.stage.backgroundColor = '#DE9C04';
         game.add.tileSprite(0,0, 1280, 800, 'background');
 
-        game.add.button(900,20, 'exitButton', game.exitButtonClicked, this);
+        exitButton = game.add.button(1130,15, 'exitButton', game.exitButtonClicked, this);
+        exitButton.width = 130;
+        exitButton.height = 60;
 
         //music
         music = game.add.audio('intro');
@@ -68,6 +69,7 @@ var game = {
         popSound = game.add.audio('pop');
         ouchSound = game.add.audio('camel_ouch');
 
+        /*
         // for earthquake effect, add margin to the world, so the camera can move
         var margin = 50;
         // and set the world's bounds according to the given margin
@@ -78,6 +80,7 @@ var game = {
         game.world.setBounds(x, y, w, h);
         // make sure camera at 0
         game.world.camera.position.set(0);
+		*/
 
         //Enable P2 Physics
         game.physics.startSystem(Phaser.Physics.P2JS);
@@ -87,7 +90,8 @@ var game = {
         game.physics.p2.restitution = 0;
 
         //  The bounds of centre camel playground
-        var bounds = new Phaser.Rectangle(game.width/4, game.height/4, game.width/2, game.height/2);
+        // the width and height are wrong from game.world.width after adding quake effect
+        bounds = new Phaser.Rectangle(1280/4, 800/4, 1280/2, 800/2);
 
         //  Create our collision groups. One for the player, one for the bubblesGroup, one for the camelsGroup
         playerCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -110,7 +114,7 @@ var game = {
         bubblesGroup.physicsBodyType = Phaser.Physics.P2JS;
 
         for (var i = 0; i < numBubbles; i++)
-            bubbles[i] = createBubble(game.world.randomX, game.world.randomY);
+            createBubble(game.world.randomX, game.world.randomY);
 
         //camels group
         camelsGroup = game.add.group();
@@ -118,7 +122,7 @@ var game = {
         camelsGroup.physicsBodyType = Phaser.Physics.P2JS;
 
         for (var i = 0; i < numCamels; i++)
-        	camels[i] = createCamel(bounds.randomX, bounds.randomY);
+        	createCamel(bounds.randomX, bounds.randomY);
 
         // Create our player sprite
         player = game.add.sprite(200, 200, 'player');
@@ -211,9 +215,7 @@ function addQuake() {
   var rumbleOffset = 7;
   
   // we need to move according to the camera's current position
-  var properties = {
-    x: game.camera.x - rumbleOffset
-};
+  var properties = { x: game.camera.x - rumbleOffset};
 
   // we make it a relly fast movement
   var duration = 50;
@@ -268,11 +270,12 @@ function camelBubbleHit(camelBody, bubbleBody){
 
 function createfullBubble(x,y){
     fullBubble = fullBubbleGroup.create(x,y, 'fullBubble');
-    fullBubble.scale.set(0.5);
+    fullBubble.scale.set(0.37);
     fullBubble.enableBody = true;
     fullBubble.body.setCircle(24);
     fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
     fullBubble.body.collides([playerCollisionGroup]);
+    fullBubble.body.collideWorldBounds=true;
     return fullBubble;
 }
 
@@ -283,6 +286,7 @@ function createBubble(x,y){
     new_bubble.body.setCollisionGroup(bubbleCollisionGroup);
     new_bubble.body.fixedRotation = true;
     new_bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
+    new_bubble.body.collideWorldBounds=true;
     return new_bubble;
 }
 
@@ -307,6 +311,7 @@ function createCamel(x,y){
     new_camel.body.setCollisionGroup(camelCollisionGroup);
     new_camel.body.fixedRotation = true;
     new_camel.body.collides(bubbleCollisionGroup, camelBubbleHit, this);
+    new_camel.body.collideWorldBounds=true;
     return new_camel;
 }
 
