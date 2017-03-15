@@ -68,12 +68,16 @@ var game = {
 
         //load pause menu
         var menu;
+        var menuH;
+        var menuW;
         pauseButton.events.onInputUp.add(
 
             function(){
                 //game.paused doesn't work by itself, need to freeze everything
                 game.paused = true;
                 menu = game.add.sprite(160, 100, 'pauseScreen');
+                menuH = menu.height;
+                menuW = menu.width; 
 
                 choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
                     '30px Arial', fill: '#000'});
@@ -81,30 +85,21 @@ var game = {
             }
         );
 
-        // if user presses outside, unpause
+        // if user presses click check if unpause, unpause
         this.input.onDown.add(unpause, self);
 
         function unpause(event){
-        // Only act if paused
+
+            // Only act if paused
             if(game.paused){
-                // Calculate the corners of the menu
-                var x1 = w/2 - 270/2, x2 = w/2 + 270/2,
-                y1 = h/2 - 180/2, y2 = h/2 + 180/2;
+
+                // corners of the pause menu
+                var x1 = 160, x2 = 160 + menuW,
+                y1 = 100, y2 = 100 + menuH;
 
                 // Check if the click was inside the menu
                 if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
-                    // The choicemap is an array that will help us see which item was clicked
-                    var choisemap = ['one', 'two', 'three', 'four', 'five', 'six'];
-
-                    // Get menu local coordinates for the click
-                    var x = event.x - x1,
-                    y = event.y - y1;
-
-                    // Calculate the choice 
-                    var choise = Math.floor(x / 90) + 3*Math.floor(y / 90);
-
-                    // Display the choice
-                    choiseLabel.text = 'You chose menu item: ' + choisemap[choise];
+                   //do nothing
                 }
                 else{
                     // Remove the menu and the label
@@ -251,11 +246,11 @@ var game = {
         }
 
         //winning condition - go to shop
-        if((bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) == 0)
+        if(numBubbles == 0)
         	main.state.start('shop');
 
         //if camels are ever 0, game over - exit game, go game over screen
-        if(camelsGroup.countLiving() == 0)
+        if(numCamels == 0)
         	main.state.start('gameover');
     },
 
