@@ -46,6 +46,7 @@ var game = {
         game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
         game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
         game.load.image('pauseScreen', './assets/images/backgrounds/pause_screen.png');
+        game.load.image('mainMenuButton', './assets/images/buttons/mainMenu_button.png');
         game.load.audio('intro', './assets/sounds/introMusic.ogg');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
@@ -74,8 +75,12 @@ var game = {
                 //game.paused doesn't work by itself, need to freeze everything
                 game.game.paused = true;
                 menu = game.add.sprite(160, 100, 'pauseScreen');
+
                 menuH = menu.height;
                 menuW = menu.width; 
+
+                mainMenuButton = game.add.button(w/2, h-230, 'mainMenuButton');
+                mainMenuButton.anchor.setTo(0.5,0.5);
 
                 choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
                     '30px Arial', fill: '#000'});
