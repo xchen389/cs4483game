@@ -47,7 +47,6 @@ var game = {
         game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
         game.load.image('pauseScreen', './assets/images/backgrounds/pause_screen.png');
         game.load.image('mainMenuButton', './assets/images/buttons/mainMenu_button.png');
-        game.load.audio('intro', './assets/sounds/introMusic.ogg');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
     },
@@ -126,12 +125,6 @@ var game = {
                 }
             }
         };
-
-
-        //music
-        music = game.add.audio('intro');
-        
-        //music.play();
 
         popSound = game.add.audio('pop');
         ouchSound = game.add.audio('camel_ouch');
