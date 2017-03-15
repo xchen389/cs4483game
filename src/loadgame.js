@@ -25,7 +25,7 @@ var loadGame = {
 	loadTheGame: function(){
 		//get shit from the file, edit gobal vars
 		main.state.start('shop');
-	}
+	},
 
 	shutdown: function(){
 		music.stop();

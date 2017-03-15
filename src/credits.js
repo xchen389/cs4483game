@@ -18,7 +18,7 @@ var credits = {
 
 	loadCredits: function(){
 		this.state.start('menu');
-	}
+	},
 
 	shutdown: function(){
 		music.stop();
