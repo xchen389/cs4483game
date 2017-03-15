@@ -11,9 +11,9 @@ var menu = {
 
 	create: function(){
 		this.add.tileSprite(0,0, 1280, 800, 'menuBackground');
-		var newGameButton = this.add.button(140,250,'newGameButton',this.startGame, this);
-		var loadGameButton = this.add.button(140,370, 'loadGameButton', this.loadGame, this);
-		var CreditButton = this.add.button(140,490, 'creditsButton', this.loadCredits,this);
+		var newGameButton = this.add.button(200,250,'newGameButton',this.startGame, this);
+		var loadGameButton = this.add.button(200,370, 'loadGameButton', this.loadGame, this);
+		var CreditButton = this.add.button(200,490, 'creditsButton', this.loadCredits,this);
 	},
 
 		startGame: function(){

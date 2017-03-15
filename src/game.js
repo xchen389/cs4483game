@@ -5,13 +5,16 @@ var ouchSound;
 
 var musicButton; //TO-DO
 var FXButton; //TO-DO 
+var counterText;
 
 var player;
 var cursors;
 var wasd;
 
-//change these depending on how many bubbles and want
+//THIS IS AMOUNT OF BUBBLES REMAINING, != bubbles currently on screen
+//use the bubblesGroup to find bubbles and camels currently on screen for AI
 var numBubbles = 15;
+//only decrement numCamels when a fullBubble exits the screen
 var numCamels = 5;
 
 // sprite groups (only done for when there is more than one sprite in each group)
@@ -39,15 +42,15 @@ var game = {
         game.load.image('camel', './assets/images/single_camel.gif');
         game.load.image('fullBubble', './assets/images/full_bubble.png');
         game.load.image('musicButton', './assets/images/musicToggle.png');
-        game.load.image('exitButton', './assets/images/buttons/exit_button.png');
+        game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
         game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
         game.load.audio('intro', './assets/sounds/introMusic.ogg');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
     },
 
-   exitButtonClicked:function() {
-        game.state.start('menu')
+   pauseButtonClicked:function() {
+        main.state.start('menu')
     },
 
     // runs a single time when the game instance is created
@@ -57,9 +60,9 @@ var game = {
         //game.stage.backgroundColor = '#DE9C04';
         game.add.tileSprite(0,0, 1280, 800, 'background');
 
-        exitButton = game.add.button(1130,15, 'exitButton', game.exitButtonClicked, this);
-        exitButton.width = 130;
-        exitButton.height = 50;
+        pauseButton = game.add.button(1170,10, 'pauseButton', game.pauseButtonClicked, this);
+        pauseButton.width = 100;
+        pauseButton.height = 40;
 
         //music
         music = game.add.audio('intro');
@@ -149,6 +152,7 @@ var game = {
         graphics.lineStyle(4, 0xff0000, 1);
         graphics.drawRect(0, 0, bounds.width, bounds.height);
 
+
         // controls
         cursors = game.input.keyboard.createCursorKeys();
         
@@ -164,6 +168,9 @@ var game = {
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.D);
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
+
+        counterText = this.add.text(15,10, "Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + numCamels );
+
     },
 
     //runs continuously. 
@@ -191,23 +198,22 @@ var game = {
 
         //winning condition - go to shop
         if((bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) == 0)
-        	game.state.start('shop');
+        	main.state.start('shop');
 
-        /* if camels are ever 0, game over - exit game, go game over screen
+        //if camels are ever 0, game over - exit game, go game over screen
         if(camelsGroup.countLiving() == 0)
-        	//losing condition
-        */
-
+        	main.state.start('gameover');
     },
-
-    //runs continously
-    render: function() {
-        //game.debug.text("Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + camelsGroup.countLiving(), 40, 40);
-    }
 
 }
 
 //Helper Methods
+
+//call this everytime bubble pops
+function updateCounterText(){
+    //add formatting for text later
+    counterText.setText("Bubbles: " + numBubbles + " camels: " + numCamels);
+}
 
 function addQuake() {
 
@@ -239,9 +245,11 @@ function addQuake() {
 // body1 is the player (as it's the body that owns the callback)
 // body2 is the body it impacted with, its the body of the bubble :
 function bumpBubble(playerBody, bubbleBody) {
+    popSound.play();
+    numBubbles--;
+    updateCounterText();
     bubbleBody.sprite.alive = false;
     bubbleBody.sprite.pendingDestroy = true;
-    popSound.play();
 }
 
 function musicToggle(){
@@ -294,14 +302,15 @@ function createBubble(x,y){
 // body 2 is the full bubble
 // method should destroy fullBubble, and put camel back
 function bumpFullBubble(playerBody, fullBubbleBody){
-
+    popSound.play();
+    numBubbles--;
     //create new camel at where fullBubble was
     new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
 
     // destroy full-bubble sprite
     fullBubbleBody.sprite.alive = false;
     fullBubbleBody.sprite.pendingDestroy = true;
-    popSound.play();
+    updateCounterText();
 }
 
 function createCamel(x,y){
