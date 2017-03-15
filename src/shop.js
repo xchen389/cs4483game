@@ -15,7 +15,7 @@ var shop = {
 		var nextButton = this.add.button(670,670, 'nextButton', this.loadGame,this);
 		//nextButton.width = 200;
 		//nextButton.height = 100;
-
+		//
 		var exitButton = this.add.button(970,670, 'exitButton', this.loadMenu,this);
 		//exitButton.width = 100;
 		//exitButton.height = 80;

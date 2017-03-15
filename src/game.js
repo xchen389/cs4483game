@@ -299,12 +299,12 @@ var game = {
         if(numBubbles == 0){
             //only adding 50 bubbles for testing
             //when implementing, you need to set bubbles to be some amount before
-            //each level. 
-            numBubbles = 20;
+            //each level. Things are different every night right? 
+            numBubbles = 50;
         	main.state.start('shop');
         }
 
-        //if camels are ever 0, game over - exit game, go game over screen
+        //losing condition
         if(numCamels == 0)
         	main.state.start('gameover');
     },
