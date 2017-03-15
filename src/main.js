@@ -7,7 +7,9 @@ var main = new Phaser.Game(1280, 800, Phaser.CANVAS, 'gameDiv')
 main.state.add('game', game);
 main.state.add('menu', menu);
 main.state.add('credits', credits);
+main.state.add('gameover', gameover);
 main.state.add('shop', shop);
+main.state.add('loadGame', loadGame);
 
 //start main menu state
 main.state.start('menu');

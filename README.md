@@ -9,7 +9,7 @@
 	-Open a terminal in the root of this and
 	write in command line for depending on what language you have:
 	
-		python -m http.server
+		python -m http.server (On Mac: python3 -m http.server )
 		ruby -run -e httpd . -p 8000
 		php -S localhost:8000
 

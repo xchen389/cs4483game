@@ -5,13 +5,19 @@ var ouchSound;
 
 var musicButton; //TO-DO
 var FXButton; //TO-DO 
+var counterText;
 
 var player;
 var cursors;
 var wasd;
 
-//change these depending on how many bubbles and want
+var w = 1280;
+var h = 800;
+
+//THIS IS AMOUNT OF BUBBLES REMAINING, != bubbles currently on screen
+//use the bubblesGroup to find bubbles and camels currently on screen for AI
 var numBubbles = 15;
+//only decrement numCamels when a fullBubble exits the screen
 var numCamels = 5;
 
 // sprite groups (only done for when there is more than one sprite in each group)
@@ -27,8 +33,6 @@ var fullBubbleCollisionGroup;
 var customBounds;
 var bounds;
 
-//array of bubble and camel sprites
-
 //game object definiton
 var game = {
 
@@ -39,15 +43,12 @@ var game = {
         game.load.image('camel', './assets/images/single_camel.gif');
         game.load.image('fullBubble', './assets/images/full_bubble.png');
         game.load.image('musicButton', './assets/images/musicToggle.png');
-        game.load.image('exitButton', './assets/images/exit_button.png');
-        game.load.image('background', './assets/images/game_background.png');
-        game.load.audio('intro', './assets/sounds/introMusic.ogg');
+        game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
+        game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
+        game.load.image('pauseScreen', './assets/images/backgrounds/pause_screen.png');
+        game.load.image('mainMenuButton', './assets/images/buttons/mainMenu_button.png');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
-    },
-
-   exitButtonClicked:function() {
-        game.state.start('menu')
     },
 
     // runs a single time when the game instance is created
@@ -57,14 +58,73 @@ var game = {
         //game.stage.backgroundColor = '#DE9C04';
         game.add.tileSprite(0,0, 1280, 800, 'background');
 
-        exitButton = game.add.button(1130,15, 'exitButton', game.exitButtonClicked, this);
-        exitButton.width = 130;
-        exitButton.height = 60;
+        //Code for pause Menu
+        pauseButton = game.add.button(1170,10, 'pauseButton');
+        pauseButton.width = 100;
+        pauseButton.height = 35;
+        pauseButton.inputEnabled = true;
 
-        //music
-        music = game.add.audio('intro');
-        
-        //music.play();
+        //load pause menu
+        var menu;
+        var menuH;
+        var menuW;
+        var mainMenuButton;
+        pauseButton.events.onInputUp.add(
+
+            function(){
+                //game.paused doesn't work by itself, need to freeze everything
+                game.game.paused = true;
+                menu = game.add.sprite(160, 100, 'pauseScreen');
+
+                menuH = menu.height;
+                menuW = menu.width; 
+
+                mainMenuButton = game.add.button(w/2, h-230, 'mainMenuButton');
+                mainMenuButton.anchor.setTo(0.5,0.5);
+                mainMenuButton.height = 60;
+                mainMenuButton.width = 200;
+
+                choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
+                    '30px Arial', fill: '#000'});
+                choiceLabel.anchor.setTo(0.5,0.5);
+            }
+        );
+
+        // if user presses click check if unpause, unpause
+        this.input.onDown.add(unpause, self);
+
+        function unpause(event){
+
+            // Only act if paused
+            if(game.game.paused){
+
+                // corners of the pause menu
+                var x1 = 160, x2 = 160 + menuW,
+                y1 = 100, y2 = 100 + menuH;
+
+                // Check if the click was inside the menu
+                if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+                   //do nothing
+                   //check if it hit the mainMenuButton
+                   if(event.x > w/2 - mainMenuButton.width/2 &&
+                    event.x < w/2 + mainMenuButton.width/2 &&
+                    event.y > (h-230) - mainMenuButton.height/2 &&
+                    event.y < (h-230) + mainMenuButton.height/2
+                    ){
+                        game.game.paused = false;
+                        main.state.start('menu');
+                   }
+                }
+                else{
+                    // Remove the menu and the label
+                    menu.destroy();
+                    mainMenuButton.destroy();
+                    choiceLabel.destroy();
+                    // Unpause the game
+                    game.game.paused = false;
+                }
+            }
+        };
 
         popSound = game.add.audio('pop');
         ouchSound = game.add.audio('camel_ouch');
@@ -80,7 +140,7 @@ var game = {
         game.world.setBounds(x, y, w, h);
         // make sure camera at 0
         game.world.camera.position.set(0);
-		*/
+        */
 
         //Enable P2 Physics
         game.physics.startSystem(Phaser.Physics.P2JS);
@@ -149,6 +209,7 @@ var game = {
         graphics.lineStyle(4, 0xff0000, 1);
         graphics.drawRect(0, 0, bounds.width, bounds.height);
 
+
         // controls
         cursors = game.input.keyboard.createCursorKeys();
         
@@ -164,6 +225,9 @@ var game = {
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.D);
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
+
+        counterText = this.add.text(15,10, "Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + numCamels );
+
     },
 
     //runs continuously. 
@@ -190,24 +254,28 @@ var game = {
         }
 
         //winning condition - go to shop
-        if((bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) == 0)
-        	game.state.start('shop');
+        if(numBubbles == 0){
+            //only adding 50 bubbles for testing
+            //when implementing, you need to set bubbles to be some amount before
+            //each level. 
+            numBubbles = 20;
+        	main.state.start('shop');
+        }
 
-        /* if camels are ever 0, game over - exit game, go game over screen
-        if(camelsGroup.countLiving() == 0)
-        	//losing condition
-        */
-
+        //if camels are ever 0, game over - exit game, go game over screen
+        if(numCamels == 0)
+        	main.state.start('gameover');
     },
-
-    //runs continously
-    render: function() {
-        //game.debug.text("Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + camelsGroup.countLiving(), 40, 40);
-    }
 
 }
 
 //Helper Methods
+
+//call this everytime bubble pops
+function updateCounterText(){
+    //add formatting for text later
+    counterText.setText("Bubbles: " + numBubbles + " camels: " + numCamels);
+}
 
 function addQuake() {
 
@@ -239,9 +307,11 @@ function addQuake() {
 // body1 is the player (as it's the body that owns the callback)
 // body2 is the body it impacted with, its the body of the bubble :
 function bumpBubble(playerBody, bubbleBody) {
+    popSound.play();
+    numBubbles--;
+    updateCounterText();
     bubbleBody.sprite.alive = false;
     bubbleBody.sprite.pendingDestroy = true;
-    popSound.play();
 }
 
 function musicToggle(){
@@ -294,14 +364,15 @@ function createBubble(x,y){
 // body 2 is the full bubble
 // method should destroy fullBubble, and put camel back
 function bumpFullBubble(playerBody, fullBubbleBody){
-
+    popSound.play();
+    numBubbles--;
     //create new camel at where fullBubble was
     new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
 
     // destroy full-bubble sprite
     fullBubbleBody.sprite.alive = false;
     fullBubbleBody.sprite.pendingDestroy = true;
-    popSound.play();
+    updateCounterText();
 }
 
 function createCamel(x,y){
