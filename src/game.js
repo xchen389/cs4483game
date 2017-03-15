@@ -3,8 +3,6 @@ var music;
 var popSound;
 var ouchSound;
 
-var musicMuteButton; //TO-DO
-var fxButton; //TO-DO 
 var counterText; //Camel and Bubble Count Text
 
 var player;
@@ -14,10 +12,11 @@ var wasd;
 var w = 1280;
 var h = 800;
 
-//THIS IS AMOUNT OF BUBBLES REMAINING, != bubbles currently on screen
+//THIS IS AMOUNT OF BUBBLES REMAINING, != bubbles currently on screen 
+//There could be bubbles in the next wave 
 //use the bubblesGroup to find bubbles and camels currently on screen for AI
 var numBubbles = 15;
-//only decrement numCamels when a fullBubble exits the screen
+//only decrement numCamels when a fullBubble exits the screen (bounds)
 var numCamels = 5;
 
 // sprite groups (only done for when there is more than one sprite in each group)
