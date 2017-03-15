@@ -64,11 +64,14 @@ var game = {
         pauseButton.height = 35;
         pauseButton.inputEnabled = true;
 
-        //load pause menu
+        //pause menu variables 
         var menu;
         var menuH;
         var menuW;
         var mainMenuButton;
+        var musicText;
+        var FxText;
+
         pauseButton.events.onInputUp.add(
 
             function(){
@@ -87,6 +90,9 @@ var game = {
                 choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
                     '30px Arial', fill: '#000'});
                 choiceLabel.anchor.setTo(0.5,0.5);
+
+                musicText = game.add.text(w/2-400, h/2 + 150, "Music Volume: " + musicVolume*100);
+                fxText = game.add.text(w/2-400, h/2 + 180, "FX Volume: " + fxVolume*100);
             }
         );
 
@@ -115,15 +121,17 @@ var game = {
                         main.state.start('menu');
                    }
 
-                   //check if it hit anywhere in the options area
+                   //check where it hit in the FX/Music Space
+                        
 
                 }
                 else{
-                    // Remove the menu and the label
+                    //remove everything used in the pause menu
                     menu.destroy();
                     mainMenuButton.destroy();
                     choiceLabel.destroy();
-                    optionsButton.destroy();
+                    musicText.destroy();
+                    fxText.destroy();
                     // Unpause the game
                     game.game.paused = false;
                 }
