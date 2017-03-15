@@ -20,10 +20,12 @@ var menu = {
 		
 		music = this.add.audio('introMusic');
 		music.loop = true;
+		music.volume = 0.5;
 		music.play();
 	},
 
 	startGame: function(){
+		music.stop();
 		menu.state.start('game');
 	},
 
