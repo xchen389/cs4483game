@@ -12,10 +12,10 @@ var loadGame = {
 		this.add.button(50,690, 'backButton', this.goBack,this);
 		this.add.button(960,690, 'loadButton', this.loadTheGame,this);
 
-		music = this.add.audio('introMusic');
-		music.loop = true;
-		music.volume = 0.5;
-		music.play();
+	if(!introMusic.isPlaying){
+		introMusic.loop = true;
+		introMusic.volume = 0.5;
+		introMusic.play();
 	},
 
 	goBack: function(){
@@ -28,7 +28,6 @@ var loadGame = {
 	},
 
 	shutdown: function(){
-		music.stop();
 	}
 
 

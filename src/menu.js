@@ -1,4 +1,4 @@
-var music;
+var introMusic = null;
 
 var menu = {
 
@@ -18,14 +18,18 @@ var menu = {
 		var loadGameButton = this.add.button(205,370, 'loadGameButton', this.loadGame, this);
 		var CreditButton = this.add.button(205,470, 'creditsButton', this.loadCredits,this);
 		
-		music = this.add.audio('introMusic');
-		music.loop = true;
-		music.volume = 0.5;
-		music.play();
+		if(introMusic == null){
+			introMusic = this.add.audio('introMusic');
+		}
+		if(!introMusic.isPlaying){
+			introMusic.loop = true;
+			introMusic.volume = 0.5;
+			introMusic.play();
+		}
 	},
 
 	startGame: function(){
-		music.stop();
+		introMusic.stop();
 		menu.state.start('game');
 	},
 
@@ -39,7 +43,6 @@ var menu = {
 
 	//called when this state is exited e.g., you switch to another state
 	shutdown: function(){
-		music.stop();
 	}
 
 };

@@ -10,10 +10,11 @@ var credits = {
 		this.add.tileSprite(0,0, 1280, 800, 'creditsScreen');
 		this.add.button(170,480, 'backButton', this.loadCredits,this);
 
-		music = this.add.audio('introMusic');
-		music.loop = true;
-		music.volume = 0.5;
-		music.play();
+		if(!introMusic.isPlaying){
+			introMusic.loop = true;
+			introMusic.volume = 0.5;
+			introMusic.play();
+		}
 	},
 
 	loadCredits: function(){
@@ -21,6 +22,5 @@ var credits = {
 	},
 
 	shutdown: function(){
-		music.stop();
 	}
 };
