@@ -11,6 +11,9 @@ var player;
 var cursors;
 var wasd;
 
+var w = 1280;
+var h = 800;
+
 //THIS IS AMOUNT OF BUBBLES REMAINING, != bubbles currently on screen
 //use the bubblesGroup to find bubbles and camels currently on screen for AI
 var numBubbles = 15;
@@ -44,13 +47,10 @@ var game = {
         game.load.image('musicButton', './assets/images/musicToggle.png');
         game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
         game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
+        game.load.image('pauseScreen', './assets/images/backgrounds/pause_screen.png');
         game.load.audio('intro', './assets/sounds/introMusic.ogg');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
-    },
-
-   pauseButtonClicked:function() {
-        main.state.start('menu')
     },
 
     // runs a single time when the game instance is created
@@ -60,9 +60,59 @@ var game = {
         //game.stage.backgroundColor = '#DE9C04';
         game.add.tileSprite(0,0, 1280, 800, 'background');
 
-        pauseButton = game.add.button(1170,10, 'pauseButton', game.pauseButtonClicked, this);
+        //Code for pause Menu
+        pauseButton = game.add.button(1170,10, 'pauseButton');
         pauseButton.width = 100;
         pauseButton.height = 40;
+        pauseButton.inputEnabled = true;
+        pauseButton.events.onInputUp.add(
+
+            function(){
+                game.pause = true;
+                var pauseMenu = game.add.sprite(160, 100, 'pauseScreen');
+
+                choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
+                    '30px Arial', fill: '#fff'});
+                choiceLabel.anchor.setTo(0.5,0.5);
+            }
+            );
+
+        // if user presses outside, unpause
+        game.input.onDown.add(unpause, self);
+
+        function unpause(event){
+        // Only act if paused
+        if(game.paused){
+            // Calculate the corners of the menu
+            var x1 = w/2 - 270/2, x2 = w/2 + 270/2,
+            y1 = h/2 - 180/2, y2 = h/2 + 180/2;
+
+            // Check if the click was inside the menu
+            if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+                // The choicemap is an array that will help us see which item was clicked
+                var choisemap = ['one', 'two', 'three', 'four', 'five', 'six'];
+
+                // Get menu local coordinates for the click
+                var x = event.x - x1,
+                y = event.y - y1;
+
+                // Calculate the choice 
+                var choise = Math.floor(x / 90) + 3*Math.floor(y / 90);
+
+                // Display the choice
+                choiseLabel.text = 'You chose menu item: ' + choisemap[choise];
+            }
+            else{
+                // Remove the menu and the label
+                menu.destroy();
+                choiseLabel.destroy();
+
+                // Unpause the game
+                game.paused = false;
+            }
+        }
+    };
+
 
         //music
         music = game.add.audio('intro');
@@ -83,7 +133,7 @@ var game = {
         game.world.setBounds(x, y, w, h);
         // make sure camera at 0
         game.world.camera.position.set(0);
-		*/
+        */
 
         //Enable P2 Physics
         game.physics.startSystem(Phaser.Physics.P2JS);
