@@ -69,6 +69,7 @@ var game = {
         var menu;
         var menuH;
         var menuW;
+        var mainMenuButton;
         pauseButton.events.onInputUp.add(
 
             function(){
@@ -81,6 +82,8 @@ var game = {
 
                 mainMenuButton = game.add.button(w/2, h-230, 'mainMenuButton');
                 mainMenuButton.anchor.setTo(0.5,0.5);
+                mainMenuButton.height = 60;
+                mainMenuButton.width = 200;
 
                 choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
                     '30px Arial', fill: '#000'});
@@ -103,12 +106,21 @@ var game = {
                 // Check if the click was inside the menu
                 if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
                    //do nothing
+                   //check if it hit the mainMenuButton
+                   if(event.x > w/2 - mainMenuButton.width/2 &&
+                    event.x < w/2 + mainMenuButton.width/2 &&
+                    event.y > (h-230) - mainMenuButton.height/2 &&
+                    event.y < (h-230) + mainMenuButton.height/2
+                    ){
+                        game.game.paused = false;
+                        game.state.start('menu');
+                   }
                 }
                 else{
                     // Remove the menu and the label
                     menu.destroy();
+                    mainMenuButton.destroy();
                     choiceLabel.destroy();
-
                     // Unpause the game
                     game.game.paused = false;
                 }
