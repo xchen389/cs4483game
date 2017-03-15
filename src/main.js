@@ -10,7 +10,6 @@ main.state.add('credits', credits);
 main.state.add('gameover', gameover);
 main.state.add('shop', shop);
 main.state.add('loadGame', loadGame);
-main.state.add('options', options);
 
 //just for testing
 
