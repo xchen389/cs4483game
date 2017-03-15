@@ -1,11 +1,11 @@
-//music 
+//music and fx
 var music;
 var popSound;
 var ouchSound;
 
-var musicButton; //TO-DO
-var FXButton; //TO-DO 
-var counterText;
+var musicMuteButton; //TO-DO
+var fxButton; //TO-DO 
+var counterText; //Camel and Bubble Count Text
 
 var player;
 var cursors;
@@ -49,6 +49,7 @@ var game = {
         game.load.image('mainMenuButton', './assets/images/buttons/mainMenu_button.png');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
+        game.load.audio('gameMusic', './assets/sounds/gameMusic.mp3');
     },
 
     // runs a single time when the game instance is created
@@ -137,8 +138,7 @@ var game = {
                         clickx = event.x - 170;
                         fxVolume = (clickx/937).toFixed(2);
                         fxText.setText("FX Volume: " + fxVolume*100);
-                   }
-                        
+                   }   
 
                 }
                 else{
@@ -148,14 +148,28 @@ var game = {
                     choiceLabel.destroy();
                     musicText.destroy();
                     fxText.destroy();
+
+                    //adjust volumes accordingly
+                    music.volume = musicVolume;
+
+                    popSound.volume = fxVolume;
+                    ouchSound.volume = fxVolume;
+
                     // Unpause the game
                     game.game.paused = false;
                 }
             }
         };
 
+        //FX
         popSound = game.add.audio('pop');
         ouchSound = game.add.audio('camel_ouch');
+
+        //music 
+        music = this.add.audio('gameMusic');
+        music.volume = musicVolume;
+        music.loop = true;
+        music.play();
 
         /*
         // for earthquake effect, add margin to the world, so the camera can move
@@ -295,6 +309,11 @@ var game = {
         	main.state.start('gameover');
     },
 
+    //called when this state is exited e.g., you switch to another state
+    shutdown: function(){
+        music.stop();
+    }
+
 }
 
 //Helper Methods
@@ -340,10 +359,6 @@ function bumpBubble(playerBody, bubbleBody) {
     updateCounterText();
     bubbleBody.sprite.alive = false;
     bubbleBody.sprite.pendingDestroy = true;
-}
-
-function musicToggle(){
-    music.stop();
 }
 
 // body1 is the camel

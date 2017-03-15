@@ -14,4 +14,4 @@ main.state.add('loadGame', loadGame);
 //just for testing
 
 //start main menu state
-main.state.start('menu');
+main.state.start('shop');
