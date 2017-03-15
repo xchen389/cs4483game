@@ -39,8 +39,8 @@ var game = {
         game.load.image('camel', './assets/images/single_camel.gif');
         game.load.image('fullBubble', './assets/images/full_bubble.png');
         game.load.image('musicButton', './assets/images/musicToggle.png');
-        game.load.image('exitButton', './assets/images/exit_button.png');
-        game.load.image('background', './assets/images/game_background.png');
+        game.load.image('exitButton', './assets/images/buttons/exit_button.png');
+        game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
         game.load.audio('intro', './assets/sounds/introMusic.ogg');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
