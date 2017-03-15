@@ -9,6 +9,7 @@ main.state.add('menu', menu);
 main.state.add('credits', credits);
 main.state.add('gameover', gameover);
 main.state.add('shop', shop);
+main.state.add('loadGame', loadGame);
 
 //start main menu state
-main.state.start('gameover');
+main.state.start('game');

@@ -59,7 +59,7 @@ var game = {
 
         exitButton = game.add.button(1130,15, 'exitButton', game.exitButtonClicked, this);
         exitButton.width = 130;
-        exitButton.height = 60;
+        exitButton.height = 50;
 
         //music
         music = game.add.audio('intro');

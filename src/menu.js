@@ -20,6 +20,10 @@ var menu = {
 			this.state.start('game');
 		},
 
+		loadGame: function(){
+			this.state.start('loadGame');
+		},
+
 		loadCredits: function(){
 			this.state.start('credits');
 		}
