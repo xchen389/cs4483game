@@ -104,7 +104,7 @@ var game = {
 
                 // Check if the click was inside the menu
                 if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
-                   //do nothing
+
                    //check if it hit the mainMenuButton
                    if(event.x > w/2 - mainMenuButton.width/2 &&
                     event.x < w/2 + mainMenuButton.width/2 &&
@@ -114,12 +114,16 @@ var game = {
                         game.game.paused = false;
                         main.state.start('menu');
                    }
+
+                   //check if it hit anywhere in the options area
+
                 }
                 else{
                     // Remove the menu and the label
                     menu.destroy();
                     mainMenuButton.destroy();
                     choiceLabel.destroy();
+                    optionsButton.destroy();
                     // Unpause the game
                     game.game.paused = false;
                 }
