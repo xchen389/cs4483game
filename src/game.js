@@ -63,55 +63,59 @@ var game = {
         //Code for pause Menu
         pauseButton = game.add.button(1170,10, 'pauseButton');
         pauseButton.width = 100;
-        pauseButton.height = 40;
+        pauseButton.height = 35;
         pauseButton.inputEnabled = true;
+
+        //load pause menu
+        var menu;
         pauseButton.events.onInputUp.add(
 
             function(){
-                game.pause = true;
-                var pauseMenu = game.add.sprite(160, 100, 'pauseScreen');
+                //game.paused doesn't work by itself, need to freeze everything
+                game.paused = true;
+                menu = game.add.sprite(160, 100, 'pauseScreen');
 
                 choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
-                    '30px Arial', fill: '#fff'});
+                    '30px Arial', fill: '#000'});
                 choiceLabel.anchor.setTo(0.5,0.5);
             }
-            );
+        );
 
         // if user presses outside, unpause
-        game.input.onDown.add(unpause, self);
+        this.input.onDown.add(unpause, self);
 
         function unpause(event){
         // Only act if paused
-        if(game.paused){
-            // Calculate the corners of the menu
-            var x1 = w/2 - 270/2, x2 = w/2 + 270/2,
-            y1 = h/2 - 180/2, y2 = h/2 + 180/2;
+            if(game.paused){
+                // Calculate the corners of the menu
+                var x1 = w/2 - 270/2, x2 = w/2 + 270/2,
+                y1 = h/2 - 180/2, y2 = h/2 + 180/2;
 
-            // Check if the click was inside the menu
-            if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
-                // The choicemap is an array that will help us see which item was clicked
-                var choisemap = ['one', 'two', 'three', 'four', 'five', 'six'];
+                // Check if the click was inside the menu
+                if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+                    // The choicemap is an array that will help us see which item was clicked
+                    var choisemap = ['one', 'two', 'three', 'four', 'five', 'six'];
 
-                // Get menu local coordinates for the click
-                var x = event.x - x1,
-                y = event.y - y1;
+                    // Get menu local coordinates for the click
+                    var x = event.x - x1,
+                    y = event.y - y1;
 
-                // Calculate the choice 
-                var choise = Math.floor(x / 90) + 3*Math.floor(y / 90);
+                    // Calculate the choice 
+                    var choise = Math.floor(x / 90) + 3*Math.floor(y / 90);
 
-                // Display the choice
-                choiseLabel.text = 'You chose menu item: ' + choisemap[choise];
+                    // Display the choice
+                    choiseLabel.text = 'You chose menu item: ' + choisemap[choise];
+                }
+                else{
+                    // Remove the menu and the label
+                    menu.destroy();
+                    choiceLabel.destroy();
+
+                    // Unpause the game
+                    game.paused = false;
+                }
             }
-            else{
-                // Remove the menu and the label
-                menu.destroy();
-                choiseLabel.destroy();
-
-                // Unpause the game
-                game.paused = false;
-            }
-        }
-    };
+        };
 
 
         //music
