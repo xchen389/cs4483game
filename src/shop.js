@@ -19,10 +19,10 @@ var shop = {
 	},
 
 	loadGame: function(){
-		this.state.start('game');
+		main.state.start('game');
 	},
 
 	loadMenu: function(){
-		this.state.start('menu');
+		main.state.start('menu');
 	}
 }

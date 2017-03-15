@@ -113,7 +113,7 @@ var game = {
                     event.y < (h-230) + mainMenuButton.height/2
                     ){
                         game.game.paused = false;
-                        game.state.start('menu');
+                        main.state.start('menu');
                    }
                 }
                 else{
@@ -261,8 +261,13 @@ var game = {
         }
 
         //winning condition - go to shop
-        if(numBubbles == 0)
+        if(numBubbles == 0){
+            //only adding 50 bubbles for testing
+            //when implementing, you need to set bubbles to be some amount before
+            //each level. 
+            numBubbles = 20;
         	main.state.start('shop');
+        }
 
         //if camels are ever 0, game over - exit game, go game over screen
         if(numCamels == 0)
