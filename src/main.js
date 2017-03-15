@@ -11,5 +11,7 @@ main.state.add('gameover', gameover);
 main.state.add('shop', shop);
 main.state.add('loadGame', loadGame);
 
+//just for testing
+
 //start main menu state
 main.state.start('menu');

@@ -21,3 +21,12 @@
 
 Note: you can edit freely the source files, and see the changes when you refresh in broweser
 while the web server is open (you don't need to restart it)
+
+## credits
+
+	-All not in-house assets used in this project are royalty free and free to use for 
+	both commercial and non-comercial projects 
+	-Shop Music - Marimba Boy - DL sounds
+	-Game Music - Shanghai Loop - Pascal Talipata (DL Sounds)
+	-Background for MainMenu, Load, Credits, GameOver - sylviacopol0
+		https://pixabay.com/en/desert-sunset-camel-sand-695079/

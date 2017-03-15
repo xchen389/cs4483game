@@ -1,11 +1,9 @@
-//music 
+//music and fx
 var music;
 var popSound;
 var ouchSound;
 
-var musicButton; //TO-DO
-var FXButton; //TO-DO 
-var counterText;
+var counterText; //Camel and Bubble Count Text
 
 var player;
 var cursors;
@@ -14,10 +12,11 @@ var wasd;
 var w = 1280;
 var h = 800;
 
-//THIS IS AMOUNT OF BUBBLES REMAINING, != bubbles currently on screen
+//THIS IS AMOUNT OF BUBBLES REMAINING, != bubbles currently on screen 
+//There could be bubbles in the next wave 
 //use the bubblesGroup to find bubbles and camels currently on screen for AI
 var numBubbles = 15;
-//only decrement numCamels when a fullBubble exits the screen
+//only decrement numCamels when a fullBubble exits the screen (bounds)
 var numCamels = 5;
 
 // sprite groups (only done for when there is more than one sprite in each group)
@@ -41,7 +40,7 @@ var game = {
         game.load.image('player', './assets/images/player.png');
         game.load.image('bubble', './assets/images/bubble.png');
         game.load.image('camel', './assets/images/single_camel.gif');
-        game.load.image('fullBubble', './assets/images/full_bubble.png');
+        game.load.image('fullBubble', './assets/images/fullBubble.png');
         game.load.image('musicButton', './assets/images/musicToggle.png');
         game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
         game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
@@ -49,6 +48,7 @@ var game = {
         game.load.image('mainMenuButton', './assets/images/buttons/mainMenu_button.png');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
+        game.load.audio('gameMusic', './assets/sounds/gameMusic.mp3');
     },
 
     // runs a single time when the game instance is created
@@ -64,11 +64,14 @@ var game = {
         pauseButton.height = 35;
         pauseButton.inputEnabled = true;
 
-        //load pause menu
+        //pause menu variables 
         var menu;
         var menuH;
         var menuW;
         var mainMenuButton;
+        var musicText;
+        var FxText;
+
         pauseButton.events.onInputUp.add(
 
             function(){
@@ -87,6 +90,9 @@ var game = {
                 choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
                     '30px Arial', fill: '#000'});
                 choiceLabel.anchor.setTo(0.5,0.5);
+
+                musicText = game.add.text(w/2-420, h/2 + 150, "Music Volume: " + musicVolume*100);
+                fxText = game.add.text(w/2-420, h/2 + 180, "FX Volume: " + fxVolume*100);
             }
         );
 
@@ -104,7 +110,7 @@ var game = {
 
                 // Check if the click was inside the menu
                 if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
-                   //do nothing
+
                    //check if it hit the mainMenuButton
                    if(event.x > w/2 - mainMenuButton.width/2 &&
                     event.x < w/2 + mainMenuButton.width/2 &&
@@ -114,20 +120,55 @@ var game = {
                         game.game.paused = false;
                         main.state.start('menu');
                    }
+
+                   //check where it hit in the FX/Music Space
+                   
+                   //music section
+                    if(event.y < 369 && event.y > 244){
+                        // range is 170-1107
+                        //transform it to 0-1, set musicVolume
+                        clickx = event.x - 170;
+                        musicVolume = (clickx/937).toFixed(2);
+                        musicText.setText("Music Volume: " + musicVolume*100);
+                   }
+                   //fx section
+                    if(event.y < 507 && event.y > 382){
+                        //same as music section
+                        clickx = event.x - 170;
+                        fxVolume = (clickx/937).toFixed(2);
+                        fxText.setText("FX Volume: " + fxVolume*100);
+                   }   
+
                 }
                 else{
-                    // Remove the menu and the label
+                    //remove everything used in the pause menu
                     menu.destroy();
                     mainMenuButton.destroy();
                     choiceLabel.destroy();
+                    musicText.destroy();
+                    fxText.destroy();
+
+                    //adjust volumes accordingly
+                    music.volume = musicVolume;
+
+                    popSound.volume = fxVolume;
+                    ouchSound.volume = fxVolume;
+
                     // Unpause the game
                     game.game.paused = false;
                 }
             }
         };
 
+        //FX
         popSound = game.add.audio('pop');
         ouchSound = game.add.audio('camel_ouch');
+
+        //music 
+        music = this.add.audio('gameMusic');
+        music.volume = musicVolume;
+        music.loop = true;
+        music.play();
 
         /*
         // for earthquake effect, add margin to the world, so the camera can move
@@ -257,15 +298,20 @@ var game = {
         if(numBubbles == 0){
             //only adding 50 bubbles for testing
             //when implementing, you need to set bubbles to be some amount before
-            //each level. 
-            numBubbles = 20;
+            //each level. Things are different every night right? 
+            numBubbles = 50;
         	main.state.start('shop');
         }
 
-        //if camels are ever 0, game over - exit game, go game over screen
+        //losing condition
         if(numCamels == 0)
         	main.state.start('gameover');
     },
+
+    //called when this state is exited e.g., you switch to another state
+    shutdown: function(){
+        music.stop();
+    }
 
 }
 
@@ -312,10 +358,6 @@ function bumpBubble(playerBody, bubbleBody) {
     updateCounterText();
     bubbleBody.sprite.alive = false;
     bubbleBody.sprite.pendingDestroy = true;
-}
-
-function musicToggle(){
-    music.stop();
 }
 
 // body1 is the camel
