@@ -41,7 +41,7 @@ var game = {
         game.load.image('player', './assets/images/player.png');
         game.load.image('bubble', './assets/images/bubble.png');
         game.load.image('camel', './assets/images/single_camel.gif');
-        game.load.image('fullBubble', './assets/images/full_bubble.png');
+        game.load.image('fullBubble', './assets/images/fullBubble.png');
         game.load.image('musicButton', './assets/images/musicToggle.png');
         game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
         game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');

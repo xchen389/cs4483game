@@ -21,3 +21,7 @@
 
 Note: you can edit freely the source files, and see the changes when you refresh in broweser
 while the web server is open (you don't need to restart it)
+
+## credits
+	-All not in-house assets used in this project are royalty free and free to use for 
+	both commercial and non-comercial projects 
