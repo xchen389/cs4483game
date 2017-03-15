@@ -91,8 +91,8 @@ var game = {
                     '30px Arial', fill: '#000'});
                 choiceLabel.anchor.setTo(0.5,0.5);
 
-                musicText = game.add.text(w/2-400, h/2 + 150, "Music Volume: " + musicVolume*100);
-                fxText = game.add.text(w/2-400, h/2 + 180, "FX Volume: " + fxVolume*100);
+                musicText = game.add.text(w/2-420, h/2 + 150, "Music Volume: " + musicVolume*100);
+                fxText = game.add.text(w/2-420, h/2 + 180, "FX Volume: " + fxVolume*100);
             }
         );
 
@@ -122,6 +122,22 @@ var game = {
                    }
 
                    //check where it hit in the FX/Music Space
+                   
+                   //music section
+                    if(event.y < 369 && event.y > 244){
+                        // range is 170-1107
+                        //transform it to 0-1, set musicVolume
+                        clickx = event.x - 170;
+                        musicVolume = (clickx/937).toFixed(2);
+                        musicText.setText("Music Volume: " + musicVolume*100);
+                   }
+                   //fx section
+                    if(event.y < 507 && event.y > 382){
+                        //same as music section
+                        clickx = event.x - 170;
+                        fxVolume = (clickx/937).toFixed(2);
+                        fxText.setText("FX Volume: " + fxVolume*100);
+                   }
                         
 
                 }

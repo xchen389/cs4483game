@@ -15,8 +15,8 @@ var menu = {
 		this.add.tileSprite(0,0, 1280, 800, 'menuBackground');
 		var newGameButton = this.add.button(50,310,'newGameButton',this.startGame, this);
 		var loadGameButton = this.add.button(360,310, 'loadGameButton', this.loadGame, this);
-		var CreditButton = this.add.button(50,410, 'creditsButton', this.loadCredits,this);
-		var optionsButton = this.add.button(360,410, 'optionsButton', this.loadOptions, this);
+		var CreditButton = this.add.button(50,430, 'creditsButton', this.loadCredits,this);
+		var optionsButton = this.add.button(360,430, 'optionsButton', this.loadOptions, this);
 		
 		//music
         music = menu.add.audio('introAudio');
