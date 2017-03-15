@@ -12,4 +12,4 @@ main.state.add('shop', shop);
 main.state.add('loadGame', loadGame);
 
 //start main menu state
-main.state.start('game');
+main.state.start('menu');

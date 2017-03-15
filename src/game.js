@@ -33,8 +33,6 @@ var fullBubbleCollisionGroup;
 var customBounds;
 var bounds;
 
-//array of bubble and camel sprites
-
 //game object definiton
 var game = {
 
@@ -74,7 +72,7 @@ var game = {
 
             function(){
                 //game.paused doesn't work by itself, need to freeze everything
-                game.paused = true;
+                game.game.paused = true;
                 menu = game.add.sprite(160, 100, 'pauseScreen');
                 menuH = menu.height;
                 menuW = menu.width; 
@@ -91,7 +89,7 @@ var game = {
         function unpause(event){
 
             // Only act if paused
-            if(game.paused){
+            if(game.game.paused){
 
                 // corners of the pause menu
                 var x1 = 160, x2 = 160 + menuW,
@@ -107,7 +105,7 @@ var game = {
                     choiceLabel.destroy();
 
                     // Unpause the game
-                    game.paused = false;
+                    game.game.paused = false;
                 }
             }
         };
