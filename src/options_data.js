@@ -4,7 +4,7 @@
 //options
 var playerName;
 var musicVolume = 0.5;
-var fxVolume = 0.5;
+var fxVolume = 0.35;
 
 //Information about game
 var currentDay;
