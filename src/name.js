@@ -10,8 +10,8 @@ var nameScreen = {
 
 	create: function(){
 		this.add.tileSprite(0,0, 1280, 800, 'nameScreen');
-		this.add.button(170,480, 'backButton', this.goBackToMenu,this);
-		this.add.button(800, 480, 'nextButton', this.continueToGame, this);
+		this.add.button(200,500, 'backButton', this.goBackToMenu,this);
+		this.add.button(800,500, 'nextButton', this.continueToGame, this);
 
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;

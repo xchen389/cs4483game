@@ -191,6 +191,10 @@ var game = {
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
 
+        //shrink the bounds by 7px to account for the black border TO DO
+        //So far I think it works, but you can remove it it's being dumb
+        game.world.setBounds(0,0,1280-7, 800-7);
+
         //  The bounds of centre camel playground
         // the width and height are wrong from game.world.width after adding quake effect
         bounds = new Phaser.Rectangle(1280/4, 800/4, 1280/2, 800/2);
@@ -297,10 +301,10 @@ var game = {
 
         //winning condition - go to shop
         if(numBubbles == 0){
-            //only adding 50 bubbles for testing
+            //only adding 20 bubbles for testing
             //when implementing, you need to set bubbles to be some amount before
             //each level. Things are different every night right? 
-            numBubbles = 50;
+            numBubbles = 20;
         	main.state.start('shop');
         }
 

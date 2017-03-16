@@ -2,7 +2,7 @@
 //that will be saved and loaded 
 
 //options
-var playerName;
+var playerName = "";
 var musicVolume = 0.2;
 var fxVolume = 0.2;
 
