@@ -9,8 +9,6 @@ var player;
 var cursors;
 var wasd;
 
-var w = 1280;
-var h = 800;
 
 //THIS IS AMOUNT OF BUBBLES REMAINING, != bubbles currently on screen 
 //There could be bubbles in the next wave 
@@ -272,7 +270,7 @@ var game = {
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
 
-        counterText = this.add.text(15,10, "Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + numCamels );
+        counterText = this.add.text(15,10, "Bubbles: " + numBubbles + " Camels: " + numCamels );
 
     },
 
@@ -325,7 +323,7 @@ var game = {
 //call this everytime bubble pops
 function updateCounterText(){
     //add formatting for text later
-    counterText.setText("Bubbles: " + numBubbles + " camels: " + numCamels);
+    counterText.setText("Bubbles: " + numBubbles + " Camels: " + numCamels);
 }
 
 function addQuake() {
@@ -385,6 +383,21 @@ function camelBubbleHit(camelBody, bubbleBody){
     camelBody.sprite.pendingDestroy = true;
 }
 
+// body 1 is the player
+// body 2 is the full bubble
+// method should destroy fullBubble, and put camel back
+function bumpFullBubble(playerBody, fullBubbleBody){
+    popSound.play();
+    numBubbles--;
+    //create new camel at where fullBubble was
+    new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
+
+    // destroy full-bubble sprite
+    fullBubbleBody.sprite.alive = false;
+    fullBubbleBody.sprite.pendingDestroy = true;
+    updateCounterText();
+}
+
 function createfullBubble(x,y){
     fullBubble = fullBubbleGroup.create(x,y, 'fullBubble');
     fullBubble.scale.set(0.37);
@@ -405,21 +418,6 @@ function createBubble(x,y){
     new_bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
     new_bubble.body.collideWorldBounds=true;
     return new_bubble;
-}
-
-// body 1 is the player
-// body 2 is the full bubble
-// method should destroy fullBubble, and put camel back
-function bumpFullBubble(playerBody, fullBubbleBody){
-    popSound.play();
-    numBubbles--;
-    //create new camel at where fullBubble was
-    new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
-
-    // destroy full-bubble sprite
-    fullBubbleBody.sprite.alive = false;
-    fullBubbleBody.sprite.pendingDestroy = true;
-    updateCounterText();
 }
 
 function createCamel(x,y){
