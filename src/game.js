@@ -9,8 +9,6 @@ var player;
 var cursors;
 var wasd;
 
-var w = 1280;
-var h = 800;
 
 //THIS IS AMOUNT OF BUBBLES REMAINING, != bubbles currently on screen 
 //There could be bubbles in the next wave 
@@ -41,7 +39,6 @@ var game = {
         game.load.image('bubble', './assets/images/bubble.png');
         game.load.image('camel', './assets/images/single_camel.gif');
         game.load.image('fullBubble', './assets/images/fullBubble.png');
-        game.load.image('musicButton', './assets/images/musicToggle.png');
         game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
         game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
         game.load.image('pauseScreen', './assets/images/backgrounds/pause_screen.png');
@@ -163,6 +160,8 @@ var game = {
         //FX
         popSound = game.add.audio('pop');
         ouchSound = game.add.audio('camel_ouch');
+        popSound.volume = fxVolume;
+        ouchSound.volume = fxVolume;
 
         //music 
         music = this.add.audio('gameMusic');
@@ -189,6 +188,10 @@ var game = {
         //  Turn on impact events for the world, without this we get no collision callbacks
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
+
+        //shrink the bounds by 7px to account for the black border TO DO
+        //So far I think it works, but you can remove it it's being dumb
+        game.world.setBounds(0,0,1280-7, 800-7);
 
         //  The bounds of centre camel playground
         // the width and height are wrong from game.world.width after adding quake effect
@@ -267,7 +270,7 @@ var game = {
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
 
-        counterText = this.add.text(15,10, "Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + numCamels );
+        counterText = this.add.text(15,10, "Bubbles: " + numBubbles + " Camels: " + numCamels );
 
     },
 
@@ -296,10 +299,10 @@ var game = {
 
         //winning condition - go to shop
         if(numBubbles == 0){
-            //only adding 50 bubbles for testing
+            //only adding 20 bubbles for testing
             //when implementing, you need to set bubbles to be some amount before
             //each level. Things are different every night right? 
-            numBubbles = 50;
+            numBubbles = 20;
         	main.state.start('shop');
         }
 
@@ -320,7 +323,7 @@ var game = {
 //call this everytime bubble pops
 function updateCounterText(){
     //add formatting for text later
-    counterText.setText("Bubbles: " + numBubbles + " camels: " + numCamels);
+    counterText.setText("Bubbles: " + numBubbles + " Camels: " + numCamels);
 }
 
 function addQuake() {
@@ -380,6 +383,21 @@ function camelBubbleHit(camelBody, bubbleBody){
     camelBody.sprite.pendingDestroy = true;
 }
 
+// body 1 is the player
+// body 2 is the full bubble
+// method should destroy fullBubble, and put camel back
+function bumpFullBubble(playerBody, fullBubbleBody){
+    popSound.play();
+    numBubbles--;
+    //create new camel at where fullBubble was
+    new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
+
+    // destroy full-bubble sprite
+    fullBubbleBody.sprite.alive = false;
+    fullBubbleBody.sprite.pendingDestroy = true;
+    updateCounterText();
+}
+
 function createfullBubble(x,y){
     fullBubble = fullBubbleGroup.create(x,y, 'fullBubble');
     fullBubble.scale.set(0.37);
@@ -400,21 +418,6 @@ function createBubble(x,y){
     new_bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
     new_bubble.body.collideWorldBounds=true;
     return new_bubble;
-}
-
-// body 1 is the player
-// body 2 is the full bubble
-// method should destroy fullBubble, and put camel back
-function bumpFullBubble(playerBody, fullBubbleBody){
-    popSound.play();
-    numBubbles--;
-    //create new camel at where fullBubble was
-    new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
-
-    // destroy full-bubble sprite
-    fullBubbleBody.sprite.alive = false;
-    fullBubbleBody.sprite.pendingDestroy = true;
-    updateCounterText();
 }
 
 function createCamel(x,y){
