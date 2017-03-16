@@ -129,14 +129,14 @@ var game = {
                         //transform it to 0-1, set musicVolume
                         clickx = event.x - 170;
                         musicVolume = (clickx/937).toFixed(2);
-                        musicText.setText("Music Volume: " + (musicVolume*100).toFixed(0));
+                        musicText.setText("Music Volume: " + (musicVolume*100).toFixed(0).toFixed(0));
                    }
                    //fx section
                     if(event.y < 507 && event.y > 382){
                         //same as music section
                         clickx = event.x - 170;
                         fxVolume = (clickx/937).toFixed(2);
-                        fxText.setText("FX Volume: " + (fxVolume*100).toFixed(0));
+                        fxText.setText("FX Volume: " + (fxVolume*100).toFixed(0).toFixed(0));
                    }   
 
                 }

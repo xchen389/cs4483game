@@ -1,3 +1,5 @@
+var input;
+
 var nameScreen = {
 
 	preload: function(){
@@ -18,19 +20,31 @@ var nameScreen = {
 		}
 
 		game.game.add.plugin(PhaserInput.Plugin);
-		var input = this.add.inputField(360,335, {
+		input = this.add.inputField(360,335, {
 			font: '78px Arial',
-			width: 560
-
+			width: 560,
+			borderWidth: 5,
+			borderColor: '#000',
+			max: 14
 		});
 	},
+
+
 
 	goBackToMenu: function(){
 		main.state.start('menu');
 	},
 
 	continueToGame: function(){
-		//save whatever is in textbox to playerName
+		//If nothing is written in the box, don't let user go to game
+		if(input.value == "")
+			return;
+		//assign global playerName to this value
+		playerName = input.value;
+		//only shut down music if you're going to start game, 
+		//I did not put this in shutdown function cause 
+		//if the user went back via back button, music would restart
+		introMusic.stop();
 		main.state.start('game');
 	}
 
