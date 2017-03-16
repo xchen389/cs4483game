@@ -1,10 +1,9 @@
-//music 
+//music and fx
 var music;
 var popSound;
 var ouchSound;
 
-var musicButton; //TO-DO
-var FXButton; //TO-DO 
+var counterText; //Camel and Bubble Count Text
 
 var player;
 var cursors;
@@ -12,6 +11,7 @@ var wasd;
 
 //change these depending on how many bubbles and want
 var numBubbles = 0;
+
 var numCamels = 5;
 var camelsRemained = numCamels;
 var numFullBubbles = 0;
@@ -29,10 +29,7 @@ var bubbleCollisionGroup;
 var camelCollisionGroup;
 var fullBubbleCollisionGroup;
 var customBounds;
-
-//array of bubble and camel sprites
-var bubbles = [numBubbles];
-var camels = [numCamels];
+var bounds;
 
 //game object definiton
 var game = {
@@ -42,17 +39,14 @@ var game = {
         game.load.image('player', './assets/images/player.png');
         game.load.image('bubble', './assets/images/bubble.png');
         game.load.image('camel', './assets/images/single_camel.gif');
-        game.load.image('fullBubble', './assets/images/full_bubble.png');
-        game.load.image('musicButton', './assets/images/musicToggle.png');
-        game.load.image('exitButton', './assets/images/exit_button.png');
-        game.load.image('background', './assets/images/game_background.png');
-        game.load.audio('intro', './assets/sounds/introMusic.ogg');
+        game.load.image('fullBubble', './assets/images/fullBubble.png');
+        game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
+        game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
+        game.load.image('pauseScreen', './assets/images/backgrounds/pause_screen.png');
+        game.load.image('mainMenuButton', './assets/images/buttons/mainMenu_button.png');
         game.load.audio('pop', './assets/sounds/bubble_pop.mp3');
         game.load.audio('camel_ouch', './assets/sounds/camel_ouch.mp3');
-    },
-
-   exitButtonClicked:function() {
-        game.state.start('menu')
+        game.load.audio('gameMusic', './assets/sounds/gameMusic.mp3');
     },
 
     // runs a single time when the game instance is created
@@ -62,16 +56,121 @@ var game = {
         //game.stage.backgroundColor = '#DE9C04';
         game.add.tileSprite(0,0, 1280, 800, 'background');
 
-        game.add.button(900,20, 'exitButton', game.exitButtonClicked, this);
+        //Code for pause Menu
+        pauseButton = game.add.button(1170,10, 'pauseButton');
+        pauseButton.width = 100;
+        pauseButton.height = 35;
+        pauseButton.inputEnabled = true;
 
-        //music
-        music = game.add.audio('intro');
-        
-        //music.play();
+        //pause menu variables 
+        var menu;
+        var menuH;
+        var menuW;
+        var mainMenuButton;
+        var musicText;
+        var FxText;
 
+        pauseButton.events.onInputUp.add(
+
+            function(){
+                //game.paused doesn't work by itself, need to freeze everything
+                game.game.paused = true;
+                menu = game.add.sprite(160, 100, 'pauseScreen');
+
+                menuH = menu.height;
+                menuW = menu.width; 
+
+                mainMenuButton = game.add.button(w/2, h-230, 'mainMenuButton');
+                mainMenuButton.anchor.setTo(0.5,0.5);
+                mainMenuButton.height = 60;
+                mainMenuButton.width = 200;
+
+                choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
+                    '30px Arial', fill: '#000'});
+                choiceLabel.anchor.setTo(0.5,0.5);
+
+                musicText = game.add.text(w/2-420, h/2 + 150, "Music Volume: " + musicVolume*100);
+                fxText = game.add.text(w/2-420, h/2 + 180, "FX Volume: " + fxVolume*100);
+            }
+        );
+
+        // if user presses click check if unpause, unpause
+        this.input.onDown.add(unpause, self);
+
+        function unpause(event){
+
+            // Only act if paused
+            if(game.game.paused){
+
+                // corners of the pause menu
+                var x1 = 160, x2 = 160 + menuW,
+                y1 = 100, y2 = 100 + menuH;
+
+                // Check if the click was inside the menu
+                if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+
+                   //check if it hit the mainMenuButton
+                   if(event.x > w/2 - mainMenuButton.width/2 &&
+                    event.x < w/2 + mainMenuButton.width/2 &&
+                    event.y > (h-230) - mainMenuButton.height/2 &&
+                    event.y < (h-230) + mainMenuButton.height/2
+                    ){
+                        game.game.paused = false;
+                        main.state.start('menu');
+                   }
+
+                   //check where it hit in the FX/Music Space
+                   
+                   //music section
+                    if(event.y < 369 && event.y > 244){
+                        // range is 170-1107
+                        //transform it to 0-1, set musicVolume
+                        clickx = event.x - 170;
+                        musicVolume = (clickx/937).toFixed(2);
+                        musicText.setText("Music Volume: " + (musicVolume*100).toFixed(0));
+                   }
+                   //fx section
+                    if(event.y < 507 && event.y > 382){
+                        //same as music section
+                        clickx = event.x - 170;
+                        fxVolume = (clickx/937).toFixed(2);
+                        fxText.setText("FX Volume: " + (fxVolume*100).toFixed(0));
+                   }   
+
+                }
+                else{
+                    //remove everything used in the pause menu
+                    menu.destroy();
+                    mainMenuButton.destroy();
+                    choiceLabel.destroy();
+                    musicText.destroy();
+                    fxText.destroy();
+
+                    //adjust volumes accordingly
+                    music.volume = musicVolume;
+
+                    popSound.volume = fxVolume;
+                    ouchSound.volume = fxVolume;
+
+                    // Unpause the game
+                    game.game.paused = false;
+                }
+            }
+        };
+
+        //FX
         popSound = game.add.audio('pop');
         ouchSound = game.add.audio('camel_ouch');
+        popSound.volume = fxVolume;
+        ouchSound.volume = fxVolume;
 
+        //music 
+        music = this.add.audio('gameMusic');
+        music.volume = musicVolume;
+        music.loop = true;
+        music.play();
+
+        /*
         // for earthquake effect, add margin to the world, so the camera can move
         var margin = 50;
         // and set the world's bounds according to the given margin
@@ -82,6 +181,7 @@ var game = {
         game.world.setBounds(x, y, w, h);
         // make sure camera at 0
         game.world.camera.position.set(0);
+        */
 
         //Enable P2 Physics
         game.physics.startSystem(Phaser.Physics.P2JS);
@@ -90,8 +190,13 @@ var game = {
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
 
+        //shrink the bounds by 7px to account for the black border TO DO
+        //So far I think it works, but you can remove it it's being dumb
+        game.world.setBounds(0,0,1280-7, 800-7);
+
         //  The bounds of centre camel playground
-        var bounds = new Phaser.Rectangle(game.width/4, game.height/4, game.width/2, game.height/2);
+        // the width and height are wrong from game.world.width after adding quake effect
+        bounds = new Phaser.Rectangle(1280/4, 800/4, 1280/2, 800/2);
 
         //  Create our collision groups. One for the player, one for the bubblesGroup, one for the camelsGroup
         playerCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -166,6 +271,7 @@ var game = {
         graphics.lineStyle(4, 0xff0000, 1);
         graphics.drawRect(0, 0, bounds.width, bounds.height);
 
+
         // controls
         cursors = game.input.keyboard.createCursorKeys();
         
@@ -181,6 +287,9 @@ var game = {
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.D);
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
+
+        counterText = this.add.text(15,10,"Time: " + time + " Camels: " + numCamels );
+
     },
 
     //runs continuously. 
@@ -215,16 +324,25 @@ var game = {
         	//losing condition
         */
 
+        //losing condition
+        if(numCamels == 0)
+        	main.state.start('gameover');
     },
 
-    //runs continously
-    render:function() {
-        // game.debug.text("Bubbles: " + (bubblesGroup.countLiving()+fullBubbleGroup.countLiving()) + " camels: " + camelsGroup.countLiving(), 32, 32);
+    //called when this state is exited e.g., you switch to another state
+    shutdown: function(){
+        music.stop();
     }
 
 }
 
 //Helper Methods
+
+//call this everytime bubble pops
+function updateCounterText(){
+    //add formatting for text later
+    counterText.setText("Time: " + time + " Camels: " + numCamels);
+}
 
 function addQuake() {
 
@@ -232,9 +350,7 @@ function addQuake() {
   var rumbleOffset = 7;
   
   // we need to move according to the camera's current position
-  var properties = {
-    x: game.camera.x - rumbleOffset
-};
+  var properties = { x: game.camera.x - rumbleOffset};
 
   // we make it a relly fast movement
   var duration = 50;
@@ -258,14 +374,11 @@ function addQuake() {
 // body1 is the player (as it's the body that owns the callback)
 // body2 is the body it impacted with, its the body of the bubble :
 function bumpBubble(playerBody, bubbleBody) {
+    popSound.play();
+    numBubbles--;
+    updateCounterText();
     bubbleBody.sprite.alive = false;
     bubbleBody.sprite.pendingDestroy = true;
-    numBubbles--;
-    popSound.play();
-}
-
-function musicToggle(){
-    music.stop();
 }
 
 // body1 is the camel
@@ -292,9 +405,24 @@ function camelBubbleHit(camelBody, bubbleBody){
     numCamels--;
 }
 
+// body 1 is the player
+// body 2 is the full bubble
+// method should destroy fullBubble, and put camel back
+function bumpFullBubble(playerBody, fullBubbleBody){
+    popSound.play();
+    numBubbles--;
+    //create new camel at where fullBubble was
+    new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
+
+    // destroy full-bubble sprite
+    fullBubbleBody.sprite.alive = false;
+    fullBubbleBody.sprite.pendingDestroy = true;
+    updateCounterText();
+}
+
 function createfullBubble(x,y){
     fullBubble = fullBubbleGroup.create(x,y, 'fullBubble');
-    fullBubble.scale.set(0.5);
+    fullBubble.scale.set(0.37);
     fullBubble.enableBody = true;
     fullBubble.body.setCircle(24);
     fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
@@ -337,6 +465,7 @@ function createCamel(x,y){
     new_camel.body.setCollisionGroup(camelCollisionGroup);
     new_camel.body.fixedRotation = true;
     new_camel.body.collides(bubbleCollisionGroup, camelBubbleHit, this);
+
 }
 
 function createBubbles(){

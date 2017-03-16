@@ -1,23 +1,41 @@
+var music;
+
 var shop = {
 
 	preload: function(){
-		this.load.image('shopScreen','./assets/images/shop_screen.png');
-		this.load.image('nextButton','./assets/images/next_button.png');
-		this.load.image('exitButton','./assets/images/exit_button.png');
+		this.load.image('shopScreen','./assets/images/backgrounds/shop_screen.png');
+		this.load.image('nextButton','./assets/images/buttons/next_button.png');
+		this.load.image('exitButton','./assets/images/buttons/exit_button.png');
+		this.load.audio('shopMusic', './assets/sounds/shopMusic.mp3');
 	},
 
 	create: function(){
 		this.add.tileSprite(0,0, 1280, 800, 'shopScreen');
 		//make buttons smaller later 
-		this.add.button(580,650, 'nextButton', this.loadGame,this);
-		this.add.button(920,650, 'exitButton', this.loadMenu,this);
+		var nextButton = this.add.button(670,670, 'nextButton', this.loadGame,this);
+		//nextButton.width = 200;
+		//nextButton.height = 100;
+		//
+		var exitButton = this.add.button(970,670, 'exitButton', this.loadMenu,this);
+		//exitButton.width = 100;
+		//exitButton.height = 80;
+		
+		music = this.add.audio('shopMusic');
+		music.volume = musicVolume;
+		music.loop = true;
+		music.play();
 	},
 
 	loadGame: function(){
-		this.state.start('game');
+		main.state.start('game');
 	},
 
 	loadMenu: function(){
-		this.state.start('menu');
+		main.state.start('menu');
+	},
+
+	//called when this state is switched (state shutdown)
+	shutdown: function(){
+		music.stop();
 	}
 }
