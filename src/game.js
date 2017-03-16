@@ -13,9 +13,10 @@ var wasd;
 //change these depending on how many bubbles and want
 var numBubbles = 0;
 var numCamels = 5;
+var camelsRemained = numCamels;
 var numFullBubbles = 0;
 
-var time = 100;
+var time = 120;
 
 // sprite groups (only done for when there is more than one sprite in each group)
 var bubblesGroup;
@@ -112,8 +113,6 @@ var game = {
         bubblesGroup.enableBody = true;
         bubblesGroup.physicsBodyType = Phaser.Physics.P2JS;
 
-        createBubble(game.world.randomX, game.world.randomY);
-
         //camels group
         camelsGroup = game.add.group();
         camelsGroup.enableBody = true;
@@ -138,6 +137,9 @@ var game = {
         //To move full bubbles
         game.time.events.loop(Phaser.Timer.SECOND * 4, createBubbles, this); 
 
+
+        //Timer
+        game.time.events.loop(Phaser.Timer.SECOND, timer, this); 
 
         // Create our player sprite
         player = game.add.sprite(200, 200, 'player');
@@ -205,7 +207,7 @@ var game = {
         }
 
         //winning condition - go to shop
-        if(time == 0)
+        if(time == 0 || camelsRemained<2)
         	game.state.start('shop');
 
         /* if camels are ever 0, game over - exit game
@@ -338,8 +340,85 @@ function createCamel(x,y){
 }
 
 function createBubbles(){
-	x = game.rnd.integerInRange(0, 1000);
-	y = game.rnd.integerInRange(0, 800);
+	randX = game.rnd.integerInRange(1, 4);    
+	if(randX == 1){
+		x = -20;
+		randY = game.rnd.integerInRange(1, 5);
+		if(randY == 1){
+			y = 0;
+		}
+		else if(randY == 2){
+			y = 100;
+		}
+		else if(randY == 3){
+			y = 200;
+		}
+		else if(randY == 4){
+			y = 300;
+		}
+		else {
+			y = 400;
+		}
+	}
+	else if(randX == 2){
+		x = 1300;
+		randY = game.rnd.integerInRange(1, 5);
+		if(randY == 1){
+			y = 0;
+		}
+		else if(randY == 2){
+			y = 100;
+		}
+		else if(randY == 3){
+			y = 200;
+		}
+		else if(randY == 4){
+			y = 300;
+		}
+		else{
+			y = 400;
+		}
+	}
+	else if(randX == 3){
+		y = -20;
+		randY = game.rnd.integerInRange(1, 5);
+		if(randY == 1){
+			x = 0;
+		}
+		else if(randY == 2){
+			x = 200;
+		}
+		else if(randY == 3){
+			x = 400;
+		}
+		else if(randY == 4){
+			x = 800;
+		}
+		else if(randY == 5){
+			x = 1000;
+		}
+	}
+
+	else {
+		y = 820;
+		randY = game.rnd.integerInRange(1, 5);
+		if(randY == 1){
+			x = 0;
+		}
+		else if(randY == 2){
+			x = 200;
+		}
+		else if(randY == 3){
+			x = 400;
+		}
+		else if(randY == 4){
+			x = 800;
+		}
+		else if(randY == 5){
+			x = 1000;
+		}
+	}
+	
     createBubble(x, y);	
 }
 
@@ -387,32 +466,48 @@ function moveCamels() {
 
 function moveFullBubbles() {
 	for(var i=0 ; i<numFullBubbles ; i++){
-		fullBubbleGroup.getAt(i).body.velocity.y = 80;
+		xPos = Math.abs(fullBubbleGroup.getAt(i).x - 1300);
+		xMin = Math.abs(fullBubbleGroup.getAt(i).x - 0);
+
+		yPos = Math.abs(fullBubbleGroup.getAt(i).y - 820);
+		yMin = Math.abs(fullBubbleGroup.getAt(i).y - 0);
+
+		if(xPos<xMin && xPos<yMin && xPos<yPos)
+			fullBubbleGroup.getAt(i).body.velocity.x = 90;
+		else if(xMin<yMin && xMin<yPos && xMin<xPos)
+			fullBubbleGroup.getAt(i).body.velocity.x = -90;
+		else if(yPos<yMin && yPos<xPos && yPos<xMin)
+			fullBubbleGroup.getAt(i).body.velocity.y = 90;
+		else
+			fullBubbleGroup.getAt(i).body.velocity.y = -90;
+
+		if(fullBubbleGroup.getAt(i).y > 820 || fullBubbleGroup.getAt(i).y < 0 || fullBubbleGroup.getAt(i).x > 1300 || fullBubbleGroup.getAt(i).x < 0){
+			numFullBubbles--;
+			camelsRemained--;
+			fullBubbleGroup.remove(fullBubbleGroup.getAt(i));
+		}
 	}
 }	
 
 function moveBubbles() {
-	for(var i=0 ; i<numBubbles ; i++){
-		if(bubblesGroup.getAt(i).x>800 && bubblesGroup.getAt(i).y>500){
-			bubblesGroup.getAt(i).body.velocity.y = -80;
-			bubblesGroup.getAt(i).body.velocity.x = -80;
-		}
-		else if (bubblesGroup.getAt(i).x>800 && bubblesGroup.getAt(i).y<500){
-			bubblesGroup.getAt(i).body.velocity.y = 80;
-			bubblesGroup.getAt(i).body.velocity.x = -80;
-		}
-		else if (bubblesGroup.getAt(i).x<800 && bubblesGroup.getAt(i).y>500){
-			bubblesGroup.getAt(i).body.velocity.y = -80;
-			bubblesGroup.getAt(i).body.velocity.x = 80;
-		}
-		else{
-			bubblesGroup.getAt(i).body.velocity.y = 80;
-			bubblesGroup.getAt(i).body.velocity.x = 80;
-		}
 
+	for(var i=0 ; i<numBubbles ; i++){
+		if(bubblesGroup.getAt(i).x>700){
+			bubblesGroup.getAt(i).body.velocity.x = -70;
+		}
+		if(bubblesGroup.getAt(i).y>400){
+			bubblesGroup.getAt(i).body.velocity.y = -70;
+		}
+		if(bubblesGroup.getAt(i).x<700)
+			bubblesGroup.getAt(i).body.velocity.x = 70;
+		if(bubblesGroup.getAt(i).y<400)
+			bubblesGroup.getAt(i).body.velocity.y = 70;
 	}
 }	
 
+function timer() {
+	time--;
+}
 
 function createPreviewBounds(x,y,w,h){
     var sim = game.physics.p2;
