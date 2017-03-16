@@ -9,7 +9,7 @@
 	-Open a terminal in the root of this and
 	write in command line for depending on what language you have:
 	
-		python -m http.server (On Mac: python3 -m http.server )
+		python -m http.server (On Mac: python3 -m http.server)
 		ruby -run -e httpd . -p 8000
 		php -S localhost:8000
 
@@ -20,6 +20,8 @@
 	to view the game
 
 	to close the local web server, just close the process (in Windows, crtl-c in the commmand line)
+
+	You can always play without audio by just opening index.html, but we don't reccommend this. 
 
 Note: you can edit freely the source files, and see the changes when you refresh in browser while the web server is open (you don't need to restart it).
 
