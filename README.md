@@ -14,7 +14,9 @@
 		php -S localhost:8000
 
 	then, go to your browser and type:
-	localhost:8000 t
+
+	localhost:8000 
+	
 	to view the game
 
 	to close the local web server, just close the process (in Windows, crtl-c in the commmand line)
