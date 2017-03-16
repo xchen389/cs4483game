@@ -1,9 +1,9 @@
-# cs4483game - Attack of the Bubbles
+# CS4483 Game - Attack of the Bubbles
 
 ## Game Design Documentation + Drive
 	https://drive.google.com/drive/folders/0B0QVWVNDpyXyVFYtQWdxTUxRcGs?usp=sharing
 
-## To run the game
+## How to Play The Game
 	
 	-download and unzip the game
 	-Open a terminal in the root of this and
@@ -16,7 +16,7 @@
 	then, go to your browser and type:
 
 	localhost:8000 
-	
+
 	to view the game
 
 	to close the local web server, just close the process (in Windows, crtl-c in the commmand line)
@@ -24,7 +24,7 @@
 Note: you can edit freely the source files, and see the changes when you refresh in broweser
 while the web server is open (you don't need to restart it)
 
-## credits
+## Credits
 
 	-All not in-house assets used in this project are royalty free and free to use for 
 	both commercial and non-comercial projects 
