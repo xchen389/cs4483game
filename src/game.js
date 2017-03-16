@@ -41,7 +41,6 @@ var game = {
         game.load.image('bubble', './assets/images/bubble.png');
         game.load.image('camel', './assets/images/single_camel.gif');
         game.load.image('fullBubble', './assets/images/fullBubble.png');
-        game.load.image('musicButton', './assets/images/musicToggle.png');
         game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
         game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
         game.load.image('pauseScreen', './assets/images/backgrounds/pause_screen.png');
@@ -129,14 +128,14 @@ var game = {
                         //transform it to 0-1, set musicVolume
                         clickx = event.x - 170;
                         musicVolume = (clickx/937).toFixed(2);
-                        musicText.setText("Music Volume: " + (musicVolume*100).toFixed(0).toFixed(0));
+                        musicText.setText("Music Volume: " + (musicVolume*100).toFixed(0));
                    }
                    //fx section
                     if(event.y < 507 && event.y > 382){
                         //same as music section
                         clickx = event.x - 170;
                         fxVolume = (clickx/937).toFixed(2);
-                        fxText.setText("FX Volume: " + (fxVolume*100).toFixed(0).toFixed(0));
+                        fxText.setText("FX Volume: " + (fxVolume*100).toFixed(0));
                    }   
 
                 }
@@ -163,6 +162,8 @@ var game = {
         //FX
         popSound = game.add.audio('pop');
         ouchSound = game.add.audio('camel_ouch');
+        popSound.volume = fxVolume;
+        ouchSound.volume = fxVolume;
 
         //music 
         music = this.add.audio('gameMusic');
