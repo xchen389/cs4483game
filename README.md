@@ -21,8 +21,7 @@
 
 	to close the local web server, just close the process (in Windows, crtl-c in the commmand line)
 
-Note: you can edit freely the source files, and see the changes when you refresh in broweser
-while the web server is open (you don't need to restart it)
+Note: you can edit freely the source files, and see the changes when you refresh in browser while the web server is open (you don't need to restart it).
 
 ## Credits
 
