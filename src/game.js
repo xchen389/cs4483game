@@ -234,14 +234,14 @@ var game = {
         game.time.events.loop(Phaser.Timer.SECOND * 1.5, moveCamels, this); 
 
         //To move full bubbles
-        game.time.events.loop(Phaser.Timer.SECOND * 0.5, moveBubbles, this); 
+       // game.time.events.loop(Phaser.Timer.SECOND * 0.5, moveBubbles, this); 
 
         //To move full bubbles
         game.time.events.loop(Phaser.Timer.SECOND * 0.5, moveFullBubbles, this); 
 
-        //To move full bubbles
+        //To create bubbles
         game.time.events.loop(Phaser.Timer.SECOND * 4, createBubbles, this); 
-
+        //createBubbles();
 
         //Timer
         game.time.events.loop(Phaser.Timer.SECOND, timer, this); 
@@ -431,13 +431,53 @@ function createfullBubble(x,y){
 }
 
 function createBubble(x,y){
+    var targetCamel = findNearestInGroup(x, y, camelsGroup);
+
+    if (targetCamel == null) {return;}
+    
+    var newBubble = new Bubble(game, x, y, targetCamel, 30);
+    bubblesGroup.add(newBubble);
+/*
     new_bubble = bubblesGroup.create(x, y, 'bubble');
     new_bubble.scale.set(0.3);
     new_bubble.body.setCircle(24);
     new_bubble.body.setCollisionGroup(bubbleCollisionGroup);
     new_bubble.body.fixedRotation = true;
     new_bubble.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
+    */
     numBubbles++;
+}
+
+function findNearestInGroup(x,y, objGroup)
+{
+    if (objGroup.total <= 0)
+    {
+        return null;
+    }
+    var nearestObj;
+    var dist;
+    objGroup.forEach(function(childObj, x, y){
+        if (typeof nearestObj === 'undefined')
+        {
+            console.log("child undefined");
+            nearestObj = childObj;
+            dist = Math.pow(nearestObj.x - x, 2)
+                   +Math.pow(nearestObj.y - y, 2);
+            
+        }
+        else
+        {
+            var newDist = Math.pow(childObj.x - x, 2)
+                   +Math.pow(childObj.y - y, 2);
+            if (newDist < dist)
+            {
+                nearestObj = childObj;
+                dist = newDist;
+            }
+        }
+    }, this, true, x, y);
+
+    return nearestObj;
 }
 
 // body 1 is the player
@@ -461,6 +501,7 @@ function bumpFullBubble(playerBody, fullBubbleBody){
 function createCamel(x,y){
     new_camel = camelsGroup.create(x, y, 'camel');
     new_camel.scale.setTo(0.5);
+    new_camel.anchor.setTo(0.5);
     new_camel.body.setRectangle(40);
     new_camel.body.setCollisionGroup(camelCollisionGroup);
     new_camel.body.fixedRotation = true;
@@ -634,8 +675,54 @@ function moveBubbles() {
 	}
 }	
 
+//------------------------------- Bubble class
+Bubble = function(game, x, y, target, speed)
+{
+    // create the bubble sprite at specified coordinates
+    Phaser.Sprite.call(this, game, x, y, "bubble");
+
+    this.scale.set(0.3);
+    
+    // set the anchor to centre of sprite
+    this.anchor.setTo(0.5);
+
+    // enalble P2 physics
+    game.physics.enable(this, Phaser.Physics.P2JS);
+
+    this.body.setCircle(24);
+    this.body.setCollisionGroup(bubbleCollisionGroup);
+    this.body.fixedRotation = true;
+    this.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
+    this.target = target;
+    this.speed = speed;
+    
+};
+Bubble.prototype = Object.create(Phaser.Sprite.prototype);
+Bubble.prototype.constructor = Bubble;
+Bubble.prototype.update = function()
+{
+    if (!this.target.alive)
+    {
+        console.log("target camel missing! Looking for next target...");
+        this.target = findNearestInGroup(this.body.x, this.body.y, camelsGroup);
+        if (this.target == null || !this.target.alive) { return;}
+    }
+    
+    accelerateToObject(this, this.target, this.speed);
+}
+//---------------end of Bubble class
+
 function timer() {
 	time--;
+}
+
+function accelerateToObject (chaser, chased, speed)
+{
+    if (typeof speed === 'undefined') { speed = 50;}
+    var angle = Math.atan2(chased.y - chaser.y, chased.x - chaser.x);
+    chaser.body.force.x = Math.cos(angle) * speed;
+    chaser.body.force.y = Math.sin(angle) * speed;
+    //console.log(Math.cos(angle) * speed, Math.sin(angle) * speed);
 }
 
 function createPreviewBounds(x,y,w,h){
