@@ -379,9 +379,21 @@ function gameOver()
         game.state.start('shop');
     });
 }
+function camelCaughtNotice()
+{
+    displayText("A camel has been caught!", 0.5, function(){
+        notificationText.destroy();
+    });
+}
 
 function displayText(str, autoNext, callback)
 {
+    // remove previous notification text if it exist
+    if (notificationText != null && notificationText!== 'undefined' && notificationText.alive)
+    {
+        notificationText.destroy();
+    }
+
     notificationText = game.add.text(game.world.centerX, game.world.centerY, str, { font: "65px Arial", fill: "#fff", align: "center" });
     notificationText.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);    
     notificationText.anchor.setTo(0.5, 0.5);
@@ -455,7 +467,8 @@ function bumpBubble(playerBody, bubbleBody) {
 // trigger event to put create camel inside bubble sprite, and pull towards corners
 function camelBubbleHit(camelBody, bubbleBody){
     // add earthquake effect
-    addQuake();
+    camelCaughtNotice();
+
     ouchSound.play();
 
     // create full_bubble sprite where original bubble was
