@@ -9,6 +9,8 @@ var player;
 var cursors;
 var wasd;
 
+var companion;
+
 //change these depending on how many bubbles and want
 var numBubbles = 0;
 
@@ -28,6 +30,7 @@ var playerCollisionGroup;
 var bubbleCollisionGroup;
 var camelCollisionGroup;
 var fullBubbleCollisionGroup;
+var companionCollisionGroup;
 var customBounds;
 var bounds;
 
@@ -39,6 +42,7 @@ var game = {
         game.load.image('player', './assets/images/player.png');
         game.load.image('bubble', './assets/images/bubble.png');
         game.load.image('camel', './assets/images/single_camel.gif');
+        game.load.image('companion', './assets/images/dog-placeholder.png');
         game.load.image('fullBubble', './assets/images/fullBubble.png');
         game.load.image('pauseButton', './assets/images/buttons/pause_button.png');
         game.load.image('background', './assets/images/backgrounds/gamebackground_screen.png');
@@ -203,6 +207,7 @@ var game = {
         bubbleCollisionGroup = game.physics.p2.createCollisionGroup();
         camelCollisionGroup = game.physics.p2.createCollisionGroup();
         fullBubbleCollisionGroup = game.physics.p2.createCollisionGroup();
+        companionCollisionGroup = game.physics.p2.createCollisionGroup();
 
         //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
         //  (which we do) - what this does is adjust the bounds to use its own collision group.
@@ -260,6 +265,10 @@ var game = {
         // When player colides with bubbles or fullbubbles, the function in second parameter is called. 
         player.body.collides(bubbleCollisionGroup, bumpBubble, this);
         player.body.collides(fullBubbleCollisionGroup, bumpFullBubble, this);
+
+        // setup companion
+        companion = new Companion(game, 200, 600, 60);
+        game.add.existing(companion);
 
         //  Create a new custom sized bounds, within the world bounds
         customBounds = { left: null, right: null, top: null, bottom: null };
@@ -426,7 +435,7 @@ function createfullBubble(x,y){
     fullBubble.enableBody = true;
     fullBubble.body.setCircle(24);
     fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
-    fullBubble.body.collides([playerCollisionGroup]);
+    fullBubble.body.collides([playerCollisionGroup,companionCollisionGroup]);
     numFullBubbles++;
 }
 
@@ -679,7 +688,7 @@ function moveBubbles() {
 Bubble = function(game, x, y, target, speed)
 {
     // create the bubble sprite at specified coordinates
-    Phaser.Sprite.call(this, game, x, y, "bubble");
+    Phaser.Sprite.call(this, game, x, y, 'bubble');
 
     this.scale.set(0.3);
     
@@ -705,12 +714,65 @@ Bubble.prototype.update = function()
     {
         console.log("target camel missing! Looking for next target...");
         this.target = findNearestInGroup(this.body.x, this.body.y, camelsGroup);
-        if (this.target == null || !this.target.alive) { return;}
+        if (!isTargetValid(this.target)) { return;}
     }
     
     accelerateToObject(this, this.target, this.speed);
 }
 //---------------end of Bubble class
+
+//---------------Companion class
+Companion = function(game, x, y, speed)
+{
+    Phaser.Sprite.call(this, game, x, y, 'companion');
+
+    this.scale.setTo(0.4);
+    this.anchor.setTo(0.5);
+    this.speed = speed;
+
+    game.physics.enable(this, Phaser.Physics.P2JS);
+
+    this.body.setRectangle(35);
+    this.body.fixedRotation = true;
+
+    this.body.setCollisionGroup(companionCollisionGroup);
+    this.body.collides(fullBubbleCollisionGroup, bumpFullBubble, this);
+    
+    this.state = 'idle';
+    this.target = null;
+};
+Companion.prototype = Object.create(Phaser.Sprite.prototype);
+Companion.prototype.constructor = Companion;
+Companion.prototype.update = function()
+{
+    if (this.state == 'idle' || !isTargetValid(this.target))
+    {
+        this.state = 'idle';
+        this.findTarget();
+    }
+    else if (this.state == 'chase')
+    {
+        accelerateToObject(this, this.target, this.speed);
+    }
+};
+Companion.prototype.findTarget = function()
+{
+    var bubbleTarget = findNearestInGroup(this.x, this.y, fullBubbleGroup);
+    if (!isTargetValid(bubbleTarget))
+    {
+        return;
+    }
+    else{
+        this.state = 'chase';
+        this.target = bubbleTarget;
+    }
+}
+//-------------------------end of Companion class
+
+function isTargetValid(obj)
+{
+    return (obj!=null && typeof obj !== 'undefined' && obj.alive);
+}
 
 function timer() {
 	time--;
