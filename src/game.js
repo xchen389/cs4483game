@@ -4,10 +4,12 @@ var popSound;
 var ouchSound;
 
 var counterText; //Camel and Bubble Count Text
+var notificationText;
 
 var player;
 var cursors;
 var wasd;
+var spaceKey;
 
 var companion;
 
@@ -75,9 +77,8 @@ var game = {
         var FxText;
 
         pauseButton.events.onInputUp.add(
-
             function(){
-                //game.paused doesn't work by itself, need to freeze everything
+                togglePause(this);
                 game.game.paused = true;
                 menu = game.add.sprite(160, 100, 'pauseScreen');
 
@@ -158,6 +159,7 @@ var game = {
 
                     // Unpause the game
                     game.game.paused = false;
+                    togglePause(event);
                 }
             }
         };
@@ -291,6 +293,10 @@ var game = {
             down:game.input.keyboard.addKey(Phaser.Keyboard.S)
         };
 
+        // setup pause on space key pressed
+        //spaceKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+       // spaceKey.onDown.add(togglePause, this);
+
         // remove key capture so they don't flood to browser
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.A);
         game.input.keyboard.removeKeyCapture(Phaser.Keyboard.D);
@@ -326,7 +332,10 @@ var game = {
 
         //winning condition - go to shop
         if(time == 0 || camelsRemained<2)
-        	game.state.start('shop');
+        {
+            gameOver();
+        }
+        	
 
         /* if camels are ever 0, game over - exit game
         if(camelsGroup.countLiving() == 0)
@@ -351,6 +360,48 @@ var game = {
 function updateCounterText(){
     //add formatting for text later
     counterText.setText("Time: " + time + " Camels: " + numCamels);
+}
+
+function gameOver()
+{
+    displayText("You Win!", 2, function(){
+        game.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
+        notificationText.destroy();
+        game.state.start('shop');
+    });
+}
+
+function displayText(str, autoNext, callback)
+{
+    notificationText = game.add.text(game.world.centerX, game.world.centerY, str, { font: "65px Arial", fill: "#fff", align: "center" });
+    notificationText.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);    
+    notificationText.anchor.setTo(0.5, 0.5);
+
+    if (autoNext>-1)
+    {
+        game.time.events.add(Phaser.Timer.SECOND * autoNext, callback, this);
+    }
+    else
+    {
+        game.input.onDown.addOnce(callback, this);
+    }
+}
+
+function togglePause(event)
+{
+    
+    if (game.physics.p2.paused)
+    {
+        console.log("unpause called");
+        game.physics.p2.resume();
+    }
+    else
+    {
+        console.log("pause called");
+        game.physics.p2.pause();
+
+        
+    }      
 }
 
 function addQuake() {
