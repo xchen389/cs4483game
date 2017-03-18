@@ -305,6 +305,8 @@ var game = {
 
         counterText = this.add.text(15,10,"Time: " + time + " Camels: " + numCamels );
 
+        // notify game start
+        gameStart();
     },
 
     //runs continuously. 
@@ -362,6 +364,13 @@ function updateCounterText(){
     counterText.setText("Time: " + time + " Camels: " + numCamels);
 }
 
+function gameStart()
+{
+    displayText("Level Start!", 1, function(){
+        game.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
+        notificationText.destroy();
+    });
+}
 function gameOver()
 {
     displayText("You Win!", 2, function(){
