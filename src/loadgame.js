@@ -1,35 +1,31 @@
-var loadGame = {
+aotb_game.loadGame = function(){
+	var pgame = this;
 
-	preload: function(){
-		this.load.image('loadGameBackground','./assets/images/backgrounds/loadGame_screen.png');
-		this.load.image('backButton', './assets/images/buttons/back_button.png')
-		this.load.image('loadButton', './assets/images/buttons/load_button.png')
-		this.load.audio('introMusic', './assets/sounds/introMusic.ogg');
-	},
+	this.preload = function(){
+		pgame.load.image('loadGameBackground','./assets/images/backgrounds/loadGame_screen.png');
+		pgame.load.image('backButton', './assets/images/buttons/back_button.png')
+		pgame.load.image('loadButton', './assets/images/buttons/load_button.png')
+		pgame.load.audio('introMusic', './assets/sounds/introMusic.ogg');
+	}
 
-	create: function(){
-		this.add.tileSprite(0,0, 1280, 800, 'loadGameBackground');
-		this.add.button(50,690, 'backButton', this.goBack,this);
-		this.add.button(960,690, 'loadButton', this.loadTheGame,this);
+	this.create = function(){
+		pgame.add.tileSprite(0,0, 1280, 800, 'loadGameBackground');
+		pgame.add.button(50,690, 'backButton', goBack,pgame);
+		pgame.add.button(960,690, 'loadButton', loadTheGame,pgame);
 
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
 			introMusic.volume = 0.5;
 			introMusic.play();
 		}
-	},
-
-	goBack: function(){
-		main.state.start('menu');
-	},
-
-	loadTheGame: function(){
-		//get shit from the file, edit gobal vars
-		main.state.start('shop');
-	},
-
-	shutdown: function(){
 	}
 
+	function goBack(){
+		pgame.state.start('menu');
+	}
 
-}
+	function loadTheGame(){
+		//get shit from the file, edit gobal vars
+		pgame.state.start('shop');
+	}
+};

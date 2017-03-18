@@ -1,8 +1,9 @@
 var introMusic = null;
 
-var menu = {
+aotb_game.menu = function(){
+	var pgame = this;
 
-	preload: function(){
+	this.preload = function(){
 		this.load.image('menuBackground','./assets/images/backgrounds/mainMenu_screen.png');
 		this.load.image('newGameButton','./assets/images/buttons/newGame_button.png');
 		this.load.image('loadGameButton','./assets/images/buttons/loadGame_button.png');
@@ -10,13 +11,13 @@ var menu = {
 		this.load.audio('hoverSound', './assets/sounds/button_hover.mp3');
 		this.load.audio('buttonClickedSound','./assets/sounds/button_clicked.mp3');
 		this.load.audio('introMusic', './assets/sounds/introMusic.ogg');
-	},
+	}
 
-	create: function(){
+	this.create = function(){
 		this.add.tileSprite(0,0, 1280, 800, 'menuBackground');
-		var newGameButton = this.add.button(205,270,'newGameButton',this.newGame, this);
-		var loadGameButton = this.add.button(205,370, 'loadGameButton', this.loadGame, this);
-		var CreditButton = this.add.button(205,470, 'creditsButton', this.loadCredits,this);
+		var newGameButton = this.add.button(205,270,'newGameButton',newGame, this);
+		var loadGameButton = this.add.button(205,370, 'loadGameButton', loadGame, this);
+		var CreditButton = this.add.button(205,470, 'creditsButton', loadCredits,this);
 		
 		if(introMusic == null)
 			introMusic = this.add.audio('introMusic');
@@ -27,22 +28,18 @@ var menu = {
 			introMusic.volume = 0.5;
 			introMusic.play();
 		}
-	},
+	}
 
-	newGame: function(){
-		menu.state.start('name');
-	},
+	function newGame(){
+		pgame.state.start('name');
+	}
 
-	loadGame: function(){
-		menu.state.start('loadGame');
-	},
+	function loadGame(){
+		pgame.state.start('loadGame');
+	}
 
-	loadCredits: function(){
-		menu.state.start('credits');
-	},
-
-	//called when this state is exited e.g., you switch to another state
-	shutdown: function(){
+	function loadCredits(){
+		pgame.state.start('credits');
 	}
 
 };
