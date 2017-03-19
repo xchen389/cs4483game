@@ -164,7 +164,7 @@ aotb_game.levelbase = function(pgame){
                     ouchSound.volume = fxVolume;
 
                     // Unpause the game
-                    game.game.paused = false;
+                    pgame.game.paused = false;
                     togglePause(event);
                 }
             }
