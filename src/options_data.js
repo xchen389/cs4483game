@@ -46,10 +46,6 @@ function loadData(name){
 	playerData = JSON.parse(loadedJSONString);
 }
 
-function deleteData(name){
-	localStorage.removeItem(name);
-}
-
 function deleteAll(){
 	localStorage.clear();
 }
