@@ -25,6 +25,18 @@
 
 Note: you can edit freely the source files, and see the changes when you refresh in browser while the web server is open (you don't need to restart it).
 
+## Who Did What
+Abdul Alhumidan
+Ather Qureshi
+Bowen Jiang 
+Sherry Chen: 
+	- Bubble AI
+	- Companion AI
+	- Notification UI
+	- Store items UI
+	- Shooting mechanism
+	- Game restructure
+
 ## Credits
 
 	-All not in-house assets used in this project are royalty free and free to use for 
