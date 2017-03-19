@@ -86,7 +86,7 @@ var loadGame = {
 }
 
 function load(name){
-	console.log(name);
 	loadData(name);
+	introMusic.stop();
 	main.state.start('shop');
 }

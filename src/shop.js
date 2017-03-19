@@ -1,4 +1,4 @@
-var music;
+var shopMusic;
 
 var shop = {
 
@@ -20,10 +20,10 @@ var shop = {
 		//exitButton.width = 100;
 		//exitButton.height = 80;
 		
-		music = this.add.audio('shopMusic');
-		music.volume = playerData.musicVolume;
-		music.loop = true;
-		music.play();
+		shopMusic = this.add.audio('shopMusic');
+		shopMusic.volume = playerData.musicVolume;
+		shopMusic.loop = true;
+		shopMusic.play();
 	},
 
 	loadGame: function(){
@@ -38,6 +38,6 @@ var shop = {
 
 	//called when this state is switched (state shutdown)
 	shutdown: function(){
-		music.stop();
+		shopMusic.stop();
 	}
 }
