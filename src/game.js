@@ -332,7 +332,7 @@ aotb_game.levelbase = function(pgame){
         counterText = pgame.add.text(15,10,"Time: " + time + " Camels: " + numCamels );
 
         // notify game start
-        gameStart();
+        //gameStart();
     };
 
     //runs continuously. 
@@ -509,16 +509,9 @@ aotb_game.levelbase = function(pgame){
         counterText.setText("Time: " + time + " Camels: " + numCamels);
     }
 
-    function gameStart()
-    {
-        displayText("Level Start!", 1, function(){
-            pgame.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
-            notificationText.destroy();
-        });
-    }
     function gameOver()
     {
-        displayText("You Win!", 2, function(){
+        self.displayText("You Win!", 2, function(){
             pgame.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
             notificationText.destroy();
             pgame.state.start('shop');
@@ -526,12 +519,12 @@ aotb_game.levelbase = function(pgame){
     }
     function camelCaughtNotice()
     {
-        displayText("A camel has been caught!", 0.5, function(){
+        self.displayText("A camel has been caught!", 0.5, function(){
             notificationText.destroy();
         });
     }
 
-    function displayText(str, autoNext, callback)
+    this.displayText = function(str, autoNext, callback)
     {
         // remove previous notification text if it exist
         if (notificationText != null && notificationText!== 'undefined' && notificationText.alive)
@@ -742,7 +735,7 @@ aotb_game.levelbase = function(pgame){
     
     function camelShotNotice()
     {
-        displayText("You shot a camel!", 0.8, function(){
+        self.displayText("You shot a camel!", 0.8, function(){
             notificationText.destroy();
         });
     }
