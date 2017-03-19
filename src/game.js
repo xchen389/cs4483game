@@ -329,10 +329,8 @@ aotb_game.levelbase = function(pgame){
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
 
-        counterText = pgame.add.text(15,10,"Time: " + time + " Camels: " + numCamels );
-
-        // notify game start
-        //gameStart();
+        counterText = pgame.add.text(0,0,"Time: " + time + " Camels: " + numCamels, {font: '40px Arial', fill:'#fff', boundsAlignH: "center"});
+        counterText.setTextBounds(0, 10, pgame.world.width, 100);
     };
 
     //runs continuously. 
@@ -373,6 +371,8 @@ aotb_game.levelbase = function(pgame){
         //losing condition
         if(numCamels == 0)
         	pgame.state.start('gameover');
+
+        updateCounterText();
     }
 
     this.bulletUpdate = function()
@@ -563,7 +563,7 @@ aotb_game.levelbase = function(pgame){
 
         popSound.play();
 
-        updateCounterText();
+        //updateCounterText();
     }
 
     function createCamel(x,y){
@@ -680,7 +680,7 @@ aotb_game.levelbase = function(pgame){
     function bumpBubble(playerBody, bubbleBody) {
         popSound.play();
         numBubbles--;
-        updateCounterText();
+        
         bubbleBody.sprite.alive = false;
         bubbleBody.sprite.pendingDestroy = true;
     }
