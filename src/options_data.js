@@ -9,14 +9,22 @@ var h = 800;
 Player Specific Data
 
 Depending on what you need, feel free to add more fields to this object
-it will not affect saveData and loadData"
+The only field you can not change is name, as that is the key value
+we use to find save data in localStorage
+
 */
 
 //initialized Object for playerData
+//when user loads data this will change
 var playerData = { 
+	//DO NOT CHANGE!
 	"name":"default", 
-	"musicvolume":0.2, 
+
+	//options
+	"musicVolume":0.2, 
 	"fxVolume": 0.2,
+
+	//gameState Info
 	"currentDay": 1,
 	"totalScore": 0,
 	"currCredits": 0.
@@ -48,7 +56,7 @@ function deleteAll(){
 function returnAllData(){
 
 	// create an array that will hold all the savedData Names
-	var names;
+	var names = [];
 
 	// iterate through all files in localStorage and get their JSONs and names
 	// push the names to the array names
@@ -61,14 +69,3 @@ function returnAllData(){
 	//return names
 	return names;
 }
-
-//options
-var playerName = "";
-var musicVolume = 0.2;
-var fxVolume = 0.2;
-
-//Information about game
-var currentDay;
-var camelsLeft;
-var totalScore;
-var currCredits;

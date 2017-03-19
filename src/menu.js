@@ -23,7 +23,7 @@ var menu = {
 		}
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
-			introMusic.volume = 0.5;
+			introMusic.volume = playerData.musicVolume;
 			introMusic.play();
 		}
 	},

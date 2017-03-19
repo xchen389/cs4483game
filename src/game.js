@@ -84,12 +84,16 @@ var game = {
                 mainMenuButton.height = 60;
                 mainMenuButton.width = 200;
 
-                choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
-                    '30px Arial', fill: '#000'});
+                choiceLabel = game.add.text(w/2,h-150, 'Click Outside the Menu To Continue', 
+                    { font:
+                    '30px Arial', 
+                    fill: '#000'}
+                );
+
                 choiceLabel.anchor.setTo(0.5,0.5);
 
-                musicText = game.add.text(w/2-420, h/2 + 150, "Music Volume: " + musicVolume*100);
-                fxText = game.add.text(w/2-420, h/2 + 180, "FX Volume: " + fxVolume*100);
+                musicText = game.add.text(w/2-420, h/2 + 150, "Music Volume: " + playerData.musicVolume*100);
+                fxText = game.add.text(w/2-420, h/2 + 180, "FX Volume: " + playerData.fxVolume*100);
             }
         );
 
@@ -125,15 +129,15 @@ var game = {
                         // range is 170-1107
                         //transform it to 0-1, set musicVolume
                         clickx = event.x - 170;
-                        musicVolume = (clickx/937).toFixed(2);
-                        musicText.setText("Music Volume: " + (musicVolume*100).toFixed(0));
+                        playerData.musicVolume = (clickx/937).toFixed(2);
+                        musicText.setText("Music Volume: " + (playerData.musicVolume*100).toFixed(0));
                    }
                    //fx section
                     if(event.y < 507 && event.y > 382){
                         //same as music section
                         clickx = event.x - 170;
-                        fxVolume = (clickx/937).toFixed(2);
-                        fxText.setText("FX Volume: " + (fxVolume*100).toFixed(0));
+                        playerData.fxVolume = (clickx/937).toFixed(2);
+                        fxText.setText("FX Volume: " + (playerData.fxVolume*100).toFixed(0));
                    }   
 
                 }
@@ -146,10 +150,10 @@ var game = {
                     fxText.destroy();
 
                     //adjust volumes accordingly
-                    music.volume = musicVolume;
+                    music.volume = playerData.musicVolume;
 
-                    popSound.volume = fxVolume;
-                    ouchSound.volume = fxVolume;
+                    popSound.volume = playerData.fxVolume;
+                    ouchSound.volume = playerData.fxVolume;
 
                     // Unpause the game
                     game.game.paused = false;
@@ -160,12 +164,12 @@ var game = {
         //FX
         popSound = game.add.audio('pop');
         ouchSound = game.add.audio('camel_ouch');
-        popSound.volume = fxVolume;
-        ouchSound.volume = fxVolume;
+        popSound.volume = playerData.fxVolume;
+        ouchSound.volume = playerData.fxVolume;
 
         //music 
         music = this.add.audio('gameMusic');
-        music.volume = musicVolume;
+        music.volume = playerData.musicVolume;
         music.loop = true;
         music.play();
 

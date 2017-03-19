@@ -21,16 +21,18 @@ var shop = {
 		//exitButton.height = 80;
 		
 		music = this.add.audio('shopMusic');
-		music.volume = musicVolume;
+		music.volume = playerData.musicVolume;
 		music.loop = true;
 		music.play();
 	},
 
 	loadGame: function(){
+		saveData();
 		main.state.start('game');
 	},
 
 	loadMenu: function(){
+		saveData();
 		main.state.start('menu');
 	},
 

@@ -1,3 +1,5 @@
+var nameKeys;
+
 var loadGame = {
 
 	preload: function(){
@@ -14,9 +16,14 @@ var loadGame = {
 
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
-			introMusic.volume = 0.5;
+			introMusic.volume = playerData.musicVolume;
 			introMusic.play();
 		}
+
+		//get the files in localStorage
+		nameKeys = returnAllData();
+
+		//list the names in the screen and let the user see the names
 	},
 
 	goBack: function(){
@@ -24,7 +31,6 @@ var loadGame = {
 	},
 
 	loadTheGame: function(){
-		//get shit from the file, edit gobal vars
 		main.state.start('shop');
 	},
 
