@@ -43,7 +43,8 @@ aotb_game.game = function()
           return;
       }
 
-      _pgame = new Phaser.Game(1280, 800, Phaser.CANVAS, options.id, null, false, true);
+      _pgame = new Phaser.Game(1280, 800, Phaser.CANVAS, options.id);
+      
       _pgame.state.add('level1', new aotb_game.lv1);
       _pgame.state.add('menu', new aotb_game.menu);
       _pgame.state.add('credits', new aotb_game.credits);

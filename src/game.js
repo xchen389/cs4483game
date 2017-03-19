@@ -84,7 +84,7 @@ aotb_game.levelbase = function(pgame){
 
         pauseButton.events.onInputUp.add(
             function(){
-                togglePause(this);
+                togglePause(true);
                 pgame.game.paused = true;
                 menu = pgame.add.sprite(160, 100, 'pauseScreen');
 
@@ -127,6 +127,7 @@ aotb_game.levelbase = function(pgame){
                     event.y < (h-230) + mainMenuButton.height/2
                     ){
                         pgame.game.paused = false;
+                        togglePause(false);
                         pgame.state.start('menu');
                    }
 
@@ -164,8 +165,8 @@ aotb_game.levelbase = function(pgame){
                     ouchSound.volume = fxVolume;
 
                     // Unpause the game
-                    game.game.paused = false;
-                    togglePause(event);
+                    pgame.game.paused = false;
+                    togglePause(false);
                 }
             }
         };
@@ -366,7 +367,14 @@ aotb_game.levelbase = function(pgame){
 
         fullBubbleGroup.removeAll(true, true);
         fullBubbleGroup.destroy();
+
         music.stop();
+        
+        if (pgame.game.paused)
+        {
+            pgame.game.paused = false;
+            togglePause(false);
+        }
     }
 
     function moveCamels() {
@@ -614,20 +622,18 @@ aotb_game.levelbase = function(pgame){
         createBubble(x, y);	
     }
 
-    function togglePause(event)
+    function togglePause(pause)
     {
         
-        if (pgame.physics.p2.paused)
+        if (!pause && pgame.physics.p2.paused)
         {
             console.log("unpause called");
             pgame.physics.p2.resume();
         }
-        else
+        else if (pause && !pgame.physics.p2.paused)
         {
             console.log("pause called");
-            pgame.physics.p2.pause();
-
-            
+            pgame.physics.p2.pause();     
         }      
     }
 

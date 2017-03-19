@@ -3,6 +3,17 @@ var introMusic = null;
 aotb_game.menu = function(){
 	var pgame = this;
 
+	this.init = function()
+	{
+		//setup scale
+		this.scale.windowConstraints.bottom = "visual";
+		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+		// put the canvas at centre
+		this.scale.pageAlignHorizontally = true;
+		this.scale.pageAlignVertically = true;
+	}
+
 	this.preload = function(){
 		this.load.image('menuBackground','./assets/images/backgrounds/mainMenu_screen.png');
 		this.load.image('newGameButton','./assets/images/buttons/newGame_button.png');
