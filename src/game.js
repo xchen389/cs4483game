@@ -16,6 +16,7 @@ var companion;
 var bubblesGroup;
 var camelsGroup;
 var fullBubbleGroup;
+var bullets;
 
 //collision groups (Full Bubble = bubble with camel inside)
 var playerCollisionGroup;
@@ -23,6 +24,8 @@ var bubbleCollisionGroup;
 var camelCollisionGroup;
 var fullBubbleCollisionGroup;
 var companionCollisionGroup;
+var bulletsCollisionGroup;
+
 var customBounds;
 var bounds;
 
@@ -31,7 +34,9 @@ aotb_game.levelbase = function(pgame){
     var player;
     var cursors;
     var wasd;
-    var spaceKey;
+    var fireButton;
+    
+    var nextFire = 0;
 
     //change these depending on how many bubbles and want
     var numBubbles = 0;
@@ -59,10 +64,11 @@ aotb_game.levelbase = function(pgame){
         game.loadAsset('pop', 'bubble_pop.mp3',0);
         game.loadAsset('camel_ouch', 'camel_ouch.mp3',0);
         game.loadAsset('gameMusic', 'gameMusic.mp3',0);
+        game.loadAsset('bullet', 'bullet.GIF',1);
     };
 
     // runs a single time when the game instance is created
-    this.create=function() {
+    this.create=function(bulletEnable = false) {
 
 	    //background 
         //game.stage.backgroundColor = '#DE9C04';
@@ -217,6 +223,8 @@ aotb_game.levelbase = function(pgame){
         camelCollisionGroup = pgame.physics.p2.createCollisionGroup();
         fullBubbleCollisionGroup = pgame.physics.p2.createCollisionGroup();
         companionCollisionGroup = pgame.physics.p2.createCollisionGroup();
+        bulletsCollisionGroup = pgame.physics.p2.createCollisionGroup();
+        
 
         //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
         //  (which we do) - what this does is adjust the bounds to use its own collision group.
@@ -279,6 +287,33 @@ aotb_game.levelbase = function(pgame){
         companion = new Companion(pgame, this, 200, 600, 60);
         pgame.add.existing(companion);
 
+        //bullet group
+        if (bulletEnable)//TODO should perform another check for type of gun
+        {
+           /* bullets.bulletKillType = Phaser.Weapon.KILL_DISTANCE;
+            bullets.bulletKillDistance = 500;
+            bullets.bulletSpeed = 600;
+            bullets.bullets.enableBody = true;*/
+            //  Our bullet group
+            bullets = pgame.add.group();
+            bullets.enableBody = true;
+            bullets.physicsBodyType = Phaser.Physics.P2JS;
+            for (var i=0;i<5;i++)
+            {
+                var bl = new Bullet(pgame,this,0,0,600, 700);
+                bullets.add(bl);
+            }
+            bullets.setAll('anchor.x', 0.5);
+            bullets.setAll('anchor.y', 0.5);
+            bullets.setAll('outOfBoundsKill', true);
+            bullets.setAll('checkWorldBounds', true);
+
+           /* bullets.forEach(function(bullet){
+                console.log(bullet);
+                bullet.bullets.body.collides(bubbleCollisionGroup, bulletHitBubble, this);
+            }, this);*/
+        }
+
         //  Create a new custom sized bounds, within the world bounds
         customBounds = { left: null, right: null, top: null, bottom: null };
 
@@ -299,6 +334,12 @@ aotb_game.levelbase = function(pgame){
             up:pgame.input.keyboard.addKey(Phaser.Keyboard.W),
             down:pgame.input.keyboard.addKey(Phaser.Keyboard.S)
         };
+
+        if (bulletEnable)
+        {
+            pgame.input.mouse.capture = true;
+            fireButton = pgame.input.activePointer.leftButton;
+        }
 
         // setup pause on space key pressed
         //spaceKey = pgame.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -354,8 +395,34 @@ aotb_game.levelbase = function(pgame){
         //losing condition
         if(numCamels == 0)
         	pgame.state.start('gameover');
-    },
+    }
 
+    this.bulletUpdate = function()
+    {
+        
+        //player.rotation = pgame.physics.arcade.angleToPointer(player);
+        if (fireButton.isDown && !pgame.game.paused)
+        {
+            fire();
+        }
+    }
+
+    var fireRate = 500;
+
+    function fire()
+    {
+
+        if (pgame.time.now > nextFire && bullets.countDead() > 0)
+        {
+            var fromX = player.x;
+            var fromY = player.y;
+
+            nextFire = pgame.time.now + fireRate;
+            var bullet = bullets.getFirstDead();
+
+            bullet.resetTarget(fromX, fromY,pgame.input.x,pgame.input.y);
+        }
+    }
     //called when this state is exited e.g., you switch to another state
     this.shutdown= function(){
         // clear all the groups
@@ -536,7 +603,7 @@ aotb_game.levelbase = function(pgame){
         new_camel.body.setCollisionGroup(camelCollisionGroup);
         new_camel.body.fixedRotation = true;
         new_camel.body.collides(bubbleCollisionGroup, camelBubbleHit, this);
-
+        new_camel.body.collides(bulletsCollisionGroup);
     }
 
     function createBubbles(){
@@ -672,13 +739,43 @@ aotb_game.levelbase = function(pgame){
         numCamels--;
     }
 
+    this.bulletHitBubble = function(bulletBody, bubbleBody)
+    {
+        console.log("hit!");
+        bumpBubble(bulletBody, bubbleBody);
+        bulletBody.sprite.kill();
+    }
+    this.bulletHitFullBubble = function(bulletBody, fullBubbleBody)
+    {
+        self.bumpFullBubble(bulletBody, fullBubbleBody);
+        bulletBody.sprite.kill();
+    }
+    this.bulletHitCamel = function(bulletBody, camelBody)
+    {
+        camelShotNotice();
+
+        ouchSound.play();
+
+        camelBody.sprite.kill();
+        camelBody.sprite.pendingDestroy = true;
+        camelsGroup.remove(camelBody);
+        numCamels--;
+    }
+    
+    function camelShotNotice()
+    {
+        displayText("You shot a camel!", 0.8, function(){
+            notificationText.destroy();
+        });
+    }
+
     function createfullBubble(x,y){
         fullBubble = fullBubbleGroup.create(x,y, 'fullBubble');
         fullBubble.scale.set(0.37);
         fullBubble.enableBody = true;
         fullBubble.body.setCircle(24);
         fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
-        fullBubble.body.collides([playerCollisionGroup,companionCollisionGroup]);
+        fullBubble.body.collides([playerCollisionGroup,companionCollisionGroup,bulletsCollisionGroup]);
         numFullBubbles++;
     }
 
@@ -793,7 +890,7 @@ Bubble = function(game, x, y, target, speed)
     this.body.setCircle(24);
     this.body.setCollisionGroup(bubbleCollisionGroup);
     this.body.fixedRotation = true;
-    this.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup]);
+    this.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup, bulletsCollisionGroup]);
     this.target = target;
     this.speed = speed;
     
@@ -860,6 +957,58 @@ Companion.prototype.findTarget = function()
     }
 }
 //-------------------------end of Companion class
+
+//------------------Bullet class
+Bullet = function(pgame, game,x, y, speed, lifespan)
+{
+    Phaser.Sprite.call(this, pgame, x, y, 'bullet');
+
+    this.anchor.setTo(0.5);
+    this.outOfBoundsKill = true;
+    this.checkWorldBounds = true;
+
+    this.lifetime = lifespan;
+
+    this.speed = speed;
+    this.pgame = pgame;
+
+    pgame.physics.enable(this, Phaser.Physics.P2JS);
+
+    this.body.setRectangle(35);
+    this.body.fixedRotation = true;
+
+    this.body.setCollisionGroup(bulletsCollisionGroup);
+    this.body.collides(fullBubbleCollisionGroup, game.bulletHitFullBubble, this);
+    this.body.collides(bubbleCollisionGroup, game.bulletHitBubble, this);
+    this.body.collides(camelCollisionGroup, game.bulletHitCamel, this);
+    this.kill();
+}
+Bullet.prototype = Object.create(Phaser.Sprite.prototype);
+Bullet.prototype.constructor = Bullet;
+Bullet.prototype.update=function()
+{
+}
+Bullet.prototype.resetTarget = function(x,y,tx,ty)
+{
+    this.revive();
+    this.reset(x,y);
+    this.lifespan = this.lifetime;
+    console.log(this.lifespan);
+    this.setMove(tx,ty);
+}
+Bullet.prototype.setMove = function(tx,ty)
+{
+    var dx = tx - this.x;    
+    var dy = ty - this.y;   
+    var angle = Math.atan2(dy, dx);
+
+    this.rotation = angle;
+    this.body.rotation = angle;    
+
+    this.body.velocity.x = this.speed * Math.cos(angle);    
+    this.body.velocity.y = this.speed * Math.sin(angle); 
+}
+//--------------------end of Bullet class
 
 function isTargetValid(obj)
 {

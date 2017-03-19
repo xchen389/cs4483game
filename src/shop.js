@@ -74,7 +74,7 @@ aotb_game.shop = function(){
 	}
 
 	function loadGame(){
-		pgame.state.start('menu');
+		pgame.state.start('level2');
 	}
 
 	function loadMenu(){
