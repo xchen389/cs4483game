@@ -2,9 +2,6 @@ aotb_game.credits = function(){
 	var pgame = this;
 
 	this.preload = function(){
-		pgame.load.image('creditsScreen','./assets/images/backgrounds/credits_screen.png');
-		pgame.load.image('backButton','./assets/images/buttons/back_button.png');
-		pgame.load.audio('introMusic', './assets/sounds/introMusic.ogg');
 	}
 
 	this.create = function(){

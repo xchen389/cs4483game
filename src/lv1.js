@@ -6,7 +6,6 @@ aotb_game.lv1 = function()
   this.preload = function()
   {
     levelbase = new aotb_game.levelbase(pgame);
-    levelbase.init();
   };
 
   this.create = function()

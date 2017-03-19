@@ -2,10 +2,6 @@ aotb_game.loadGame = function(){
 	var pgame = this;
 
 	this.preload = function(){
-		pgame.load.image('loadGameBackground','./assets/images/backgrounds/loadGame_screen.png');
-		pgame.load.image('backButton', './assets/images/buttons/back_button.png')
-		pgame.load.image('loadButton', './assets/images/buttons/load_button.png')
-		pgame.load.audio('introMusic', './assets/sounds/introMusic.ogg');
 	}
 
 	this.create = function(){

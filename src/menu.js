@@ -3,25 +3,7 @@ var introMusic = null;
 aotb_game.menu = function(){
 	var pgame = this;
 
-	this.init = function()
-	{
-		//setup scale
-		this.scale.windowConstraints.bottom = "visual";
-		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-
-		// put the canvas at centre
-		this.scale.pageAlignHorizontally = true;
-		this.scale.pageAlignVertically = true;
-	}
-
 	this.preload = function(){
-		this.load.image('menuBackground','./assets/images/backgrounds/mainMenu_screen.png');
-		this.load.image('newGameButton','./assets/images/buttons/newGame_button.png');
-		this.load.image('loadGameButton','./assets/images/buttons/loadGame_button.png');
-		this.load.image('creditsButton','./assets/images/buttons/credits_button.png');
-		this.load.audio('hoverSound', './assets/sounds/button_hover.mp3');
-		this.load.audio('buttonClickedSound','./assets/sounds/button_clicked.mp3');
-		this.load.audio('introMusic', './assets/sounds/introMusic.ogg');
 	}
 
 	this.create = function(){

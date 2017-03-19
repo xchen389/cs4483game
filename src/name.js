@@ -4,9 +4,6 @@ aotb_game.nameScreen = function(){
 	var pgame = this;
 
 	this.preload = function(){
-		this.load.image('nameScreen','./assets/images/backgrounds/name_screen.png');
-		this.load.image('backButton','./assets/images/buttons/back_button.png');
-		this.load.image('nextButton','./assets/images/buttons/next_button.png');
 	};
 
 	this.create = function(){

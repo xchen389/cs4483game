@@ -16,15 +16,6 @@ aotb_game.shop = function(){
 	var itemButtons = [];
 
 	this.preload = function(){
-		this.load.image('shopScreen','./assets/images/backgrounds/shop_screen.png');
-		this.load.image('nextButton','./assets/images/buttons/next_button.png');
-		this.load.image('exitButton','./assets/images/buttons/exit_button.png');
-		this.load.audio('shopMusic', './assets/sounds/shopMusic.mp3');
-
-		aotb_game.game.loadAsset('dog', 'dog-placeholder.png',1);
-		aotb_game.game.loadAsset('gun', 'gun.png',1);
-		aotb_game.game.loadAsset('ak47', 'ak-47.png',1);
-
 		// setup the item shelf
 		bounds = new Phaser.Rectangle(90,220, 510, 460);
 		this.load.spritesheet('itemButton', './assets/images/buttons/itemButton.GIF', bounds.width,ITEM_BUTTON_HEIGHT);

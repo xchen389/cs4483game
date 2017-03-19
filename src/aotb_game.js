@@ -44,7 +44,8 @@ aotb_game.game = function()
       }
 
       _pgame = new Phaser.Game(1280, 800, Phaser.CANVAS, options.id);
-      
+      _pgame.state.add('boot', new aotb_game.bootStage);
+      _pgame.state.add('preloader', new aotb_game.preloadStage);
       _pgame.state.add('level1', new aotb_game.lv1);
       _pgame.state.add('level2', new aotb_game.lv2);
       _pgame.state.add('menu', new aotb_game.menu);
@@ -54,7 +55,7 @@ aotb_game.game = function()
       _pgame.state.add('loadGame', new aotb_game.loadGame);
       _pgame.state.add('name', new aotb_game.nameScreen);
 
-      _pgame.state.start('menu');
+      _pgame.state.start('boot');
     };
   };
 

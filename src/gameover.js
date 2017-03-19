@@ -2,8 +2,6 @@ aotb_game.gameover = function(){
 	var pgame = this;
 
 	this.preload = function(){
-		this.load.image('gameoverBackground', './assets/images/backgrounds/gameover_screen.png');
-		this.load.image('mainmenuButton', './assets/images/buttons/mainMenu_button.png');
 	};
 
 	this.create = function(){

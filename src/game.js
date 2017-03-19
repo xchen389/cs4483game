@@ -50,23 +50,6 @@ aotb_game.levelbase = function(pgame){
     var game = aotb_game.game;
     var self = this;
 
-    //These are loaded to the cache so we can use them in the game
-    this.init=function() {
-        game.loadAsset('player', 'player.png', 1);
-        game.loadAsset('bubble', 'bubble.png', 1);
-        game.loadAsset('camel', 'single_camel.gif',1);
-        game.loadAsset('companion', 'dog-placeholder.png',1);
-        game.loadAsset('fullBubble', 'fullBubble.png',1);
-        game.loadAsset('pauseButton', 'buttons/pause_button.png',1);
-        game.loadAsset('background', 'backgrounds/gamebackground_screen.png',1);
-        game.loadAsset('pauseScreen', 'backgrounds/pause_screen.png',1);
-        game.loadAsset('mainMenuButton', 'buttons/mainMenu_button.png',1);
-        game.loadAsset('pop', 'bubble_pop.mp3',0);
-        game.loadAsset('camel_ouch', 'camel_ouch.mp3',0);
-        game.loadAsset('gameMusic', 'gameMusic.mp3',0);
-        game.loadAsset('bullet', 'bullet.GIF',1);
-    };
-
     // runs a single time when the game instance is created
     this.create=function(bulletEnable = false) {
 
@@ -203,7 +186,7 @@ aotb_game.levelbase = function(pgame){
         */
 
         //Enable P2 Physics
-        pgame.physics.startSystem(Phaser.Physics.P2JS);
+        //pgame.physics.startSystem(Phaser.Physics.P2JS);
 
         //  Turn on impact events for the world, without this we get no collision callbacks
         pgame.physics.p2.setImpactEvents(true);
@@ -307,11 +290,6 @@ aotb_game.levelbase = function(pgame){
             bullets.setAll('anchor.y', 0.5);
             bullets.setAll('outOfBoundsKill', true);
             bullets.setAll('checkWorldBounds', true);
-
-           /* bullets.forEach(function(bullet){
-                console.log(bullet);
-                bullet.bullets.body.collides(bubbleCollisionGroup, bulletHitBubble, this);
-            }, this);*/
         }
 
         //  Create a new custom sized bounds, within the world bounds
@@ -992,8 +970,9 @@ Bullet.prototype.resetTarget = function(x,y,tx,ty)
 {
     this.revive();
     this.reset(x,y);
+
+    // reset the lifespan after bullet is revived
     this.lifespan = this.lifetime;
-    console.log(this.lifespan);
     this.setMove(tx,ty);
 }
 Bullet.prototype.setMove = function(tx,ty)
