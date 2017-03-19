@@ -5,7 +5,6 @@
 var w = 1280;
 var h = 800;
 
-
 /* 
 Player Specific Data
 
@@ -13,6 +12,7 @@ Depending on what you need, feel free to add more fields to this object
 it will not affect saveData and loadData"
 */
 
+//initialized Object for playerData
 var playerData = { 
 	"name":"default", 
 	"musicvolume":0.2, 
@@ -25,19 +25,41 @@ var playerData = {
 function saveData(){
 	//Convert playerData to a JSON String 
 	var savedJSON = JSON.stringify(playerData);
-	//get the name of playerData object to access it later in localStorage
-	var keyName = playerData.name;
 	//save it in local storage, and set key to the keyName
-	localStorage.setItem(keyName, savedJSON);
+	localStorage.setItem(playerData.name, savedJSON);
 }
 
 function loadData(name){
 	//retrieve JSON given name at key
 	var loadedJSON = localStorage.getItem(name)
-	//parse the JSON and put the object in loadedData
-	var loadedData = JSON.parse(loadedJSON);
-	//set the playerData global var to this loadedData
-	playerData = loadedData;
+	//set the playerData to equal to the File
+	playerData = JSON.parse(loadedJSON);
+}
+
+function deleteData(name){
+	localStorage.removeItem(name);
+}
+
+function deleteAll(){
+	localStorage.clear();
+}
+
+// to be used in loadScreen to view all saved Data
+function returnAllData(){
+
+	// create an array that will hold all the savedData Names
+	var names;
+
+	// iterate through all files in localStorage and get their JSONs and names
+	// push the names to the array names
+	for (var i = 0; i < localStorage.length; i++){
+		var tempJSON = localStorage.getItem(localStorage.key(i));
+		tempObj = JSON.parse(tempJSON);
+		names.push(tempObj.name);
+	}
+
+	//return names
+	return names;
 }
 
 //options
@@ -50,5 +72,3 @@ var currentDay;
 var camelsLeft;
 var totalScore;
 var currCredits;
-
-///Weapon flags
