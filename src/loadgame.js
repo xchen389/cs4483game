@@ -8,7 +8,7 @@ var loadGame = {
 		this.load.image('loadGameBackground','./assets/images/backgrounds/loadGame_screen.png');
 		this.load.image('backButton', './assets/images/buttons/back_button.png');;
 		this.load.image('deleteAllButton', './assets/images/buttons/deleteAll_button.png');
-		this.load.image('blankButton', './assets/images/buttons/blank_button.png');
+		this.load.image('blankButton', './assets/images/buttons/blankLoad_button.png');
 		this.load.audio('introMusic', './assets/sounds/introMusic.ogg');
 	},
 
