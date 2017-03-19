@@ -378,29 +378,29 @@ aotb_game.levelbase = function(pgame){
             // simple if statement to choose if and which way the baddie moves  
             if (CamelsMover == 1) {
                 if(camelsGroup.getAt(i).x < 450)        
-                camelsGroup.getAt(i).body.velocity.x = 80;
+                camelsGroup.getAt(i).body.velocity.x = 50;
                 else        
-                    camelsGroup.getAt(i).body.velocity.x = -80;
+                    camelsGroup.getAt(i).body.velocity.x = -50;
                 
             }   
             else if(CamelsMover == 2) 
             {
                 if(camelsGroup.getAt(i).x > 850)        
-                camelsGroup.getAt(i).body.velocity.x = -80;
+                camelsGroup.getAt(i).body.velocity.x = -50;
                 else
-                    camelsGroup.getAt(i).body.velocity.x = 80;
+                    camelsGroup.getAt(i).body.velocity.x = 50;
             }   
             else if (CamelsMover == 3) {
                 if(camelsGroup.getAt(i).y < 350)
-                camelsGroup.getAt(i).body.velocity.y = 80;
+                camelsGroup.getAt(i).body.velocity.y = 50;
                 else
-                    camelsGroup.getAt(i).body.velocity.y = -80; 
+                    camelsGroup.getAt(i).body.velocity.y = -50; 
             }   
             else if (CamelsMover == 4) {
-                if(camelsGroup.getAt(i).y > 550)        
-                camelsGroup.getAt(i).body.velocity.y = -80;
+                if(camelsGroup.getAt(i).y > 500)        
+                camelsGroup.getAt(i).body.velocity.y = -50;
                 else
-                    camelsGroup.getAt(i).body.velocity.y = 80;
+                    camelsGroup.getAt(i).body.velocity.y = 50;
             }   
             else {      
                 camelsGroup.getAt(i).body.velocity.x = 0;       
@@ -427,7 +427,7 @@ aotb_game.levelbase = function(pgame){
             else
                 fullBubbleGroup.getAt(i).body.velocity.y = -90;
 
-            if(fullBubbleGroup.getAt(i).y > 820 || fullBubbleGroup.getAt(i).y < 0 || fullBubbleGroup.getAt(i).x > 1300 || fullBubbleGroup.getAt(i).x < 0){
+            if(fullBubbleGroup.getAt(i).y > 750 || fullBubbleGroup.getAt(i).y < 50 || fullBubbleGroup.getAt(i).x > 1000 || fullBubbleGroup.getAt(i).x < 50){
                 numFullBubbles--;
                 camelsRemained--;
                 fullBubbleGroup.remove(fullBubbleGroup.getAt(i));
