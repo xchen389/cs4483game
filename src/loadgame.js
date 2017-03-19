@@ -1,12 +1,12 @@
 var nameKeys;
+var saveFileButtons = [];
+var saveFileTexts = [];
 
 var loadGame = {
 
 	preload: function(){
 		this.load.image('loadGameBackground','./assets/images/backgrounds/loadGame_screen.png');
-		this.load.image('backButton', './assets/images/buttons/back_button.png');
-		this.load.image('loadButton', './assets/images/buttons/load_button.png');
-		this.load.image('deleteButton', './assets/images/buttons/delete_button.png');
+		this.load.image('backButton', './assets/images/buttons/back_button.png');;
 		this.load.image('deleteAllButton', './assets/images/buttons/deleteAll_button.png');
 		this.load.image('blankButton', './assets/images/buttons/blank_button.png');
 		this.load.audio('introMusic', './assets/sounds/introMusic.ogg');
@@ -15,9 +15,7 @@ var loadGame = {
 	create: function(){
 		this.add.tileSprite(0,0, 1280, 800, 'loadGameBackground');
 		this.add.button(50,690, 'backButton', this.goBack,this);
-		this.add.button(960,690, 'loadButton', this.loadTheGame,this);
-		this.add.button(355, 690, 'deleteAllButton', this.deleteAllfunction, this);
-		this.add.button(655, 690, 'deleteButton', this.deleteFunction, this);
+		this.add.button(960, 690,'deleteAllButton', this.deleteAll, this);
 
 		
 		//music settings
@@ -28,46 +26,65 @@ var loadGame = {
 		}
 
 		
-		//Get array of names in local Storage
+		this.generateSaveButtons();
+
+	},
+
+	generateSaveButtons: function(){
+		//collect all the names currently in localStorage
 		nameKeys = returnAllData();
 
-		//create sprites that can be clicked on, with text according to name centered on
+		//return null if nothing is in localStorage, nothing will be generated
+		if (nameKeys == null)
+			return;
+
+		//create sprites that can be clicked on, with text according to name centered on them
 		for(var i = 0; i < nameKeys.length; i++){
-			var tempDataButton = this.add.sprite(490, 330+i*50, 'blankButton');
-			tempDataButton.inputEnabled = true;
-			tempDataButton.height = 50;
-			var tempText = this.add.text(0,0, nameKeys[i]);
-			tempText.anchor.set(0.5);
-			tempText.x = Math.floor(tempDataButton.x + tempDataButton.width/2);
-			tempText.y = Math.floor(tempDataButton.y + tempDataButton.height/2);
+			saveFileButtons[i] = this.add.sprite(490, 330+i*50, 'blankButton', 
+
+			//anonymous function to loadSave Data with name as parameter if clicked
+			function(){
+				load(nameKeys[i]);
+			});
+
+			saveFileButtons[i].inputEnabled = true;
+			saveFileButtons[i].height = 50;
+			
+			//create text that has the name of saveFile
+			saveFileTexts[i] = this.add.text(0,0, nameKeys[i]);
+			saveFileTexts[i].anchor.set(0.5);
+
+			//center text on the sprite
+			saveFileTexts[i].x = Math.floor(saveFileButtons[i].x + saveFileButtons[i].width/2);
+			saveFileTexts[i].y = Math.floor(saveFileButtons[i].y + saveFileButtons[i].height/2);
 		}
 
-		
-		//list the names in the screen and let the user select a name
-		//and then load that saveFile corresponding to that name
 	},
 
 	goBack: function(){
 		main.state.start('menu');
 	},
 
-	loadTheGame: function(){
-		main.state.start('shop');
-	},
-
 	shutdown: function(){
 	},
 
-	//TO-DO Show user feedback and verification
-	deleteAllfunction: function(){
-		deleteAll();
-	},
+	//TO-DO display feedback and verification
+	deleteAll: function(){
 
-	//take the name the user currently has selected, 
-	// and use that as key to delete function
-	deleteFunction: function(){
-		// TO DO
+		//delete all localStorage Data
+		deleteAll();
+
+		//delete front end buttons
+		for(var i = 0; i < saveFileButtons.length; i++){
+			saveFileButtons[i].destroy();
+			saveFileTexts[i].destroy();
+		}
+		
 	}
 
+}
 
+function load(name){
+	loadData(name);
+	main.state.start('shop');
 }

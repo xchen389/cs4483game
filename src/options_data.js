@@ -30,6 +30,8 @@ var playerData = {
 	"currCredits": 0.
 };
 
+// number of saves
+
 function saveData(){
 	//Convert playerData to a JSON String 
 	var savedJSON = JSON.stringify(playerData);
@@ -55,6 +57,10 @@ function deleteAll(){
 // to be used in loadScreen to view all saved Data
 function returnAllData(){
 
+	if (localStorage.length = 0)
+		return null;
+
+	
 	// create an array that will hold all the savedData Names
 	var names = [];
 
