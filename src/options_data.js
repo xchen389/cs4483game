@@ -21,7 +21,7 @@ var playerData = {
 	"name":"default", 
 
 	//options
-	"musicVolume":0.2, 
+	"musicVolume": 0.2, 
 	"fxVolume": 0.2,
 
 	//gameState Info
@@ -41,9 +41,9 @@ function saveData(){
 
 function loadData(name){
 	//retrieve JSON given name at key
-	var loadedJSON = localStorage.getItem(name)
+	var loadedJSONString = localStorage.getItem(name);
 	//set the playerData to equal to the File
-	playerData = JSON.parse(loadedJSON);
+	playerData = JSON.parse(loadedJSONString);
 }
 
 function deleteData(name){
@@ -60,7 +60,7 @@ function returnAllData(){
 	if (localStorage.length = 0)
 		return null;
 
-	
+
 	// create an array that will hold all the savedData Names
 	var names = [];
 

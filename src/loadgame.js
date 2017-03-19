@@ -40,15 +40,16 @@ var loadGame = {
 
 		//create sprites that can be clicked on, with text according to name centered on them
 		for(var i = 0; i < nameKeys.length; i++){
-			saveFileButtons[i] = this.add.sprite(490, 330+i*50, 'blankButton', 
 
-			//anonymous function to loadSave Data with name as parameter if clicked
-			function(){
-				load(nameKeys[i]);
-			});
+			saveFileButtons[i] = this.add.sprite(490, 330+i*50, 'blankButton');
+			saveFileButtons[i].height = 50;
 
 			saveFileButtons[i].inputEnabled = true;
-			saveFileButtons[i].height = 50;
+			buttonName = nameKeys[i];
+			saveFileButtons[i].events.onInputDown.add(
+				function(){
+					load(buttonName);
+				});
 			
 			//create text that has the name of saveFile
 			saveFileTexts[i] = this.add.text(0,0, nameKeys[i]);
@@ -85,6 +86,7 @@ var loadGame = {
 }
 
 function load(name){
+	console.log(name);
 	loadData(name);
 	main.state.start('shop');
 }
