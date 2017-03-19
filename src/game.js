@@ -339,7 +339,7 @@ aotb_game.levelbase = function(pgame){
         }
 
         //winning condition - go to shop
-        if(time == 0 || camelsRemained<2)
+        if(time == 0)
         {
             gameOver();
         }
@@ -351,7 +351,7 @@ aotb_game.levelbase = function(pgame){
         */
 
         //losing condition
-        if(numCamels == 0)
+        if(camelsRemained < 2)
         	pgame.state.start('gameover');
     },
 
