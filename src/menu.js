@@ -39,9 +39,5 @@ var menu = {
 	loadCredits: function(){
 		menu.state.start('credits');
 	},
-
-	//called when this state is exited e.g., you switch to another state
-	shutdown: function(){
-	}
-
+	
 };
