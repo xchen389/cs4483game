@@ -42,6 +42,7 @@ aotb_game.shop = function(){
 		for(var i = 0; i < itemInfo.length; ++i)
 		{
 			var itemButton = pgame.add.button(bounds.x, bounds.y + ITEM_BUTTON_HEIGHT* i, 'itemButton', buyItem, this, 1, 0, 1);
+			itemButton.itemId = i;
 			var itemSprite = pgame.add.image(0,0,itemInfo[i].key);
 			var itemText = pgame.add.text(bounds.width/2, ITEM_BUTTON_HEIGHT/2-10, itemInfo[i].name + ": $" + itemInfo[i].price);
 			
@@ -80,10 +81,23 @@ aotb_game.shop = function(){
 		pgame.state.start('menu');
 	}
 
-	function buyItem(item)
+	function buyItem(itemButton)
 	{
+		// minus user credit by price
+		
+		// update playerdata with the bought item
 
+		// destroy button and refresh list
+		itemButtons.splice(itemButton.itemId,1);
+		itemInfo.splice(itemButton.itemId,1);
+		itemButton.destroy(true);
+
+		for (var i = 0; i<itemInfo.length; ++i)
+		{
+			itemButtons[i].y = bounds.y + i * ITEM_BUTTON_HEIGHT;
+		}
 	}
+	
 	//called when this state is switched (state shutdown)
 	this.shutdown = function(){
 		music.stop();
