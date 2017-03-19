@@ -9,8 +9,9 @@ aotb_game.shop = function(){
 	var bounds;
 
 	var itemInfo = [
-		{key: 'dog', name: 'superdog', type: 'companion', price: 10},
-		{key: 'gun', name: 'handgun', type: 'weapon', price: 10},
+		{key: 'dog', name: 'Superdog', type: 'companion', price: 10, locked: false},
+		{key: 'gun', name: 'Handgun', type: 'weapon', price: 10, locked: false},
+		{key: 'ak47', name: 'AK-47', type: 'weapon', price: 999, locked: true}
 	];
 	var itemButtons = [];
 
@@ -22,6 +23,7 @@ aotb_game.shop = function(){
 
 		aotb_game.game.loadAsset('dog', 'dog-placeholder.png',1);
 		aotb_game.game.loadAsset('gun', 'gun.png',1);
+		aotb_game.game.loadAsset('ak47', 'ak-47.png',1);
 
 		// setup the item shelf
 		bounds = new Phaser.Rectangle(90,220, 510, 460);
@@ -45,6 +47,12 @@ aotb_game.shop = function(){
 			
 			itemButton.addChild(itemSprite);
 			itemButton.addChild(itemText);
+
+			if (itemInfo[i].locked)
+			{
+				itemButton.inputEnabled = false;
+				itemButton.tint = 0x555555;
+			}
 			//itemButton.itemText.alignTo(itemButton.itemSprite, Phaser.RIGHT_CENTER, 16);
 			itemButtons.push(itemButton);
 		}

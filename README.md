@@ -34,3 +34,9 @@ Note: you can edit freely the source files, and see the changes when you refresh
 		https://pixabay.com/en/desert-sunset-camel-sand-695079/
 	-armourHouse - Ciker-Free-Vector-Images 
 		https://pixabay.com/en/building-map-blacksmith-game-48632/
+	-ak47
+		https://pixabay.com/en/ak-47-weapons-automatic-firearms-1986226/
+	-handgun
+		https://pixabay.com/en/gun-weapon-pistol-handgun-army-161223/
+	-superdog
+		https://pixabay.com/en/dog-drawing-sketch-breed-white-163658/
