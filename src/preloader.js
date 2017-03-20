@@ -1,14 +1,15 @@
-aotb_game.preloadStage = function()
-{
-  var game = aotb_game.game;
+//continuation of the booting screen
 
+aotb_game.preloadStage = function(){
+
+  var game = aotb_game.game;
   var loadPercent = 0;
   var percentText;
   var preloadBar;
 
-  this.preload = function()
-  {
-    //add progress bar
+  this.preload = function(){
+
+    //add loading bar
     preloadBar = this.add.graphics(this.world.centerX - 60, this.world.centerY+100);
     preloadBar.lineStyle(10, 0x0, 1);
     preloadBar.moveTo(0, 0);
@@ -16,12 +17,12 @@ aotb_game.preloadStage = function()
 
     preloadBar.scale.x = 0;
 
-    // Add text for progress indication
+    // Add the progress bar text for progress indication
     this.add.text(this.world.centerX - 60, this.world.centerY+70, 'LOADING...', {font: '18pt Arial', fill: "#000000", stroke: "#ffffff"});
     percentText = this.add.text(this.world.centerX + 83, this.world.centerY + 90, loadPercent + '%', {font:'14pt Arial'});
 
     //------------ load all the assets
-    //for menu
+    //for main menu
     game.loadAsset('menuBackground','backgrounds/mainMenu_screen.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('newGameButton','buttons/newGame_button.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('loadGameButton','buttons/loadGame_button.png', aotb_game.AssetType.IMAGE);
@@ -72,15 +73,17 @@ aotb_game.preloadStage = function()
     game.loadAsset('nameScreen','backgrounds/name_screen.png', aotb_game.AssetType.IMAGE);
   }
 
-  this.create = function()
-  {
+//starts the main menu 
+  this.create = function(){
+
     this.time.events.add(Phaser.Timer.SECOND/2, function(){
       this.state.start('menu');
     }, this);
   }
 
-  this.loadUpdate = function()
-  {
+  //adds the bar and % of when the game will start
+  this.loadUpdate = function(){
+
     loadPercent = this.load.progress;
     percentText.setText(loadPercent + '%');
     preloadBar.scale.x = loadPercent * 0.01;

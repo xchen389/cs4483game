@@ -1,34 +1,37 @@
-aotb_game.bootStage = function()
-{
-  var game = aotb_game.game;
-  var pgame = this;
+//loading stage of the game 
 
-  this.init = function()
-  {
+//boot stage of the game
+aotb_game.bootStage = function(){
+
+  //var game = aotb_game.game;
+  var game = this;
+
+  this.init = function(){
+
     //setup scale
 		this.scale.windowConstraints.bottom = "visual";
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-		// put the canvas at centre
+		// set the canvas at centre
 		this.scale.pageAlignHorizontally = true;
 		this.scale.pageAlignVertically = true;
 
-    this.stage.backgroundColor = '#ffffff';
+    //set background colour of loading screen
+    this.stage.backgroundColor = '#222222';
 
     //Enable P2 Physics
-    pgame.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.startSystem(Phaser.Physics.P2JS);
   }
 
-  this.preload = function()
-  {
+  this.preload = function(){
     if (aotb_game.initialized)
     {
       // load assets for loading screen
     }
   }
 
-  this.create = function()
-  {
+  //starts the preloader file
+  this.create = function(){
     this.state.start('preloader');
   }
 }
