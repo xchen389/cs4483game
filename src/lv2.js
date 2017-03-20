@@ -12,7 +12,8 @@ aotb_game.lv2 = function()
   {
     levelbase.create(true);
 
-    displayText("Second Night", 1, function(){
+    displayText("Second Night", 1, 
+      function(){
         pgame.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
         notificationText.destroy();
     });

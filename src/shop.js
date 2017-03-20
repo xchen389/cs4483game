@@ -1,7 +1,7 @@
-var music;
+var shopMusic;
 
 aotb_game.shop = function(){
-  var pgame = this;
+  	var pgame = this;
 
 	// constants
 	var ITEM_BUTTON_HEIGHT = 100;
@@ -39,7 +39,7 @@ aotb_game.shop = function(){
 		// item shelf rectangle
 		var graphics = pgame.add.graphics(bounds.x, bounds.y);
 		graphics.lineStyle(4, 0xff0000, 1);
-    graphics.drawRect(0, 0, bounds.width, bounds.height);
+   	 	graphics.drawRect(0, 0, bounds.width, bounds.height);
 
 		descriptionText = pgame.add.text(650,350,"", descriptionStyle);
 
@@ -67,34 +67,31 @@ aotb_game.shop = function(){
 			itemButtons.push(itemButton);
 		}
 
-		//make buttons smaller later 
 		var nextButton = this.add.button(670,670, 'nextButton', loadGame,this);
-		//nextButton.width = 200;
-		//nextButton.height = 100;
-		//
+
 		var exitButton = this.add.button(970,670, 'exitButton', loadMenu,this);
-		//exitButton.width = 100;
-		//exitButton.height = 80;
 		
-		music = this.add.audio('shopMusic');
-		music.volume = musicVolume;
-		music.loop = true;
-		music.play();
+		shopMusic = this.add.audio('shopMusic');
+		shopMusic.volume = playerData.musicVolume;
+		shopMusic.loop = true;
+		shopMusic.play();
 	}
 
 	function loadGame(){
+    	saveData();
 		pgame.state.start('level2');
 	}
 
 	function loadMenu(){
+		saveData();
 		pgame.state.start('menu');
 	}
 
-	function buyItem(itemButton)
-	{
-		// if the item is locked, don't proceed
-		if (itemInfo[itemButton.itemId].locked)	{	return;	}
 
+	function buyItem(itemButton){
+		// if the item is locked, don't proceed
+		if (itemInfo[itemButton.itemId].locked)
+      return;
 		// minus user credit by price
 		
 		// update playerdata with the bought item
@@ -104,24 +101,24 @@ aotb_game.shop = function(){
 		itemInfo.splice(itemButton.itemId,1);
 		itemButton.destroy(true);
 
-		for (var i = 0; i<itemInfo.length; ++i)
-		{
+		for (var i = 0; i<itemInfo.length; ++i){
 			itemButtons[i].y = bounds.y + i * ITEM_BUTTON_HEIGHT;
 		}
 	}
 	
-	function displayDescription(item)
-	{
+
+	function displayDescription(item){
 		descriptionText.setText(itemInfo[item.itemId].description);
 		descriptionText.y = bounds.y + item.itemId * ITEM_BUTTON_HEIGHT;
 	}
 
-	function removeDescription(item)
-	{
+	function removeDescription(item){
 		descriptionText.setText("");
 	}
 	//called when this state is switched (state shutdown)
+
 	this.shutdown = function(){
-		music.stop();
+		shopMusic.stop();
 	}
+	
 }

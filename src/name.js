@@ -13,7 +13,7 @@ aotb_game.nameScreen = function(){
 
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
-			introMusic.volume = 0.5;
+			introMusic.volume = playerData.musicVolume;
 			introMusic.play();
 		}
 
@@ -32,11 +32,13 @@ aotb_game.nameScreen = function(){
 	}
 
 	function continueToGame(){
+		
 		//If nothing is written in the box, don't let user go to game
 		if(input.value == "")
 			return;
-		//assign global playerName to this value
-		playerName = input.value;
+		//assign global playerData object name to this value
+		playerData.name = input.value;
+
 		//only shut down music if you're going to start game, 
 		//I did not put this in shutdown function cause 
 		//if the user went back via back button, music would restart

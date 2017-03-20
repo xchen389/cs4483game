@@ -85,12 +85,17 @@ aotb_game.levelbase = function(pgame){
                 mainMenuButton.height = 60;
                 mainMenuButton.width = 200;
 
-                choiceLabel = pgame.add.text(w/2,h-150, 'Click Outside the Menu To Continue', { font:
-                    '30px Arial', fill: '#000'});
+
+                choiceLabel = pgame.add.text(w/2,h-150, 'Click Outside the Menu To Continue', 
+                    { font:
+                    '30px Arial', 
+                    fill: '#000'}
+                );
+
                 choiceLabel.anchor.setTo(0.5,0.5);
 
-                musicText = pgame.add.text(w/2-420, h/2 + 150, "Music Volume: " + musicVolume*100);
-                fxText = pgame.add.text(w/2-420, h/2 + 180, "FX Volume: " + fxVolume*100);
+                musicText = pgame.add.text(w/2-420, h/2 + 150, "Music Volume: " + playerData.musicVolume*100);
+                fxText = pgame.add.text(w/2-420, h/2 + 180, "FX Volume: " + playerData.fxVolume*100);
             }
         );
 
@@ -127,15 +132,15 @@ aotb_game.levelbase = function(pgame){
                         // range is 170-1107
                         //transform it to 0-1, set musicVolume
                         clickx = event.x - 170;
-                        musicVolume = (clickx/937).toFixed(2);
-                        musicText.setText("Music Volume: " + (musicVolume*100).toFixed(0));
+                        playerData.musicVolume = (clickx/937).toFixed(2);
+                        musicText.setText("Music Volume: " + (playerData.musicVolume*100).toFixed(0));
                    }
                    //fx section
                     if(event.y < 507 && event.y > 382){
                         //same as music section
                         clickx = event.x - 170;
-                        fxVolume = (clickx/937).toFixed(2);
-                        fxText.setText("FX Volume: " + (fxVolume*100).toFixed(0));
+                        playerData.fxVolume = (clickx/937).toFixed(2);
+                        fxText.setText("FX Volume: " + (playerData.fxVolume*100).toFixed(0));
                    }   
 
                 }
@@ -148,10 +153,10 @@ aotb_game.levelbase = function(pgame){
                     fxText.destroy();
 
                     //adjust volumes accordingly
-                    music.volume = musicVolume;
+                    music.volume = playerData.musicVolume;
 
-                    popSound.volume = fxVolume;
-                    ouchSound.volume = fxVolume;
+                    popSound.volume = playerData.fxVolume;
+                    ouchSound.volume = playerData.fxVolume;
 
                     // Unpause the game
                     pgame.game.paused = false;
@@ -163,12 +168,13 @@ aotb_game.levelbase = function(pgame){
         //FX
         popSound = pgame.add.audio('pop');
         ouchSound = pgame.add.audio('camel_ouch');
-        popSound.volume = fxVolume;
-        ouchSound.volume = fxVolume;
+        popSound.volume = playerData.fxVolume;
+        ouchSound.volume = playerData.fxVolume;
 
         //music 
         music = pgame.add.audio('gameMusic');
-        music.volume = musicVolume;
+        music.volume = playerData.musicVolume;
+
         music.loop = true;
         music.play();
 
