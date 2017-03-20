@@ -372,7 +372,7 @@ aotb_game.levelbase = function(pgame){
         */
 
         //losing condition
-        if(numCamels == 0)
+        if(numCamels <= 0)
         	pgame.state.start('gameover');
 
         updateCounterText();
@@ -726,7 +726,6 @@ aotb_game.levelbase = function(pgame){
 
     this.bulletHitBubble = function(bulletBody, bubbleBody)
     {
-        console.log("hit!");
         bumpBubble(bulletBody, bubbleBody);
         bulletBody.sprite.kill();
     }
@@ -744,7 +743,7 @@ aotb_game.levelbase = function(pgame){
         camelBody.sprite.kill();
         camelBody.sprite.pendingDestroy = true;
         camelsGroup.remove(camelBody);
-        numCamels--;
+        numCamels = camelsGroup.countLiving();
     }
     
     function camelShotNotice()
@@ -855,9 +854,6 @@ function findNearestInGroup(x,y, objGroup)
 }
 
 
-
-	
-
 //------------------------------- Bubble class
 Bubble = function(game, x, y, target, speed)
 {
@@ -884,7 +880,7 @@ Bubble.prototype = Object.create(Phaser.Sprite.prototype);
 Bubble.prototype.constructor = Bubble;
 Bubble.prototype.update = function()
 {
-    if (!this.target.alive)
+    if (!isTargetValid(this.target))
     {
         console.log("target camel missing! Looking for next target...");
         this.target = findNearestInGroup(this.body.x, this.body.y, camelsGroup);
