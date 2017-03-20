@@ -1,4 +1,6 @@
+//gameover function
 aotb_game.gameover = function(){
+	
 	var pgame = this;
 
 	this.preload = function(){
