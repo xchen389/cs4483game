@@ -45,6 +45,9 @@ aotb_game.preloadStage = function(){
     game.loadAsset('creditsScreen','backgrounds/credits_screen.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('introMusic', 'introMusic.ogg');
 
+    //for victory
+    game.loadAsset('victory', 'backgrounds/victory.png', aotb_game.AssetType.IMAGE);
+
     // for level
     game.loadAsset('player', 'player.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('bubble', 'bubble.png', aotb_game.AssetType.IMAGE);

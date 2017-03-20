@@ -66,6 +66,7 @@ aotb_game.game = function(){
       _pgame.state.add('level10', new aotb_game.lv10);
       _pgame.state.add('menu', new aotb_game.menu);
       _pgame.state.add('credits', new aotb_game.credits);
+      _pgame.state.add('victory', new aotb_game.victory);
       _pgame.state.add('gameover', new aotb_game.gameover);
       _pgame.state.add('shop', new aotb_game.shop);
       _pgame.state.add('loadGame', new aotb_game.loadGame);

@@ -28,6 +28,7 @@ var bulletsCollisionGroup;
 
 var customBounds;
 var bounds;
+var count = 1;
 
 //game object definiton
 aotb_game.levelbase = function(pgame){
@@ -514,7 +515,13 @@ aotb_game.levelbase = function(pgame){
         self.displayText("You Win!", 2, function(){
             pgame.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
             notificationText.destroy();
-            pgame.state.start('shop');
+            if (count == 4){
+                pgame.state.start('victory');
+            }
+            else{
+                count++;
+                pgame.state.start('shop');
+            }
         });
     }
     function camelCaughtNotice()
