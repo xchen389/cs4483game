@@ -34,6 +34,7 @@ aotb_game.levelbase = function(pgame){
     
     var popSound;
     var ouchSound;
+    var gunshotSound;
 
     var nextFire = 0;
 
@@ -165,6 +166,7 @@ aotb_game.levelbase = function(pgame){
         popSound = pgame.add.audio('pop');
         ouchSound = pgame.add.audio('camel_ouch');
         barkSound = pgame.add.audio('dog-bark');
+        gunshotSound = pgame.add.audio('gunshot');
         
         //music 
         music = pgame.add.audio('gameMusic');
@@ -388,7 +390,6 @@ aotb_game.levelbase = function(pgame){
 
     function fire()
     {
-
         if (pgame.time.now > nextFire && bullets.countDead() > 0)
         {
             var fromX = player.x;
@@ -398,6 +399,8 @@ aotb_game.levelbase = function(pgame){
             var bullet = bullets.getFirstDead();
 
             bullet.resetTarget(fromX, fromY,pgame.input.x,pgame.input.y);
+
+            gunshotSound.play();
         }
     }
     //called when this state is exited e.g., you switch to another state
@@ -426,6 +429,7 @@ aotb_game.levelbase = function(pgame){
         popSound.volume = playerData.fxVolume;
         ouchSound.volume = playerData.fxVolume;
         barkSound.volume = playerData.fxVolume;
+        gunshotSound.volume = playerData.fxVolume;
 
         music.volume = playerData.musicVolume;
     }
