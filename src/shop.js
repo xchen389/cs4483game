@@ -5,6 +5,7 @@ aotb_game.shop = function(){
 
 	// constants
 	var ITEM_BUTTON_HEIGHT = 100;
+	var x = 2;
 
 	var bounds;
 	var descriptionText;
@@ -74,7 +75,8 @@ aotb_game.shop = function(){
 	}
 
 	function loadGame(){
-		pgame.state.start('level2');
+		pgame.state.start('level' + x);
+		x++;
 	}
 
 	function loadMenu(){

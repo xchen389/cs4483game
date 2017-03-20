@@ -57,6 +57,13 @@ aotb_game.game = function(){
       _pgame.state.add('level1', new aotb_game.lv1);
       _pgame.state.add('level2', new aotb_game.lv2);
       _pgame.state.add('level3', new aotb_game.lv3);
+      _pgame.state.add('level4', new aotb_game.lv4);
+      _pgame.state.add('level5', new aotb_game.lv5);
+      _pgame.state.add('level6', new aotb_game.lv6);
+      _pgame.state.add('level7', new aotb_game.lv7);
+      _pgame.state.add('level8', new aotb_game.lv8);
+      _pgame.state.add('level9', new aotb_game.lv9);
+      _pgame.state.add('level10', new aotb_game.lv10);
       _pgame.state.add('menu', new aotb_game.menu);
       _pgame.state.add('credits', new aotb_game.credits);
       _pgame.state.add('gameover', new aotb_game.gameover);
