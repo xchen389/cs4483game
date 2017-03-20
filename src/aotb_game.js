@@ -43,6 +43,7 @@ aotb_game.game = function(){
           return;
       }
 
+      //load in the necessary javascript files into the game
       _pgame = new Phaser.Game(1280, 800, Phaser.CANVAS, options.id);
       _pgame.state.add('boot', new aotb_game.bootStage);
       _pgame.state.add('preloader', new aotb_game.preloadStage);
@@ -55,10 +56,11 @@ aotb_game.game = function(){
       _pgame.state.add('loadGame', new aotb_game.loadGame);
       _pgame.state.add('name', new aotb_game.nameScreen);
 
+      //start the game with the javascript file boot
       _pgame.state.start('boot');
     };
   };
 
   return game;
-  
+
 }();
