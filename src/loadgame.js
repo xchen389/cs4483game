@@ -3,27 +3,17 @@ var nameKeys;
 var saveFileButtons = [];
 var saveFileTexts = [];
 
-
-
 aotb_game.loadGame = function(){
 	
   var pgame = this;
 
 	this.preload = function(){
-    this.load.image('loadGameBackground','./assets/images/backgrounds/loadGame_screen.png');
-		this.load.image('backButton', './assets/images/buttons/back_button.png');;
-		this.load.image('deleteAllButton', './assets/images/buttons/deleteAll_button.png');
-		this.load.image('blankButton', './assets/images/buttons/blankLoad_button.png');
-		this.load.audio('introMusic', './assets/sounds/introMusic.ogg');
 	  }
 
 	this.create = function(){
 		pgame.add.tileSprite(0,0, 1280, 800, 'loadGameBackground');
-		pgame.add.button(50,690, 'backButton', goBack,pgame);
-		pgame.add.button(960,690, 'deleteAllButton', loadTheGame,pgame);
-    
-
-
+		pgame.add.button(50,690, 'backButton', goBack, pgame);
+		pgame.add.button(960,690, 'deleteAllButton', deleteAllPressed, pgame);
 		
 		//music settings
 		if(!introMusic.isPlaying){
@@ -31,14 +21,13 @@ aotb_game.loadGame = function(){
 			introMusic.volume = playerData.musicVolume;
 			introMusic.play();
 		  }
-
-
 		
-		this.generateSaveButtons();
+		generateSaveButtons();
 
 	}
 
-	this.generateSaveButtons = function(){
+	function generateSaveButtons(){
+
 		//collect all the names currently in localStorage
 		nameKeys = returnAllData();
 
@@ -54,13 +43,14 @@ aotb_game.loadGame = function(){
 
 			saveFileButtons[i].inputEnabled = true;
 			buttonName = nameKeys[i];
+
 			saveFileButtons[i].events.onInputDown.add(
 				function(){
 					load(buttonName);
-				});
+			});
 			
 			//create text that has the name of saveFile
-			saveFileTexts[i] = this.add.text(0,0, nameKeys[i]);
+			saveFileTexts[i] = pgame.add.text(0,0, nameKeys[i]);
 			saveFileTexts[i].anchor.set(0.5);
 
 			//center text on the sprite
@@ -70,30 +60,29 @@ aotb_game.loadGame = function(){
 
 	}
 
-	this.goback = function(){
+	function goBack(){
 		pgame.state.start('menu');
 	}
 
 
 	//TO-DO display feedback and verification
-  this.deleteAll = function(){
-
+	function deleteAllPressed(){
 		//delete all localStorage Data
 		deleteAll();
-
 		//delete front end buttons
 		for(var i = 0; i < saveFileButtons.length; i++){
 			saveFileButtons[i].destroy();
 			saveFileTexts[i].destroy();
 		}
-		
-  }
+  	}
 
-}
+  	function load(name){
+		loadData(name);
+		introMusic.stop();
+		pgame.state.start('shop');
+	}
 
-function load(name){
-	loadData(name);
-	introMusic.stop();
-	pgame.state.start('shop');
-}
+};
+
+
 

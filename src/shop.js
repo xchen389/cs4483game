@@ -1,7 +1,7 @@
 var shopMusic;
 
 aotb_game.shop = function(){
-  var pgame = this;
+  	var pgame = this;
 
 	// constants
 	var ITEM_BUTTON_HEIGHT = 100;
@@ -32,7 +32,7 @@ aotb_game.shop = function(){
 		// item shelf rectangle
 		var graphics = pgame.add.graphics(bounds.x, bounds.y);
 		graphics.lineStyle(4, 0xff0000, 1);
-    graphics.drawRect(0, 0, bounds.width, bounds.height);
+   	 	graphics.drawRect(0, 0, bounds.width, bounds.height);
 
 		// setup goods
 		for(var i = 0; i < itemInfo.length; ++i)
@@ -58,14 +58,9 @@ aotb_game.shop = function(){
 			itemButtons.push(itemButton);
 		}
 
-		//make buttons smaller later 
 		var nextButton = this.add.button(670,670, 'nextButton', loadGame,this);
-		//nextButton.width = 200;
-		//nextButton.height = 100;
-		//
+
 		var exitButton = this.add.button(970,670, 'exitButton', loadMenu,this);
-		//exitButton.width = 100;
-		//exitButton.height = 80;
 		
 		shopMusic = this.add.audio('shopMusic');
 		shopMusic.volume = playerData.musicVolume;
@@ -74,11 +69,12 @@ aotb_game.shop = function(){
 	}
 
 	function loadGame(){
-    saveData();
+    	saveData();
 		pgame.state.start('level2');
 	}
 
 	function loadMenu(){
+		saveData();
 		pgame.state.start('menu');
 	}
 

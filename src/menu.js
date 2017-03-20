@@ -27,14 +27,14 @@ aotb_game.menu = function(){
 		pgame.state.start('name');
 	}
 
-	loadCredits: function(){
+	function loadCredits(){
 		pgame.state.start('credits');
-	},
+	}
 	
 
 	function loadGame(){
 		pgame.state.start('loadGame');
-	},
+	}
 
 	function loadCredits(){
 		pgame.state.start('credits');
