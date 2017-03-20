@@ -1,17 +1,15 @@
 var input;
 
-var nameScreen = {
+aotb_game.nameScreen = function(){
+	var pgame = this;
 
-	preload: function(){
-		this.load.image('nameScreen','./assets/images/backgrounds/name_screen.png');
-		this.load.image('backButton','./assets/images/buttons/back_button.png');
-		this.load.image('nextButton','./assets/images/buttons/next_button.png');
-	},
+	this.preload = function(){
+	};
 
-	create: function(){
+	this.create = function(){
 		this.add.tileSprite(0,0, 1280, 800, 'nameScreen');
-		this.add.button(200,500, 'backButton', this.goBackToMenu,this);
-		this.add.button(800,500, 'nextButton', this.continueToGame, this);
+		this.add.button(200,500, 'backButton', goBackToMenu,this);
+		this.add.button(800,500, 'nextButton', continueToGame, this);
 
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
@@ -19,7 +17,7 @@ var nameScreen = {
 			introMusic.play();
 		}
 
-		game.game.add.plugin(PhaserInput.Plugin);
+		pgame.add.plugin(PhaserInput.Plugin);
 		input = this.add.inputField(360,335, {
 			font: '78px Arial',
 			width: 560,
@@ -27,15 +25,13 @@ var nameScreen = {
 			borderColor: '#000',
 			max: 14
 		});
-	},
+	}
 
+	function goBackToMenu(){
+		pgame.state.start('menu');
+	}
 
-
-	goBackToMenu: function(){
-		main.state.start('menu');
-	},
-
-	continueToGame: function(){
+	function continueToGame(){
 		//If nothing is written in the box, don't let user go to game
 		if(input.value == "")
 			return;
@@ -45,7 +41,7 @@ var nameScreen = {
 		//I did not put this in shutdown function cause 
 		//if the user went back via back button, music would restart
 		introMusic.stop();
-		main.state.start('game');
+		pgame.state.start('level1');
 	}
 
-}
+};
