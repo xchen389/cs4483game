@@ -1,5 +1,6 @@
 var music;
 
+//shop function
 aotb_game.shop = function(){
   var pgame = this;
 
@@ -75,9 +76,6 @@ aotb_game.shop = function(){
 	}
 
 	function loadGame(){
-		if (x == 10){
-			pgame.state.start('victory');
-		}
 		pgame.state.start('level' + x);
 		x++;
 	}
