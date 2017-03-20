@@ -267,7 +267,7 @@ aotb_game.levelbase = function(pgame){
         player.body.collides(fullBubbleCollisionGroup, self.bumpFullBubble, this);
 
         // setup companion
-        companion = new Companion(pgame, this, 200, 600, 60);
+        companion = new Companion(pgame, this, 200, 600, speed=120);
         pgame.add.existing(companion);
 
         //bullet group

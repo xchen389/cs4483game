@@ -7,11 +7,16 @@ aotb_game.shop = function(){
 	var ITEM_BUTTON_HEIGHT = 100;
 
 	var bounds;
+	var descriptionText;
+	var descriptionWindow;
 
 	var itemInfo = [
-		{key: 'dog', name: 'Superdog', type: 'companion', price: 10, locked: false},
-		{key: 'gun', name: 'Handgun', type: 'weapon', price: 10, locked: false},
-		{key: 'ak47', name: 'AK-47', type: 'weapon', price: 999, locked: true}
+		{key: 'dog', name: 'Superdog', type: 'companion', price: 10, locked: false, 
+			description:"They can not only destroy bubbles with camels inside, but also empty bubbles!"},
+		{key: 'gun', name: 'Handgun', type: 'weapon', price: 10, locked: false,
+			description: "You can shoot 5 shots maximum at a time. Be careful, you can accidentally shoot your camels with a handgun!"},
+		{key: 'ak47', name: 'AK-47', type: 'weapon', price: 999, locked: true,
+			description: "Powerful :) Not only you can have 10 shots at a time, but also no need to worry about hitting your camels!"}
 	];
 	var itemButtons = [];
 
@@ -34,6 +39,10 @@ aotb_game.shop = function(){
 		{
 			var itemButton = pgame.add.button(bounds.x, bounds.y + ITEM_BUTTON_HEIGHT* i, 'itemButton', buyItem, this, 1, 0, 1);
 			itemButton.itemId = i;
+
+			itemButton.onInputOver.add(displayDescription, this);
+			itemButton.onInputOut.add(removeDescription, this);
+
 			var itemSprite = pgame.add.image(0,0,itemInfo[i].key);
 			var itemText = pgame.add.text(bounds.width/2, ITEM_BUTTON_HEIGHT/2-10, itemInfo[i].name + ": $" + itemInfo[i].price);
 			
@@ -89,6 +98,15 @@ aotb_game.shop = function(){
 		}
 	}
 	
+	function displayDescription(item)
+	{
+	//	descriptionText = pgame.add.text(0,0,itemInfo[item.itemId].description);
+	}
+
+	function removeDescription(item)
+	{
+		//pgame.add.text(0,0,itemInfo[item.itemId].description);
+	}
 	//called when this state is switched (state shutdown)
 	this.shutdown = function(){
 		music.stop();
