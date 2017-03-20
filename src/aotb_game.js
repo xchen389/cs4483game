@@ -56,6 +56,7 @@ aotb_game.game = function(){
       _pgame.state.add('preloader', new aotb_game.preloadStage);
       _pgame.state.add('level1', new aotb_game.lv1);
       _pgame.state.add('level2', new aotb_game.lv2);
+      _pgame.state.add('level3', new aotb_game.lv3);
       _pgame.state.add('menu', new aotb_game.menu);
       _pgame.state.add('credits', new aotb_game.credits);
       _pgame.state.add('gameover', new aotb_game.gameover);

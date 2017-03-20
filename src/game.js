@@ -45,7 +45,7 @@ aotb_game.levelbase = function(pgame){
     var camelsRemained = numCamels;
     var numFullBubbles = 0;
 
-    var time = 120;
+    var time = 1;
 
     var game = aotb_game.game;
     var self = this;

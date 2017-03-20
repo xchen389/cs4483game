@@ -1,16 +1,16 @@
-aotb_game.lv1 = function()
-{
+//level 1 of the game
+aotb_game.lv1 = function(){
+
   var pgame = this;
   var levelbase;
 
-  this.preload = function()
-  {
+  this.preload = function(){
     levelbase = new aotb_game.levelbase(pgame);
   };
 
-  this.create = function()
-  {
-    levelbase.create();
+  this.create = function(){
+
+    levelbase.create(true);
 
     levelbase.displayText("First Night", 1, function(){
         pgame.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
@@ -18,13 +18,12 @@ aotb_game.lv1 = function()
     });
   };
 
-  this.update = function()
-  {
+  this.update = function(){
     levelbase.defaultUpdate();
+    levelbase.bulletUpdate();
   };
 
-  this.shutdown = function()
-  {
+  this.shutdown = function(){
     levelbase.shutdown();
   }
 };
