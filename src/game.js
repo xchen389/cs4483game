@@ -1,16 +1,12 @@
 //music and fx
 var music;
-var popSound;
-var ouchSound;
+
+var barkSound;
 
 var counterText; //Camel and Bubble Count Text
 var notificationText;
 
-
-
 var companion;
-
-
 
 // sprite groups (only done for when there is more than one sprite in each group)
 var bubblesGroup;
@@ -36,6 +32,9 @@ aotb_game.levelbase = function(pgame){
     var wasd;
     var fireButton;
     
+    var popSound;
+    var ouchSound;
+
     var nextFire = 0;
 
     //change these depending on how many bubbles and want
@@ -153,10 +152,7 @@ aotb_game.levelbase = function(pgame){
                     fxText.destroy();
 
                     //adjust volumes accordingly
-                    music.volume = playerData.musicVolume;
-
-                    popSound.volume = playerData.fxVolume;
-                    ouchSound.volume = playerData.fxVolume;
+                    setVolume();
 
                     // Unpause the game
                     pgame.game.paused = false;
@@ -168,12 +164,12 @@ aotb_game.levelbase = function(pgame){
         //FX
         popSound = pgame.add.audio('pop');
         ouchSound = pgame.add.audio('camel_ouch');
-        popSound.volume = playerData.fxVolume;
-        ouchSound.volume = playerData.fxVolume;
-
+        barkSound = pgame.add.audio('dog-bark');
+        
         //music 
         music = pgame.add.audio('gameMusic');
-        music.volume = playerData.musicVolume;
+        
+        setVolume();
 
         music.loop = true;
         music.play();
@@ -190,9 +186,6 @@ aotb_game.levelbase = function(pgame){
         // make sure camera at 0
         pgame.world.camera.position.set(0);
         */
-
-        //Enable P2 Physics
-        //pgame.physics.startSystem(Phaser.Physics.P2JS);
 
         //  Turn on impact events for the world, without this we get no collision callbacks
         pgame.physics.p2.setImpactEvents(true);
@@ -426,6 +419,15 @@ aotb_game.levelbase = function(pgame){
             pgame.game.paused = false;
             togglePause(false);
         }
+    }
+
+    function setVolume()
+    {
+        popSound.volume = playerData.fxVolume;
+        ouchSound.volume = playerData.fxVolume;
+        barkSound.volume = playerData.fxVolume;
+
+        music.volume = playerData.musicVolume;
     }
 
     function moveCamels() {
@@ -931,6 +933,7 @@ Companion.prototype.findTarget = function()
     else{
         this.state = 'chase';
         this.target = bubbleTarget;
+        barkSound.play();
     }
 }
 //-------------------------end of Companion class

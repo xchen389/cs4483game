@@ -59,6 +59,7 @@ aotb_game.preloadStage = function()
     game.loadAsset('pop', 'bubble_pop.mp3', aotb_game.AssetType.AUDIO);
     game.loadAsset('camel_ouch', 'camel_ouch.mp3', aotb_game.AssetType.AUDIO);
     game.loadAsset('gameMusic', 'gameMusic.mp3', aotb_game.AssetType.AUDIO);
+    game.loadAsset('dog-bark', 'dog-bark.mp3', aotb_game.AssetType.AUDIO);
 
     //for shop IMAGES
     game.loadAsset('shopScreen','backgrounds/shop_screen.png', aotb_game.AssetType.IMAGE);
