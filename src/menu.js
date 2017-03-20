@@ -1,43 +1,43 @@
 var introMusic = null;
 
-var menu = {
+aotb_game.menu = function(){
+	var pgame = this;
 
-	preload: function(){
-		this.load.image('menuBackground','./assets/images/backgrounds/mainMenu_screen.png');
-		this.load.image('newGameButton','./assets/images/buttons/newGame_button.png');
-		this.load.image('loadGameButton','./assets/images/buttons/loadGame_button.png');
-		this.load.image('creditsButton','./assets/images/buttons/credits_button.png');
-		this.load.audio('hoverSound', './assets/sounds/button_hover.mp3');
-		this.load.audio('buttonClickedSound','./assets/sounds/button_clicked.mp3');
-		this.load.audio('introMusic', './assets/sounds/introMusic.ogg');
-	},
+	this.preload = function(){
+	}
 
-	create: function(){
+	this.create = function(){
 		this.add.tileSprite(0,0, 1280, 800, 'menuBackground');
-		var newGameButton = this.add.button(205,270,'newGameButton',this.newGame, this);
-		var loadGameButton = this.add.button(205,370, 'loadGameButton', this.loadGame, this);
-		var CreditButton = this.add.button(205,470, 'creditsButton', this.loadCredits,this);
+		var newGameButton = this.add.button(205,270,'newGameButton',newGame, this);
+		var loadGameButton = this.add.button(205,370, 'loadGameButton', loadGame, this);
+		var CreditButton = this.add.button(205,470, 'creditsButton', loadCredits,this);
 		
-		if(introMusic == null){
+		if(introMusic == null)
 			introMusic = this.add.audio('introMusic');
-		}
+
+		
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
 			introMusic.volume = playerData.musicVolume;
 			introMusic.play();
 		}
-	},
+	}
 
-	newGame: function(){
-		menu.state.start('name');
-	},
-
-	loadGame: function(){
-		menu.state.start('loadGame');
-	},
+	function newGame(){
+		pgame.state.start('name');
+	}
 
 	loadCredits: function(){
-		menu.state.start('credits');
+		pgame.state.start('credits');
 	},
 	
+
+	function loadGame(){
+		pgame.state.start('loadGame');
+	},
+
+	function loadCredits(){
+		pgame.state.start('credits');
+	}
+
 };

@@ -25,6 +25,18 @@
 
 Note: you can edit freely the source files, and see the changes when you refresh in browser while the web server is open (you don't need to restart it).
 
+## Who Did What
+	Abdul Alhumidan
+	Ather Qureshi
+	Bowen Jiang 
+	Sherry Chen: 
+		- Bubble AI
+		- Companion AI
+		- Notification UI
+		- Store items UI
+		- Shooting mechanism
+		- Game restructure
+
 ## Credits
 
 	-All not in-house assets used in this project are royalty free and free to use for 
@@ -34,3 +46,9 @@ Note: you can edit freely the source files, and see the changes when you refresh
 		https://pixabay.com/en/desert-sunset-camel-sand-695079/
 	-armourHouse - Ciker-Free-Vector-Images 
 		https://pixabay.com/en/building-map-blacksmith-game-48632/
+	-ak47
+		https://pixabay.com/en/ak-47-weapons-automatic-firearms-1986226/
+	-handgun
+		https://pixabay.com/en/gun-weapon-pistol-handgun-army-161223/
+	-superdog
+		https://pixabay.com/en/dog-drawing-sketch-breed-white-163658/

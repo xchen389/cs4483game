@@ -1,23 +1,35 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset= "UTF-8" />
-        <title>Attack of The Bubbles</title>
-        
-        <script src=".\libraries\phaser.js"></script>
-        <script src=".\libraries\phaser-input.js"></script>
+<head>
+    <meta charset= "UTF-8" />
+    <title>Attack of The Bubbles</title>
+</head>
+<body>
+    <div id="game-div"></div>
+    
+    <script src=".\libraries\phaser.js"></script>
+    <script src=".\libraries\phaser-input.js"></script>
 
-        <script src= "src\game.js" ></script>
-    	<script src= "src\menu.js" ></script>
-        <script src= "src\credits.js"></script>
-        <script src= "src\shop.js"></script>
-        <script src= "src\gameover.js"></script>
-        <script src= "src\loadgame.js"></script>
-        <script src= "src\options_data.js"></script>
-        <script src= "src\name.js"></script>
-    	<script src= "src\main.js" ></script>
-    </head>
-	<body>
-		<div id="gameDiv"></div>
-	</body>
+    <script src= "src\index.js"></script>
+    <script src= "src\boot.js"></script>
+    <script src= "src\preloader.js"></script>
+    <script src= "src\game.js" ></script>
+    <script src= "src\lv1.js"></script>
+    <script src= "src\lv2.js"></script>
+    <script src= "src\menu.js" ></script>
+    <script src= "src\name.js"></script>
+    <script src= "src\credits.js"></script>
+    <script src= "src\shop.js"></script>
+    <script src= "src\gameover.js"></script>
+    <script src= "src\loadgame.js"></script>
+    <!--<script src= "src\main.js" ></script>-->
+    <script src= "src\options_data.js"></script>
+    <script src= "src\aotb_game.js"></script>
+    
+    <script>
+    aotb_game.start({
+        id:"game-div"
+    });
+    </script>
+</body>
 </html>

@@ -1,21 +1,28 @@
+
 var nameKeys;
 var saveFileButtons = [];
 var saveFileTexts = [];
 
-var loadGame = {
 
-	preload: function(){
-		this.load.image('loadGameBackground','./assets/images/backgrounds/loadGame_screen.png');
+
+aotb_game.loadGame = function(){
+	
+  var pgame = this;
+
+	this.preload = function(){
+    this.load.image('loadGameBackground','./assets/images/backgrounds/loadGame_screen.png');
 		this.load.image('backButton', './assets/images/buttons/back_button.png');;
 		this.load.image('deleteAllButton', './assets/images/buttons/deleteAll_button.png');
 		this.load.image('blankButton', './assets/images/buttons/blankLoad_button.png');
 		this.load.audio('introMusic', './assets/sounds/introMusic.ogg');
-	},
+	  }
 
-	create: function(){
-		this.add.tileSprite(0,0, 1280, 800, 'loadGameBackground');
-		this.add.button(50,690, 'backButton', this.goBack,this);
-		this.add.button(960, 690,'deleteAllButton', this.deleteAll, this);
+	this.create = function(){
+		pgame.add.tileSprite(0,0, 1280, 800, 'loadGameBackground');
+		pgame.add.button(50,690, 'backButton', goBack,pgame);
+		pgame.add.button(960,690, 'deleteAllButton', loadTheGame,pgame);
+    
+
 
 		
 		//music settings
@@ -23,14 +30,15 @@ var loadGame = {
 			introMusic.loop = true;
 			introMusic.volume = playerData.musicVolume;
 			introMusic.play();
-		}
+		  }
+
 
 		
 		this.generateSaveButtons();
 
-	},
+	}
 
-	generateSaveButtons: function(){
+	this.generateSaveButtons = function(){
 		//collect all the names currently in localStorage
 		nameKeys = returnAllData();
 
@@ -41,7 +49,7 @@ var loadGame = {
 		//create sprites that can be clicked on, with text according to name centered on them
 		for(var i = 0; i < nameKeys.length; i++){
 
-			saveFileButtons[i] = this.add.sprite(490, 330+i*50, 'blankButton');
+			saveFileButtons[i] = pgame.add.sprite(490, 330+i*50, 'blankButton');
 			saveFileButtons[i].height = 50;
 
 			saveFileButtons[i].inputEnabled = true;
@@ -60,17 +68,15 @@ var loadGame = {
 			saveFileTexts[i].y = Math.floor(saveFileButtons[i].y + saveFileButtons[i].height/2);
 		}
 
-	},
+	}
 
-	goBack: function(){
-		main.state.start('menu');
-	},
+	this.goback = function(){
+		pgame.state.start('menu');
+	}
 
-	shutdown: function(){
-	},
 
 	//TO-DO display feedback and verification
-	deleteAll: function(){
+  this.deleteAll = function(){
 
 		//delete all localStorage Data
 		deleteAll();
@@ -81,12 +87,13 @@ var loadGame = {
 			saveFileTexts[i].destroy();
 		}
 		
-	}
+  }
 
 }
 
 function load(name){
 	loadData(name);
 	introMusic.stop();
-	main.state.start('shop');
+	pgame.state.start('shop');
 }
+
