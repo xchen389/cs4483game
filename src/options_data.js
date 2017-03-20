@@ -33,7 +33,6 @@ var playerData = {
 // number of saves
 
 function saveData(){
-	console.log("got here");
 	//Convert playerData to a JSON String OF playerData
 	var savedJSON = JSON.stringify(playerData);
 	//save it in local storage, and set key to the playerData.name

@@ -21,21 +21,21 @@ aotb_game.preloadStage = function()
     percentText = this.add.text(this.world.centerX + 83, this.world.centerY + 90, loadPercent + '%', {font:'14pt Arial'});
 
     //------------ load all the assets
-    //for menu
+    //for menu IMAGES
     game.loadAsset('menuBackground','backgrounds/mainMenu_screen.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('newGameButton','buttons/newGame_button.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('loadGameButton','buttons/loadGame_button.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('creditsButton','buttons/credits_button.png', aotb_game.AssetType.IMAGE);
-		game.loadAsset('hoverSound', 'button_hover.mp3');
-		game.loadAsset('buttonClickedSound','button_clicked.mp3');
-		game.loadAsset('introMusic', 'introMusic.ogg');
+
+		game.loadAsset('hoverSound', 'button_hover.mp3', aotb_game.AssetType.AUDIO);
+		game.loadAsset('buttonClickedSound','button_clicked.mp3', aotb_game.AssetType.AUDIO);
+		game.loadAsset('introMusic', 'introMusic.ogg', aotb_game.AssetType.AUDIO); 
 
     // for loadgame 
     game.loadAsset('loadGameBackground','backgrounds/loadGame_screen.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('backButton', 'buttons/back_button.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('deleteAllButton', 'buttons/deleteAll_button.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('blankButton', 'buttons/blankLoad_button.png', aotb_game.AssetType.IMAGE);
-		game.loadAsset('introMusic', 'introMusic.ogg');
 
     // for gameover
     game.loadAsset('gameoverBackground', 'backgrounds/gameover_screen.png', aotb_game.AssetType.IMAGE);
@@ -43,7 +43,6 @@ aotb_game.preloadStage = function()
     
     // for credits
     game.loadAsset('creditsScreen','backgrounds/credits_screen.png', aotb_game.AssetType.IMAGE);
-		game.loadAsset('introMusic', 'introMusic.ogg');
 
     // for level
     game.loadAsset('player', 'player.png', aotb_game.AssetType.IMAGE);
@@ -55,19 +54,21 @@ aotb_game.preloadStage = function()
     game.loadAsset('background', 'backgrounds/gamebackground_screen.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('pauseScreen', 'backgrounds/pause_screen.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('mainMenuButton', 'buttons/mainMenu_button.png', aotb_game.AssetType.IMAGE);
+    game.loadAsset('bullet', 'bullet.GIF', aotb_game.AssetType.IMAGE);
+
     game.loadAsset('pop', 'bubble_pop.mp3', aotb_game.AssetType.AUDIO);
     game.loadAsset('camel_ouch', 'camel_ouch.mp3', aotb_game.AssetType.AUDIO);
     game.loadAsset('gameMusic', 'gameMusic.mp3', aotb_game.AssetType.AUDIO);
-    game.loadAsset('bullet', 'bullet.GIF', aotb_game.AssetType.IMAGE);
 
-    //for shop
+    //for shop IMAGES
     game.loadAsset('shopScreen','backgrounds/shop_screen.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('nextButton','buttons/next_button.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('exitButton','buttons/exit_button.png', aotb_game.AssetType.IMAGE);
-		game.loadAsset('shopMusic', 'shopMusic.mp3', aotb_game.AssetType.AUDIO);
 		game.loadAsset('dog', 'dog-placeholder.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('gun', 'gun.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('ak47', 'ak-47.png', aotb_game.AssetType.IMAGE);
+    
+    game.loadAsset('shopMusic', 'shopMusic.mp3', aotb_game.AssetType.AUDIO);
 
     // for name screen
     game.loadAsset('nameScreen','backgrounds/name_screen.png', aotb_game.AssetType.IMAGE);

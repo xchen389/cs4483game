@@ -11,11 +11,11 @@ aotb_game.menu = function(){
 		var newGameButton = this.add.button(205,270,'newGameButton',newGame, this);
 		var loadGameButton = this.add.button(205,370, 'loadGameButton', loadGame, this);
 		var CreditButton = this.add.button(205,470, 'creditsButton', loadCredits,this);
-		
-		if(introMusic == null)
-			introMusic = this.add.audio('introMusic');
 
-		
+		if(introMusic == null){
+			introMusic = this.add.audio('introMusic');
+		}
+
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
 			introMusic.volume = playerData.musicVolume;

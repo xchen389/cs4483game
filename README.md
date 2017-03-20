@@ -23,12 +23,18 @@
 
 	You can always play without audio by just opening index.html, but we don't reccommend this. 
 
-Note: you can edit freely the source files, and see the changes when you refresh in browser while the web server is open (you don't need to restart it).
+Note: you can edit freely the source files, and see the changes when you refresh in browser while the web server is open (you don't need to restart it). Also, when you run the game more than a few times, assets will be stored in the cache. You must clear the cache in your browser to see changes to assets you changed. Or you can always run in incognito! 
 
 ## Who Did What
 	Abdul Alhumidan
-	Ather Qureshi
-	Bowen Jiang 
+	Ather Qureshi:
+		- Menu Systems 
+		- UI, Graphics and Look and Feel
+		- Collisions/Physics
+		- Basic game implementation
+		- Pause Menu
+		- Saving/Loading Data
+	Bowen Jiang
 	Sherry Chen: 
 		- Bubble AI
 		- Companion AI
