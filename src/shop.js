@@ -10,9 +10,16 @@ aotb_game.shop = function(){
 	var descriptionText;
 	var descriptionWindow;
 
+	var descriptionStyle = { font: '20pt Arial', 
+								fill: 'black', 
+								align: 'left', 
+								wordWrap: true, 
+								wordWrapWidth: 450,
+								backgroundColor: '#ffedce' };
+
 	var itemInfo = [
 		{key: 'dog', name: 'Superdog', type: 'companion', price: 10, locked: false, 
-			description:"They can not only destroy bubbles with camels inside, but also empty bubbles!"},
+			description:"They can destroy bubbles with camels inside AND empty bubbles!"},
 		{key: 'gun', name: 'Handgun', type: 'weapon', price: 10, locked: false,
 			description: "You can shoot 5 shots maximum at a time. Be careful, you can accidentally shoot your camels with a handgun!"},
 		{key: 'ak47', name: 'AK-47', type: 'weapon', price: 999, locked: true,
@@ -34,6 +41,8 @@ aotb_game.shop = function(){
 		graphics.lineStyle(4, 0xff0000, 1);
    	 	graphics.drawRect(0, 0, bounds.width, bounds.height);
 
+		descriptionText = pgame.add.text(650,350,"", descriptionStyle);
+
 		// setup goods
 		for(var i = 0; i < itemInfo.length; ++i)
 		{
@@ -49,9 +58,9 @@ aotb_game.shop = function(){
 			itemButton.addChild(itemSprite);
 			itemButton.addChild(itemText);
 
+			// make button gray if is locked
 			if (itemInfo[i].locked)
 			{
-				itemButton.inputEnabled = false;
 				itemButton.tint = 0x555555;
 			}
 			//itemButton.itemText.alignTo(itemButton.itemSprite, Phaser.RIGHT_CENTER, 16);
@@ -78,7 +87,11 @@ aotb_game.shop = function(){
 		pgame.state.start('menu');
 	}
 
+
 	function buyItem(itemButton){
+		// if the item is locked, don't proceed
+		if (itemInfo[itemButton.itemId].locked)
+      return;
 		// minus user credit by price
 		
 		// update playerdata with the bought item
@@ -93,16 +106,19 @@ aotb_game.shop = function(){
 		}
 	}
 	
+
 	function displayDescription(item){
-	//	descriptionText = pgame.add.text(0,0,itemInfo[item.itemId].description);
+		descriptionText.setText(itemInfo[item.itemId].description);
+		descriptionText.y = bounds.y + item.itemId * ITEM_BUTTON_HEIGHT;
 	}
 
 	function removeDescription(item){
-		//pgame.add.text(0,0,itemInfo[item.itemId].description);
+		descriptionText.setText("");
 	}
 	//called when this state is switched (state shutdown)
 
 	this.shutdown = function(){
 		shopMusic.stop();
 	}
+	
 }
