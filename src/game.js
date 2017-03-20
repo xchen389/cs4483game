@@ -6,11 +6,7 @@ var ouchSound;
 var counterText; //Camel and Bubble Count Text
 var notificationText;
 
-
-
 var companion;
-
-
 
 // sprite groups (only done for when there is more than one sprite in each group)
 var bubblesGroup;
@@ -28,7 +24,11 @@ var bulletsCollisionGroup;
 
 var customBounds;
 var bounds;
-var count = 1;
+var count = 0;
+var count2 = 0;
+var count3 = 0;
+var count4 = 0;
+var count5 = 0;
 
 //game object definiton
 aotb_game.levelbase = function(pgame){
@@ -46,7 +46,7 @@ aotb_game.levelbase = function(pgame){
     var camelsRemained = numCamels;
     var numFullBubbles = 0;
 
-    var time = 1;
+    var time = 100;
 
     var game = aotb_game.game;
     var self = this;
@@ -515,7 +515,7 @@ aotb_game.levelbase = function(pgame){
         self.displayText("You Win!", 2, function(){
             pgame.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
             notificationText.destroy();
-            if (count == 4){
+            if (count == 10){
                 pgame.state.start('victory');
             }
             else{
