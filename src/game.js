@@ -5,6 +5,7 @@ var ouchSound;
 
 var counterText; //Camel and Bubble Count Text
 var notificationText;
+var scoreText;
 
 var companion;
 
@@ -37,6 +38,7 @@ aotb_game.levelbase = function(pgame){
     var cursors;
     var wasd;
     var fireButton;
+    var score = 0;
     
     var nextFire = 0;
     //change these depending on how many bubbles and want
@@ -46,7 +48,7 @@ aotb_game.levelbase = function(pgame){
     //var camelsRemained = numCamels;
     var numFullBubbles = 0;
 
-    var time = 5;
+    var time = 10;
 
     var game = aotb_game.game;
     var self = this;
@@ -246,7 +248,7 @@ aotb_game.levelbase = function(pgame){
         //createBubbles();
 
         //Timer
-        pgame.time.events.loop(Phaser.Timer.SECOND, timer, this); 
+        pgame.time.events.loop(Phaser.Timer.SECOND*1.25, timer, this); 
 
         // Create our player sprite
         player = pgame.add.sprite(200, 200, 'player');
@@ -329,6 +331,9 @@ aotb_game.levelbase = function(pgame){
         //display the count in the playing screen
         counterText = pgame.add.text(0,0,"Time: " + time + " Camels: " + numCamels, {font: '40px Arial', fill:'#fff', boundsAlignH: "center"});
         counterText.setTextBounds(0, 10, pgame.world.width, 100);
+
+        scoreText = pgame.add.text(0,0,"Score: " + score, {font: '40px Arial', fill:'#fff', boundsAlignH: "left"});
+        scoreText.setTextBounds(10, 5, pgame.world.width, 100);
     };
 
     //runs continuously. 
@@ -350,6 +355,8 @@ aotb_game.levelbase = function(pgame){
             player.body.moveDown(200);
         }
         updateCounterText();
+
+        updateScoreText();
         //winning condition - go to shop
         if(time <= 0){ //|| camelsRemained<2){
             gameOver();
@@ -494,9 +501,13 @@ aotb_game.levelbase = function(pgame){
         counterText.setText("Time: " + time + " Camels: " + numCamels);
     }
 
-    function gameOver()
-    {
-        self.displayText("You Win!", 2, function(){
+    //update the score when a bubble is popped
+    function updateScoreText(){
+        scoreText.setText("Score: " + score);
+    }
+
+    function gameOver(){
+        self.displayText("You Win!", 1, function(){
             pgame.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
             notificationText.destroy();
             if (count == 10){
@@ -516,20 +527,17 @@ aotb_game.levelbase = function(pgame){
 
     this.displayText = function(str, autoNext, callback){
         // remove previous notification text if it exist
-        if (notificationText != null && notificationText!== 'undefined' && notificationText.alive)
-        {
+        if (notificationText != null && notificationText!== 'undefined' && notificationText.alive){
             notificationText.destroy();
         }
         notificationText = pgame.add.text(pgame.world.centerX, pgame.world.centerY, str, { font: "65px Arial", fill: "#fff", align: "center" });
         notificationText.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);    
         notificationText.anchor.setTo(0.5, 0.5);
 
-        if (autoNext>-1)
-        {
+        if (autoNext>-1){
             pgame.time.events.add(Phaser.Timer.SECOND * autoNext, callback, this);
         }
-        else
-        {
+        else{
             pgame.input.onDown.addOnce(callback, this);
         }
     }
@@ -549,6 +557,8 @@ aotb_game.levelbase = function(pgame){
         fullBubbleGroup.remove(fullBubbleBody);
 
         popSound.play();
+
+        updateScoreText();
         updateCounterText();
     }
 
@@ -664,6 +674,7 @@ aotb_game.levelbase = function(pgame){
     function bumpBubble(playerBody, bubbleBody) {
         popSound.play();
         numBubbles--;
+        score += 1000;
         
         bubbleBody.sprite.alive = false;
         bubbleBody.sprite.pendingDestroy = true;
@@ -698,11 +709,13 @@ aotb_game.levelbase = function(pgame){
         console.log("hit!");
         bumpBubble(bulletBody, bubbleBody);
         bulletBody.sprite.kill();
+        score += 1000;
     }
     this.bulletHitFullBubble = function(bulletBody, fullBubbleBody)
     {
         self.bumpFullBubble(bulletBody, fullBubbleBody);
         bulletBody.sprite.kill();
+        score += 1000;
     }
     this.bulletHitCamel = function(bulletBody, camelBody){
 
@@ -713,6 +726,7 @@ aotb_game.levelbase = function(pgame){
         camelBody.sprite.pendingDestroy = true;
         camelsGroup.remove(camelBody);
         numCamels--;
+        score -= 1000;
     }
     
     function camelShotNotice(){
