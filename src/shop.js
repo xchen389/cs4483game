@@ -1,7 +1,8 @@
-var shopMusic;
-
 aotb_game.shop = function(){
-  	var pgame = this;
+  var pgame = this;
+
+	var cashRegisterSound;
+  var shopMusic;
 
 	// constants
 	var ITEM_BUTTON_HEIGHT = 100;
@@ -19,7 +20,7 @@ aotb_game.shop = function(){
 
 	var itemInfo = [
 		{key: 'dog', name: 'Superdog', type: 'companion', price: 10, locked: false, 
-			description:"They can destroy bubbles with camels inside AND empty bubbles!"},
+			description:"They can destroy both bubbles with camels inside AND empty bubbles!"},
 		{key: 'gun', name: 'Handgun', type: 'weapon', price: 10, locked: false,
 			description: "You can shoot 5 shots maximum at a time. Be careful, you can accidentally shoot your camels with a handgun!"},
 		{key: 'ak47', name: 'AK-47', type: 'weapon', price: 999, locked: true,
@@ -34,12 +35,12 @@ aotb_game.shop = function(){
 	}
 
 	this.create = function(){
-		this.add.tileSprite(0,0, 1280, 800, 'shopScreen');
+		this.add.tileSprite(0,0, w, h, 'shopScreen');
 
 		// item shelf rectangle
 		var graphics = pgame.add.graphics(bounds.x, bounds.y);
 		graphics.lineStyle(4, 0xff0000, 1);
-   	 	graphics.drawRect(0, 0, bounds.width, bounds.height);
+   	graphics.drawRect(0, 0, bounds.width, bounds.height);
 
 		descriptionText = pgame.add.text(650,350,"", descriptionStyle);
 
@@ -63,7 +64,7 @@ aotb_game.shop = function(){
 			{
 				itemButton.tint = 0x555555;
 			}
-			//itemButton.itemText.alignTo(itemButton.itemSprite, Phaser.RIGHT_CENTER, 16);
+
 			itemButtons.push(itemButton);
 		}
 
@@ -75,6 +76,9 @@ aotb_game.shop = function(){
 		shopMusic.volume = playerData.musicVolume;
 		shopMusic.loop = true;
 		shopMusic.play();
+
+    cashRegisterSound = this.add.audio('cashRegister');
+    cashRegisterSound.volume = playerData.fxVolume;
 	}
 
 	function loadGame(){
@@ -92,7 +96,10 @@ aotb_game.shop = function(){
 		// if the item is locked, don't proceed
 		if (itemInfo[itemButton.itemId].locked)
       return;
-		// minus user credit by price
+
+		cashRegisterSound.play();
+		// check if credits is enough
+    // then minus user credit by price
 		
 		// update playerdata with the bought item
 
@@ -103,6 +110,7 @@ aotb_game.shop = function(){
 
 		for (var i = 0; i<itemInfo.length; ++i){
 			itemButtons[i].y = bounds.y + i * ITEM_BUTTON_HEIGHT;
+      itemButtons[i].itemId = i;
 		}
 	}
 	

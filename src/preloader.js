@@ -71,7 +71,8 @@ aotb_game.preloadStage = function()
 		game.loadAsset('ak47', 'ak-47.png', aotb_game.AssetType.IMAGE);
     
     game.loadAsset('shopMusic', 'shopMusic.mp3', aotb_game.AssetType.AUDIO);
-
+    game.loadAsset('cashRegister', 'cashreg.mp3', aotb_game.AssetType.AUDIO);
+    
     // for name screen
     game.loadAsset('nameScreen','backgrounds/name_screen.png', aotb_game.AssetType.IMAGE);
   }

@@ -50,6 +50,7 @@ Note: you can edit freely the source files, and see the changes when you refresh
 	-Shop Music - Marimba Boy - DL sounds
 	- Dog barking sfx: http://www.flashkit.com/soundfx/Creatures/Pets/Dog_Bark-SoundSca-9057/index.php
 	- Gun shot sfx: http://www.flashkit.com/soundfx/Cartoon/Shots/Uzi-Drug_Dea-8374/index.php
+	- Cash register sfx: http://www.flashkit.com/soundfx/Industrial_Commercial/Cash/Cash_reg-public_d-296/index.php
 	
 	-Background for MainMenu, Load, Credits, GameOver - sylviacopol0
 		https://pixabay.com/en/desert-sunset-camel-sand-695079/

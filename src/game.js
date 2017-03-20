@@ -195,11 +195,14 @@ aotb_game.levelbase = function(pgame){
 
         //shrink the bounds by 7px to account for the black border TO DO
         //So far I think it works, but you can remove it it's being dumb
-        pgame.world.setBounds(0,0,1280-7, 800-7);
+        //pgame.world.setBounds(0,0,w-7, h-7);
+        var worldOutline = pgame.add.graphics(0, 0);
+        worldOutline.lineStyle(7, 0x0, 1);
+        worldOutline.drawRect(0,0, w, h);
 
         //  The bounds of centre camel playground
         // the width and height are wrong from pgame.world.width after adding quake effect
-        bounds = new Phaser.Rectangle(1280/4, 800/4, 1280/2, 800/2);
+        bounds = new Phaser.Rectangle(w/4, h/4, w/2, h/2);
 
         //  Create our collision groups. One for the player, one for the bubblesGroup, one for the camelsGroup
         playerCollisionGroup = pgame.physics.p2.createCollisionGroup();
@@ -302,7 +305,6 @@ aotb_game.levelbase = function(pgame){
         var graphics = pgame.add.graphics(bounds.x, bounds.y);
         graphics.lineStyle(4, 0xff0000, 1);
         graphics.drawRect(0, 0, bounds.width, bounds.height);
-
 
         // controls
         cursors = pgame.input.keyboard.createCursorKeys();
@@ -940,6 +942,10 @@ Companion.prototype.findTarget = function()
         barkSound.play();
     }
 }
+Companion.prototype.wander = function()
+{
+    
+}
 //-------------------------end of Companion class
 
 //------------------Bullet class
@@ -958,9 +964,10 @@ Bullet = function(pgame, game,x, y, speed, lifespan)
 
     pgame.physics.enable(this, Phaser.Physics.P2JS);
 
-    this.body.setRectangle(35);
+    this.body.setRectangle(20);
     this.body.fixedRotation = true;
 
+    // this bullet can kill everything except player
     this.body.setCollisionGroup(bulletsCollisionGroup);
     this.body.collides(fullBubbleCollisionGroup, game.bulletHitFullBubble, this);
     this.body.collides(bubbleCollisionGroup, game.bulletHitBubble, this);
@@ -1006,7 +1013,6 @@ function accelerateToObject (chaser, chased, speed)
     var angle = Math.atan2(chased.y - chaser.y, chased.x - chaser.x);
     chaser.body.force.x = Math.cos(angle) * speed;
     chaser.body.force.y = Math.sin(angle) * speed;
-    //console.log(Math.cos(angle) * speed, Math.sin(angle) * speed);
 }
 
 function createPreviewBounds(game, x,y,w,h){
