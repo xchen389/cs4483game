@@ -28,7 +28,7 @@ aotb_game.menu = function(){
 
 	//go to make a name screen
 	function newGame(){
-		pgame.state.start('name');
+		pgame.state.start('level1');
 	}
 
 	//go to load the game screen
