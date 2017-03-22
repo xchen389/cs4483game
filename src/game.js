@@ -27,20 +27,25 @@ var customBounds;
 var bounds;
 var count = 0;
 var count2 = 0;
-var count3 = 0;
+var count3 = 1.1;
 var count4 = 0;
 var count5 = 0;
 
-
+var numCamels;
 
 //game object definiton
 aotb_game.levelbase = function(pgame){
-
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
     var player;
     var cursors;
     var wasd;
     var fireButton;
     var score = 0;
+    //var count2 = 0;
 
     var sprite;
     var weapon;
@@ -55,7 +60,7 @@ aotb_game.levelbase = function(pgame){
     //var camelsRemained = numCamels;
     var numFullBubbles = 0;
 
-    var time = 10;
+    var time = 2;
 
     var game = aotb_game.game;
     var self = this;
@@ -194,7 +199,7 @@ aotb_game.levelbase = function(pgame){
         //Enable P2 Physics
         //pgame.physics.startSystem(Phaser.Physics.P2JS);
 
-        weapon = pgame.add.weapon(30, 'bullet');
+        /*weapon = pgame.add.weapon(30, 'bullet');
 
         weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 
@@ -208,7 +213,7 @@ aotb_game.levelbase = function(pgame){
 
         if (fireButton.isDown){
         weapon.fire();
-        }
+        }*/
 
         //  Turn on impact events for the world, without this we get no collision callbacks
         pgame.physics.p2.setImpactEvents(true);
@@ -221,6 +226,14 @@ aotb_game.levelbase = function(pgame){
         //  The bounds of centre camel playground
         // the width and height are wrong from pgame.world.width after adding quake effect
         bounds = new Phaser.Rectangle(1280/4, 800/4, 1280/2, 800/2);
+
+
+
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////
 
         //  Create our collision groups. One for the player, one for the bubblesGroup, one for the camelsGroup
         playerCollisionGroup = pgame.physics.p2.createCollisionGroup();
@@ -250,7 +263,7 @@ aotb_game.levelbase = function(pgame){
         camelsGroup.enableBody = true;
         camelsGroup.physicsBodyType = Phaser.Physics.P2JS;
 
-        for (var i = 0; i < numCamels; i++){
+        for (var i = 0; i < numCamels+count2; i++){
         	// Camel spawn positions
         	CSx = Math.random() * (850 - 450) + 450;
         	CSy = Math.random() * (550 - 350) + 350;
@@ -267,7 +280,7 @@ aotb_game.levelbase = function(pgame){
         pgame.time.events.loop(Phaser.Timer.SECOND * 0.5, moveFullBubbles, this); 
 
         //To create bubbles
-        pgame.time.events.loop(Phaser.Timer.SECOND * 4, createBubbles, this); 
+        pgame.time.events.loop(Phaser.Timer.SECOND * count3 , createBubbles, this); 
         //createBubbles();
 
         //Timer
@@ -305,7 +318,7 @@ aotb_game.levelbase = function(pgame){
             bullets.physicsBodyType = Phaser.Physics.P2JS;
             for (var i=0;i<5;i++)
             {
-                var bl = new Bullet(pgame,this,0,0,600, 700);
+                var bl = new Bullet(pgame,this,0,0,1000, 800);
                 bullets.add(bl);
             }
             bullets.setAll('anchor.x', 0.5);
@@ -341,10 +354,10 @@ aotb_game.levelbase = function(pgame){
             fireButton = pgame.input.activePointer.leftButton;
         }
 
-        if (fireButton.isDown)
+        /*if (fireButton.isDown)
         {
         weapon.fire();
-        }
+        }*/
 
         // setup pause on space key pressed
         //spaceKey = pgame.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -382,12 +395,12 @@ aotb_game.levelbase = function(pgame){
         else if (cursors.down.isDown || wasd.down.isDown){
             player.body.moveDown(200);
         }
-        if (fireButton.isDown)
-        {
-        weapon.fire();
-        }
-        updateCounterText();
+        //if (fireButton.isDown)
+        //{
+        //weapon.fire();
+        //}
 
+        updateCounterText();
         updateScoreText();
         //winning condition - go to shop
         if(time <= 0){ //|| camelsRemained<2){
@@ -401,8 +414,10 @@ aotb_game.levelbase = function(pgame){
 
         //losing condition
         if(numCamels <= 0){
+            count2=0;
             pgame.state.start('gameover');
         }
+        //updateCounterText();
     }
 
     this.bulletUpdate = function(){
@@ -450,7 +465,7 @@ aotb_game.levelbase = function(pgame){
     }
 
     function moveCamels(){
-        for(var i=0 ; i<numCamels ; i++){
+        for(var i=0 ; i<numCamels+count2 ; i++){
             camelsGroup.getAt(i).body.setZeroVelocity();
             // randomise the movement   
             CamelsMover = pgame.rnd.integerInRange(1, 7);    
@@ -542,6 +557,8 @@ aotb_game.levelbase = function(pgame){
         self.displayText("You Win!", 1, function(){
             pgame.add.tween(notificationText).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
             notificationText.destroy();
+            count2=count2+2;
+            count3=count3-0.1;
             if (count == 10){
                 pgame.state.start('victory');
             }
@@ -580,7 +597,8 @@ aotb_game.levelbase = function(pgame){
     this.bumpFullBubble = function(playerBody, fullBubbleBody){
         //create new camel at where fullBubble was
         new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
-        //numCamels++;
+        numCamels++;
+        score+=1000;
 
         // destroy full-bubble sprite
         numFullBubbles--;
@@ -734,7 +752,7 @@ aotb_game.levelbase = function(pgame){
         camelBody.sprite.alive = false;
         camelBody.sprite.pendingDestroy = true;
         camelsGroup.remove(camelBody);
-        //numCamels--;
+        numCamels--;
     }
 
     this.bulletHitBubble = function(bulletBody, bubbleBody){
@@ -745,6 +763,7 @@ aotb_game.levelbase = function(pgame){
     }
     this.bulletHitFullBubble = function(bulletBody, fullBubbleBody)
     {
+        console.log("hit!");
         self.bumpFullBubble(bulletBody, fullBubbleBody);
         bulletBody.sprite.kill();
         score += 1000;
@@ -888,7 +907,7 @@ Bubble.prototype = Object.create(Phaser.Sprite.prototype);
 Bubble.prototype.constructor = Bubble;
 Bubble.prototype.update = function()
 {
-    if (!this.target.alive)
+    if (!isTargetValid(this.target))
     {
         console.log("target camel missing! Looking for next target...");
         this.target = findNearestInGroup(this.body.x, this.body.y, camelsGroup);
@@ -952,7 +971,7 @@ Bullet = function(pgame, game,x, y, speed, lifespan)
 {
     Phaser.Sprite.call(this, pgame, x, y, 'bullet');
 
-    this.anchor.setTo(0.5);
+    this.anchor.setTo(5);
     this.outOfBoundsKill = true;
     this.checkWorldBounds = true;
 
@@ -974,7 +993,7 @@ Bullet = function(pgame, game,x, y, speed, lifespan)
 }
 Bullet.prototype = Object.create(Phaser.Sprite.prototype);
 Bullet.prototype.constructor = Bullet;
-Bullet.prototype.update=function()
+//Bullet.prototype.update=function()
 {
 }
 Bullet.prototype.resetTarget = function(x,y,tx,ty)
