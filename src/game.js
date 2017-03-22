@@ -31,6 +31,8 @@ var count3 = 0;
 var count4 = 0;
 var count5 = 0;
 
+
+
 //game object definiton
 aotb_game.levelbase = function(pgame){
 
@@ -39,6 +41,11 @@ aotb_game.levelbase = function(pgame){
     var wasd;
     var fireButton;
     var score = 0;
+
+    var sprite;
+    var weapon;
+    //var cursors;
+    //var fireButton;
     
     var nextFire = 0;
     //change these depending on how many bubbles and want
@@ -187,6 +194,22 @@ aotb_game.levelbase = function(pgame){
         //Enable P2 Physics
         //pgame.physics.startSystem(Phaser.Physics.P2JS);
 
+        weapon = pgame.add.weapon(30, 'bullet');
+
+        weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+
+        weapon.bulletSpeed = 600;
+
+        weapon.fireRate = 100;
+
+        cursors = pgame.input.keyboard.createCursorKeys();
+
+        fireButton = pgame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+
+        if (fireButton.isDown){
+        weapon.fire();
+        }
+
         //  Turn on impact events for the world, without this we get no collision callbacks
         pgame.physics.p2.setImpactEvents(true);
         pgame.physics.p2.restitution = 0;
@@ -318,6 +341,11 @@ aotb_game.levelbase = function(pgame){
             fireButton = pgame.input.activePointer.leftButton;
         }
 
+        if (fireButton.isDown)
+        {
+        weapon.fire();
+        }
+
         // setup pause on space key pressed
         //spaceKey = pgame.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
        // spaceKey.onDown.add(togglePause, this);
@@ -353,6 +381,10 @@ aotb_game.levelbase = function(pgame){
         }
         else if (cursors.down.isDown || wasd.down.isDown){
             player.body.moveDown(200);
+        }
+        if (fireButton.isDown)
+        {
+        weapon.fire();
         }
         updateCounterText();
 
@@ -968,6 +1000,58 @@ Bullet.prototype.setMove = function(tx,ty)
 }
 //--------------------end of Bullet class
 
+
+Power = function(pgame, game,x, y, speed, lifespan)
+{
+    Phaser.Sprite.call(this, pgame, x, y, 'bullet');
+
+    this.anchor.setTo(0.5);
+    this.outOfBoundsKill = true;
+    this.checkWorldBounds = true;
+
+    this.lifetime = lifespan;
+
+    this.speed = speed;
+    this.pgame = pgame;
+
+    pgame.physics.enable(this, Phaser.Physics.P2JS);
+
+    this.body.setRectangle(35);
+    this.body.fixedRotation = true;
+
+    this.body.setCollisionGroup(bulletsCollisionGroup);
+    this.body.collides(fullBubbleCollisionGroup, game.bulletHitFullBubble, this);
+    this.body.collides(bubbleCollisionGroup, game.bulletHitBubble, this);
+    this.body.collides(camelCollisionGroup, game.bulletHitCamel, this);
+    this.kill();
+}
+Bullet.prototype = Object.create(Phaser.Sprite.prototype);
+Bullet.prototype.constructor = Bullet;
+Bullet.prototype.update=function()
+{
+}
+Bullet.prototype.resetTarget = function(x,y,tx,ty)
+{
+    this.revive();
+    this.reset(x,y);
+
+    // reset the lifespan after bullet is revived
+    this.lifespan = this.lifetime;
+    this.setMove(tx,ty);
+}
+Bullet.prototype.setMove = function(tx,ty)
+{
+    var dx = tx - this.x;    
+    var dy = ty - this.y;   
+    var angle = Math.atan2(dy, dx);
+
+    this.rotation = angle;
+    this.body.rotation = angle;    
+
+    this.body.velocity.x = this.speed * Math.cos(angle);    
+    this.body.velocity.y = this.speed * Math.sin(angle); 
+}
+
 function isTargetValid(obj){
     return (obj!=null && typeof obj !== 'undefined' && obj.alive);
 }
@@ -1007,3 +1091,6 @@ function createPreviewBounds(game, x,y,w,h){
     sim.world.addBody(customBounds.top);
     sim.world.addBody(customBounds.bottom);
 }
+
+
+
