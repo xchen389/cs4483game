@@ -14,6 +14,11 @@ var bubblesGroup;
 var camelsGroup;
 var fullBubbleGroup;
 var bullets;
+var blue;
+var sprite;
+var weapon;
+var cursors;
+var fireButton;
 
 //collision groups (Full Bubble = bubble with camel inside)
 var playerCollisionGroup;
@@ -60,7 +65,7 @@ aotb_game.levelbase = function(pgame){
     //var camelsRemained = numCamels;
     var numFullBubbles = 0;
 
-    var time = 2;
+    var time = 20;
 
     var game = aotb_game.game;
     var self = this;
@@ -290,6 +295,9 @@ aotb_game.levelbase = function(pgame){
         player = pgame.add.sprite(200, 200, 'player');
         player.scale.set(0.1);
 
+        player2 = pgame.add.sprite(400, 400, 'blue');
+        
+
         pgame.physics.p2.enable(player, false);
         player.body.setCircle(24);
         player.body.fixedRotation = true;
@@ -348,11 +356,48 @@ aotb_game.levelbase = function(pgame){
             down:pgame.input.keyboard.addKey(Phaser.Keyboard.S)
         };
 
+
+        key1 = pgame.input.keyboard.addKey(Phaser.Keyboard.ONE);
+        //key1.onDown.add(addPhaserDude, this);
+
+        key2 = pgame.input.keyboard.addKey(Phaser.Keyboard.TWO);
+        //key2.onDown.add(addPhaserLogo, this);
+
+        key3 = pgame.input.keyboard.addKey(Phaser.Keyboard.THREE);
+        //key3.onDown.add(addPineapple, this);
+
+
+        weapon = pgame.add.weapon(30, 'bullet');
+
+        //  The bullet will be automatically killed when it leaves the world bounds
+        weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+        //  The speed at which the bullet is fired
+        weapon.bulletSpeed = 600;
+        //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
+        weapon.fireRate = 100;
+
+        //  Tell the Weapon to track the 'player' Sprite
+        //  With no offsets from the position
+        //  But the 'true' argument tells the weapon to track sprite rotation
+        weapon.trackSprite(player, 0, 0, true);
+
+        //cursors = this.input.keyboard.createCursorKeys();
+        fireButton2 = pgame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+
+        //if (fireButton2.isDown){
+          //  weapon.fire();
+        //}
         if (bulletEnable)
         {
             pgame.input.mouse.capture = true;
             fireButton = pgame.input.activePointer.leftButton;
         }
+
+        /*if (bulletEnable)
+        {
+            pgame.input.mouse.capture = true;
+            fireButton = pgame.input.activePointer.leftButton;
+        }*/
 
         /*if (fireButton.isDown)
         {
@@ -368,6 +413,9 @@ aotb_game.levelbase = function(pgame){
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.D);
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
+        pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.ONE);
+        pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.TWO);
+        pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.THREE);
 
         //display the count in the playing screen
         counterText = pgame.add.text(0,0,"Time: " + time + " Camels: " + numCamels, {font: '40px Arial', fill:'#fff', boundsAlignH: "center"});
@@ -394,6 +442,20 @@ aotb_game.levelbase = function(pgame){
         }
         else if (cursors.down.isDown || wasd.down.isDown){
             player.body.moveDown(200);
+        }
+        if (key1.isDown){
+            //player3 = pgame.add.sprite(500, 400, 'blue');
+            pgame.add.sprite(pgame.world.randomX, pgame.world.randomY, 'blue');
+        }
+        if (key2.isDown){
+            player3 = pgame.add.sprite(600, 400, 'blue');
+        }
+        if (key3.isDown){
+            player3 = pgame.add.sprite(700, 400, 'blue');
+        }
+
+        if (fireButton2.isDown){
+            weapon.fire();
         }
         //if (fireButton.isDown)
         //{
@@ -1022,7 +1084,7 @@ Bullet.prototype.setMove = function(tx,ty)
 
 Power = function(pgame, game,x, y, speed, lifespan)
 {
-    Phaser.Sprite.call(this, pgame, x, y, 'bullet');
+    Phaser.Sprite.call(this, pgame, x, y, 'blue');
 
     this.anchor.setTo(0.5);
     this.outOfBoundsKill = true;
@@ -1044,12 +1106,12 @@ Power = function(pgame, game,x, y, speed, lifespan)
     this.body.collides(camelCollisionGroup, game.bulletHitCamel, this);
     this.kill();
 }
-Bullet.prototype = Object.create(Phaser.Sprite.prototype);
-Bullet.prototype.constructor = Bullet;
-Bullet.prototype.update=function()
+Power.prototype = Object.create(Phaser.Sprite.prototype);
+Power.prototype.constructor = Bullet;
+Power.prototype.update=function()
 {
 }
-Bullet.prototype.resetTarget = function(x,y,tx,ty)
+Power.prototype.resetTarget = function(x,y,tx,ty)
 {
     this.revive();
     this.reset(x,y);
@@ -1058,7 +1120,7 @@ Bullet.prototype.resetTarget = function(x,y,tx,ty)
     this.lifespan = this.lifetime;
     this.setMove(tx,ty);
 }
-Bullet.prototype.setMove = function(tx,ty)
+Power.prototype.setMove = function(tx,ty)
 {
     var dx = tx - this.x;    
     var dy = ty - this.y;   
@@ -1071,9 +1133,15 @@ Bullet.prototype.setMove = function(tx,ty)
     this.body.velocity.y = this.speed * Math.sin(angle); 
 }
 
+
+
+
+
 function isTargetValid(obj){
     return (obj!=null && typeof obj !== 'undefined' && obj.alive);
 }
+
+
 
 function accelerateToObject (chaser, chased, speed){
     if (typeof speed === 'undefined') { 
@@ -1083,6 +1151,40 @@ function accelerateToObject (chaser, chased, speed){
     chaser.body.force.x = Math.cos(angle) * speed;
     chaser.body.force.y = Math.sin(angle) * speed;
     //console.log(Math.cos(angle) * speed, Math.sin(angle) * speed);
+}
+
+
+function addPhaserDude () {
+    //icon = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
+    player3 = pgame.add.sprite(500, 400, 'blue');
+}
+
+function addPhaserLogo () {
+    //icon2 = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
+    //icon = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
+    player4 = pgame.add.sprite(600, 400, 'blue');
+}
+
+function addPineapple () {
+    //icon3 = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
+    //icon = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
+    player5 = pgame.add.sprite(700, 400, 'blue');
+}
+
+function update() {
+
+    if (fireButton.isDown)
+    {
+        weapon.fire();
+    }
+
+ //   game.world.wrap(sprite, 16);
+}
+
+function render() {
+
+    weapon.debug();
+
 }
 
 function createPreviewBounds(game, x,y,w,h){
