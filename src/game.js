@@ -291,16 +291,28 @@ aotb_game.levelbase = function(pgame){
         //Timer
         pgame.time.events.loop(Phaser.Timer.SECOND*1.25, timer, this); 
 
+////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
         // Create our player sprite
         player = pgame.add.sprite(200, 200, 'player');
         player.scale.set(0.1);
+        player.anchor.set(0.5);
 
         player2 = pgame.add.sprite(400, 400, 'blue');
         
 
-        pgame.physics.p2.enable(player, false);
-        player.body.setCircle(24);
-        player.body.fixedRotation = true;
+        pgame.physics.p2.enable(player);
+        pgame.physics.arcade.enable(player);
+        //player.body.setCircle(24);
+        //player.body.fixedRotation = true;
+        //player.body.drag.set(70);
+        //player.body.maxVelocity.set(200);
 
         // Set the players collision group
         player.body.setCollisionGroup(playerCollisionGroup);
@@ -356,7 +368,14 @@ aotb_game.levelbase = function(pgame){
             down:pgame.input.keyboard.addKey(Phaser.Keyboard.S)
         };
 
-
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
         key1 = pgame.input.keyboard.addKey(Phaser.Keyboard.ONE);
         //key1.onDown.add(addPhaserDude, this);
 
@@ -383,6 +402,7 @@ aotb_game.levelbase = function(pgame){
 
         //cursors = this.input.keyboard.createCursorKeys();
         fireButton2 = pgame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+
 
         //if (fireButton2.isDown){
           //  weapon.fire();
@@ -432,9 +452,11 @@ aotb_game.levelbase = function(pgame){
 
         if (cursors.left.isDown || wasd.left.isDown){
             player.body.moveLeft(200);
+            player.body.angularVelocity = -10;
         }
         else if (cursors.right.isDown || wasd.right.isDown){
             player.body.moveRight(200);
+            player.body.angularVelocity = 10;
         }
 
         if (cursors.up.isDown || wasd.up.isDown){
@@ -443,6 +465,15 @@ aotb_game.levelbase = function(pgame){
         else if (cursors.down.isDown || wasd.down.isDown){
             player.body.moveDown(200);
         }
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+
         if (key1.isDown){
             //player3 = pgame.add.sprite(500, 400, 'blue');
             pgame.add.sprite(pgame.world.randomX, pgame.world.randomY, 'blue');
