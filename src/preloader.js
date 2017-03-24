@@ -63,6 +63,10 @@ aotb_game.preloadStage = function(){
     game.loadAsset('gameMusic', 'gameMusic.mp3', aotb_game.AssetType.AUDIO);
     game.loadAsset('bullet', 'bullet.GIF', aotb_game.AssetType.IMAGE);
     game.loadAsset('blue', 'blue.png', aotb_game.AssetType.IMAGE);
+    game.loadAsset('yellow', 'yellow.png', aotb_game.AssetType.IMAGE);
+    game.loadAsset('green', 'green.png', aotb_game.AssetType.IMAGE);
+    game.loadAsset('purple', 'purple.png', aotb_game.AssetType.IMAGE);
+    game.loadAsset('brown', 'brown.png', aotb_game.AssetType.IMAGE);
 
     //for shop
     game.loadAsset('shopScreen','backgrounds/shop_screen.png', aotb_game.AssetType.IMAGE);

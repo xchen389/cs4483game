@@ -17,6 +17,7 @@ var bullets;
 var blue;
 var sprite;
 var weapon;
+var weapon2;
 var cursors;
 var fireButton;
 
@@ -389,7 +390,6 @@ aotb_game.levelbase = function(pgame){
         // Set the players collision group
         player.body.setCollisionGroup(playerCollisionGroup);*/
 
-
         weapon = pgame.add.weapon(30, 'blue');
         //weapon.scale.set(0.1);
         //weapon.anchor.set(0.5);
@@ -397,16 +397,10 @@ aotb_game.levelbase = function(pgame){
         pgame.physics.arcade.enable(weapon);
         //weapon.body.setCollisionGroup(playerCollisionGroup);
 
-        //  The bullet will be automatically killed when it leaves the world bounds
         weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-        //  The speed at which the bullet is fired
-        weapon.bulletSpeed = 600;
-        //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
+        weapon.bulletSpeed = 800;
         weapon.fireRate = 100;
 
-        //  Tell the Weapon to track the 'player' Sprite
-        //  With no offsets from the position
-        //  But the 'true' argument tells the weapon to track sprite rotation
         weapon.trackSprite(player, 0, 0, true);
         //weapon.body.setRectangle(40);
         //weapon.body.setCollisionGroup(playerCollisionGroup);
@@ -415,11 +409,56 @@ aotb_game.levelbase = function(pgame){
 
         //cursors = this.input.keyboard.createCursorKeys();
         //fireButton2 = pgame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+        weapon2 = pgame.add.weapon(30, 'yellow');
+        pgame.physics.p2.enable(weapon2);
+        pgame.physics.arcade.enable(weapon2);
+        weapon2.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+        weapon2.bulletAngleOffset = 90;
 
+        weapon2.bulletSpeed = 200;
+        weapon2.fireRate = 80;
+        weapon2.bulletSpeedVariance = 100;
+
+        weapon2.trackSprite(player, 14, 0);
+
+        fireButton3 = pgame.input.keyboard.addKey(Phaser.KeyCode.TWO);
 
         //if (fireButton2.isDown){
           //  weapon.fire();
         //}
+
+        weapon3 = pgame.add.weapon(30, 'green');
+        pgame.physics.p2.enable(weapon3);
+        pgame.physics.arcade.enable(weapon3);
+        //weapon3.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+        weapon3.bulletAngleOffset = 150;
+
+        weapon3.bulletKillType = Phaser.Weapon.KILL_LIFESPAN;
+        weapon3.bulletLifespan = 2500;
+
+        weapon3.bulletSpeed = 600;
+        weapon3.fireRate = 150;
+        weapon3.bulletWorldWrap = true;
+
+        //  Tell the Weapon to track the 'player' Sprite
+        //  With no offsets from the position
+        //  But the 'true' argument tells the weapon to track sprite rotation
+        weapon3.trackSprite(player, 0, 0, true);
+
+        fireButton4 = pgame.input.keyboard.addKey(Phaser.KeyCode.THREE);
+
+        weapon4 = pgame.add.weapon(30, 'purple');
+        weapon4.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+
+        weapon4.bulletAngleOffset = 150;
+        weapon4.bulletSpeed = 500;
+        weapon4.fireRate = 30;
+        //  Add a variance to the bullet angle by +- this value
+        weapon4.bulletAngleVariance = 40;
+        weapon4.trackSprite(player, 14, 0);
+
+        fireButton5 = pgame.input.keyboard.addKey(Phaser.KeyCode.FOUR);
+
         if (bulletEnable)
         {
             pgame.input.mouse.capture = true;
@@ -501,6 +540,15 @@ aotb_game.levelbase = function(pgame){
 
         if (fireButton2.isDown){
             weapon.fire();
+        }
+        if (fireButton3.isDown){
+            weapon2.fire();
+        }
+        if (fireButton4.isDown){
+            weapon3.fire();
+        }
+        if (fireButton5.isDown){
+            weapon4.fire();
         }
         pgame.physics.arcade.collide(weapon, bubblesGroup);
         //pgame.physics.arcade.collide(weapon, bricks, ballHitBrick);
