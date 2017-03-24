@@ -27,6 +27,7 @@ var camelCollisionGroup;
 var fullBubbleCollisionGroup;
 var companionCollisionGroup;
 var bulletsCollisionGroup;
+var powerCollisionGroup;
 
 var customBounds;
 var bounds;
@@ -232,14 +233,6 @@ aotb_game.levelbase = function(pgame){
         // the width and height are wrong from pgame.world.width after adding quake effect
         bounds = new Phaser.Rectangle(1280/4, 800/4, 1280/2, 800/2);
 
-
-
-        ////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////
-
         //  Create our collision groups. One for the player, one for the bubblesGroup, one for the camelsGroup
         playerCollisionGroup = pgame.physics.p2.createCollisionGroup();
         bubbleCollisionGroup = pgame.physics.p2.createCollisionGroup();
@@ -247,6 +240,7 @@ aotb_game.levelbase = function(pgame){
         fullBubbleCollisionGroup = pgame.physics.p2.createCollisionGroup();
         companionCollisionGroup = pgame.physics.p2.createCollisionGroup();
         bulletsCollisionGroup = pgame.physics.p2.createCollisionGroup();
+        powerCollisionGroup = pgame.physics.p2.createCollisionGroup();
         
 
         //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
@@ -291,7 +285,7 @@ aotb_game.levelbase = function(pgame){
         //Timer
         pgame.time.events.loop(Phaser.Timer.SECOND*1.25, timer, this); 
 
-////////////////////
+        ////////////////////
         ////////////////////
         ////////////////////
         ////////////////////
@@ -304,7 +298,7 @@ aotb_game.levelbase = function(pgame){
         player.scale.set(0.1);
         player.anchor.set(0.5);
 
-        player2 = pgame.add.sprite(400, 400, 'blue');
+        //player2 = pgame.add.sprite(400, 400, 'blue');
         
 
         pgame.physics.p2.enable(player);
@@ -368,25 +362,40 @@ aotb_game.levelbase = function(pgame){
             down:pgame.input.keyboard.addKey(Phaser.Keyboard.S)
         };
 
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        key1 = pgame.input.keyboard.addKey(Phaser.Keyboard.ONE);
+        one = pgame.input.keyboard.addKey(Phaser.Keyboard.ONE);
         //key1.onDown.add(addPhaserDude, this);
 
-        key2 = pgame.input.keyboard.addKey(Phaser.Keyboard.TWO);
+        two = pgame.input.keyboard.addKey(Phaser.Keyboard.TWO);
         //key2.onDown.add(addPhaserLogo, this);
 
-        key3 = pgame.input.keyboard.addKey(Phaser.Keyboard.THREE);
+        three = pgame.input.keyboard.addKey(Phaser.Keyboard.THREE);
         //key3.onDown.add(addPineapple, this);
 
 
-        weapon = pgame.add.weapon(30, 'bullet');
+        /*player = pgame.add.sprite(200, 200, 'player');
+        player.scale.set(0.1);
+        player.anchor.set(0.5);
+
+        player2 = pgame.add.sprite(400, 400, 'blue');
+        
+
+        pgame.physics.p2.enable(player);
+        pgame.physics.arcade.enable(player);
+        //player.body.setCircle(24);
+        //player.body.fixedRotation = true;
+        //player.body.drag.set(70);
+        //player.body.maxVelocity.set(200);
+
+        // Set the players collision group
+        player.body.setCollisionGroup(playerCollisionGroup);*/
+
+
+        weapon = pgame.add.weapon(30, 'blue');
+        //weapon.scale.set(0.1);
+        //weapon.anchor.set(0.5);
+        pgame.physics.p2.enable(weapon);
+        pgame.physics.arcade.enable(weapon);
+        //weapon.body.setCollisionGroup(playerCollisionGroup);
 
         //  The bullet will be automatically killed when it leaves the world bounds
         weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
@@ -399,9 +408,13 @@ aotb_game.levelbase = function(pgame){
         //  With no offsets from the position
         //  But the 'true' argument tells the weapon to track sprite rotation
         weapon.trackSprite(player, 0, 0, true);
+        //weapon.body.setRectangle(40);
+        //weapon.body.setCollisionGroup(playerCollisionGroup);
+        //weapon.body.collides(bubbleCollisionGroup, bumpBubble, this);
+        //weapon.body.collides(fullBubbleCollisionGroup, self.bumpFullBubble, this);
 
         //cursors = this.input.keyboard.createCursorKeys();
-        fireButton2 = pgame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+        //fireButton2 = pgame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
 
         //if (fireButton2.isDown){
@@ -410,8 +423,14 @@ aotb_game.levelbase = function(pgame){
         if (bulletEnable)
         {
             pgame.input.mouse.capture = true;
+            fireButton2 = pgame.input.keyboard.addKey(Phaser.KeyCode.ONE);
             fireButton = pgame.input.activePointer.leftButton;
         }
+        /*weapon = pgame.add.group();
+        weapon.enableBody = true;
+        weapon.physicsBodyType = Phaser.Physics.P2JS;
+        var power = weapon.getFirstDead();
+        power.resetTarget(fromX, fromY,pgame.input.x,pgame.input.y);*/
 
         /*if (bulletEnable)
         {
@@ -458,6 +477,9 @@ aotb_game.levelbase = function(pgame){
             player.body.moveRight(200);
             player.body.angularVelocity = 10;
         }
+        else{
+            player.body.angularVelocity = 0;
+        }
 
         if (cursors.up.isDown || wasd.up.isDown){
             player.body.moveUp(200);
@@ -465,29 +487,33 @@ aotb_game.levelbase = function(pgame){
         else if (cursors.down.isDown || wasd.down.isDown){
             player.body.moveDown(200);
         }
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
-        ////////////////////
 
-        if (key1.isDown){
+        if (one.isDown){
             //player3 = pgame.add.sprite(500, 400, 'blue');
-            pgame.add.sprite(pgame.world.randomX, pgame.world.randomY, 'blue');
+            //pgame.add.sprite(pgame.world.randomX, pgame.world.randomY, 'blue');
         }
-        if (key2.isDown){
-            player3 = pgame.add.sprite(600, 400, 'blue');
+        if (two.isDown){
+            //player3 = pgame.add.sprite(600, 400, 'blue');
         }
-        if (key3.isDown){
-            player3 = pgame.add.sprite(700, 400, 'blue');
+        if (three.isDown){
+            //player3 = pgame.add.sprite(700, 400, 'blue');
         }
 
         if (fireButton2.isDown){
             weapon.fire();
         }
+        pgame.physics.arcade.collide(weapon, bubblesGroup);
+        //pgame.physics.arcade.collide(weapon, bricks, ballHitBrick);
+
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+        ////////////////////
+
         //if (fireButton.isDown)
         //{
         //weapon.fire();
@@ -532,7 +558,6 @@ aotb_game.levelbase = function(pgame){
 
             nextFire = pgame.time.now + fireRate;
             var bullet = bullets.getFirstDead();
-
             bullet.resetTarget(fromX, fromY,pgame.input.x,pgame.input.y);
         }
     }
@@ -714,6 +739,7 @@ aotb_game.levelbase = function(pgame){
         new_camel.body.fixedRotation = true;
         new_camel.body.collides(bubbleCollisionGroup, camelBubbleHit, this);
         new_camel.body.collides(bulletsCollisionGroup);
+        new_camel.body.collides(powerCollisionGroup);
     }
 
     function createBubbles(){
@@ -872,6 +898,7 @@ aotb_game.levelbase = function(pgame){
         numCamels--;
         score -= 1000;
     }
+    //this.powerHitCamel
     
     function camelShotNotice(){
         self.displayText("You shot a camel!", 0.8, function(){
@@ -885,7 +912,7 @@ aotb_game.levelbase = function(pgame){
         fullBubble.enableBody = true;
         fullBubble.body.setCircle(24);
         fullBubble.body.setCollisionGroup(fullBubbleCollisionGroup);
-        fullBubble.body.collides([playerCollisionGroup,companionCollisionGroup,bulletsCollisionGroup]);
+        fullBubble.body.collides([playerCollisionGroup,companionCollisionGroup,bulletsCollisionGroup,powerCollisionGroup]);
         numFullBubbles++;
     }
 
@@ -991,7 +1018,7 @@ Bubble = function(game, x, y, target, speed)
     this.body.setCircle(24);
     this.body.setCollisionGroup(bubbleCollisionGroup);
     this.body.fixedRotation = true;
-    this.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup, bulletsCollisionGroup]);
+    this.body.collides([bubbleCollisionGroup, playerCollisionGroup, camelCollisionGroup, bulletsCollisionGroup,powerCollisionGroup]);
     this.target = target;
     this.speed = speed;
     
@@ -1115,7 +1142,7 @@ Bullet.prototype.setMove = function(tx,ty)
 
 Power = function(pgame, game,x, y, speed, lifespan)
 {
-    Phaser.Sprite.call(this, pgame, x, y, 'blue');
+    Phaser.Sprite.call(this, pgame, x, y, 'bullet');
 
     this.anchor.setTo(0.5);
     this.outOfBoundsKill = true;
@@ -1131,14 +1158,14 @@ Power = function(pgame, game,x, y, speed, lifespan)
     this.body.setRectangle(35);
     this.body.fixedRotation = true;
 
-    this.body.setCollisionGroup(bulletsCollisionGroup);
+    this.body.setCollisionGroup(powerCollisionGroup);
     this.body.collides(fullBubbleCollisionGroup, game.bulletHitFullBubble, this);
     this.body.collides(bubbleCollisionGroup, game.bulletHitBubble, this);
     this.body.collides(camelCollisionGroup, game.bulletHitCamel, this);
     this.kill();
 }
 Power.prototype = Object.create(Phaser.Sprite.prototype);
-Power.prototype.constructor = Bullet;
+Power.prototype.constructor = Power;
 Power.prototype.update=function()
 {
 }
@@ -1185,18 +1212,18 @@ function accelerateToObject (chaser, chased, speed){
 }
 
 
-function addPhaserDude () {
+function addDooo () {
     //icon = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
     player3 = pgame.add.sprite(500, 400, 'blue');
 }
 
-function addPhaserLogo () {
+function AddLooo () {
     //icon2 = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
     //icon = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
     player4 = pgame.add.sprite(600, 400, 'blue');
 }
 
-function addPineapple () {
+function addPlew () {
     //icon3 = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
     //icon = pgame.add.sprite(this.world.randomX, this.world.randomY, 'blue');
     player5 = pgame.add.sprite(700, 400, 'blue');
