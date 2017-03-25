@@ -28,6 +28,7 @@ aotb_game.preloadStage = function()
 		game.loadAsset('creditsButton','buttons/credits_button.png', aotb_game.AssetType.IMAGE);
 
 		game.loadAsset('buttonClickSound', 'button_hover.mp3', aotb_game.AssetType.AUDIO);
+    game.loadasset('buttonHoverSound', 'hoverSound.mp3', aotb_game.AssetType.AUDIO);
 		game.loadAsset('buttonClickedSound','button_clicked.mp3', aotb_game.AssetType.AUDIO);
 		game.loadAsset('introMusic', 'introMusic.ogg', aotb_game.AssetType.AUDIO); 
 

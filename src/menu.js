@@ -15,6 +15,8 @@ aotb_game.menu = function(){
 		newGameButton.setDownSound(buttonPressSound);
 		loadGameButton.setDownSound(buttonPressSound);
 		CreditButton.setDownSound(buttonPressSound);
+		newGameButton.onInputOver.add(highlight, this);
+		newGameButton.tint = Math.random() * 0xffffff;
 
 		if(introMusic == null){
 			introMusic = this.add.audio('introMusic');
@@ -25,6 +27,10 @@ aotb_game.menu = function(){
 			introMusic.volume = playerData.musicVolume;
 			introMusic.play();
 		}
+	}
+
+	function highlight(){
+
 	}
 
 	function newGame(){
