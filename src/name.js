@@ -8,8 +8,11 @@ aotb_game.nameScreen = function(){
 
 	this.create = function(){
 		this.add.tileSprite(0,0, 1280, 800, 'nameScreen');
-		this.add.button(200,500, 'backButton', goBackToMenu,this);
-		this.add.button(800,500, 'nextButton', continueToGame, this);
+		var buttonPressSound = this.add.audio('buttonClickSound');
+		var backButton = this.add.button(200,500, 'backButton', goBackToMenu,this);
+		var nextButton = this.add.button(800,500, 'nextButton', continueToGame, this);
+		backButton.setDownSound(buttonPressSound);
+		nextButton.setDownSound(buttonPressSound);
 
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
@@ -34,8 +37,17 @@ aotb_game.nameScreen = function(){
 	function continueToGame(){
 		
 		//If nothing is written in the box, don't let user go to game
-		if(input.value == "")
+		if(input.value == ""){
+			String myText = "Please Enter Your Name!";
+			game.time.events.add(2000, 
+				function() {    
+					game.add.tween(myText).to({y: 0}, 1500, Phaser.Easing.Linear.None, true);    
+					game.add.tween(myText).to({alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
+			}, 
+			this);
 			return;
+		}
+
 		//assign global playerData object name to this value
 		playerData.name = input.value;
 
