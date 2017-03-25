@@ -37,14 +37,14 @@ aotb_game.nameScreen = function(){
 	function continueToGame(){
 		
 		//If nothing is written in the box, don't let user go to game
+		//and show notification to write in text
 		if(input.value == ""){
-			String myText = "Please Enter Your Name!";
-			game.time.events.add(2000, 
-				function() {    
-					game.add.tween(myText).to({y: 0}, 1500, Phaser.Easing.Linear.None, true);    
-					game.add.tween(myText).to({alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
-			}, 
-			this);
+			this.instructions = this.add.text(650, 300, 
+    		"Please Enter Your Name!", 
+    		{font: '25px monospace', fill: '#000', align: 'center'}
+  			);
+  			this.instructions.anchor.setTo(0.5, 0.5);
+  			this.time.events.add(1000, this.instructions.destroy, this.instructions);
 			return;
 		}
 
