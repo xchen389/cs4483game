@@ -115,7 +115,7 @@ aotb_game.levelbase = function(pgame){
         function unpause(event){
 
             // Only act if paused
-            if(pgame.game.paused){
+            if(pgame.game.paused && isTargetValid(menu)){
 
                 // corners of the pause menu
                 var x1 = 160, x2 = 160 + menuW,
@@ -375,7 +375,7 @@ aotb_game.levelbase = function(pgame){
         }
 
         //winning condition - go to shop
-        if(time == 0 || numCamels<2){
+        if(time <= 0 && camelsRemained>=2) {
             gameOver();
         }
 
@@ -445,70 +445,71 @@ aotb_game.levelbase = function(pgame){
 
     function moveCamels() {
 
-        for(var i=0 ; i<numCamels ; i++){
-            camelsGroup.getAt(i).body.setZeroVelocity();
+        camelsGroup.forEachAlive(function(childObj){
+            childObj.body.setZeroVelocity();
             // randomise the movement   
             CamelsMover = pgame.rnd.integerInRange(1, 7);    
             // simple if statement to choose if and which way the baddie moves  
             if (CamelsMover == 1) {
-                if(camelsGroup.getAt(i).x < 450)        
-                camelsGroup.getAt(i).body.velocity.x = 50;
+                if(childObj.x < 450)        
+                    childObj.body.velocity.x = 50;
                 else        
-                    camelsGroup.getAt(i).body.velocity.x = -50;
+                    childObj.body.velocity.x = -50;
                 
             }   
             else if(CamelsMover == 2) 
             {
-                if(camelsGroup.getAt(i).x > 850)        
-                camelsGroup.getAt(i).body.velocity.x = -50;
+                if(childObj.x > 850)        
+                childObj.body.velocity.x = -50;
                 else
-                    camelsGroup.getAt(i).body.velocity.x = 50;
+                    childObj.body.velocity.x = 50;
             }   
             else if (CamelsMover == 3) {
-                if(camelsGroup.getAt(i).y < 350)
-                camelsGroup.getAt(i).body.velocity.y = 50;
+                if(childObj.y < 350)
+                childObj.body.velocity.y = 50;
                 else
-                    camelsGroup.getAt(i).body.velocity.y = -50; 
+                    childObj.body.velocity.y = -50; 
             }   
             else if (CamelsMover == 4) {
-                if(camelsGroup.getAt(i).y > 500)        
-                camelsGroup.getAt(i).body.velocity.y = -50;
+                if(childObj.y > 500)        
+                childObj.body.velocity.y = -50;
                 else
-                    camelsGroup.getAt(i).body.velocity.y = 50;
+                    childObj.body.velocity.y = 50;
             }   
             else {      
-                camelsGroup.getAt(i).body.velocity.x = 0;       
+                childObj.body.velocity.x = 0;       
                 
             }
-        }
+        },this);
     }	
 
 
     function moveFullBubbles() {
-        for(var i=0 ; i<numFullBubbles ; i++){
-            xPos = Math.abs(fullBubbleGroup.getAt(i).x - 1300);
-            xMin = Math.abs(fullBubbleGroup.getAt(i).x - 0);
+        fullBubbleGroup.forEachAlive(function(childObj){
+            xPos = Math.abs(childObj.x - 1300);
+            xMin = Math.abs(childObj.x - 0);
 
-            yPos = Math.abs(fullBubbleGroup.getAt(i).y - 820);
-            yMin = Math.abs(fullBubbleGroup.getAt(i).y - 0);
+            yPos = Math.abs(childObj.y - 820);
+            yMin = Math.abs(childObj.y - 0);
 
             if(xPos<xMin && xPos<yMin && xPos<yPos)
-                fullBubbleGroup.getAt(i).body.velocity.x = 90;
+                childObj.body.velocity.x = 90;
             else if(xMin<yMin && xMin<yPos && xMin<xPos)
-                fullBubbleGroup.getAt(i).body.velocity.x = -90;
+                childObj.body.velocity.x = -90;
             else if(yPos<yMin && yPos<xPos && yPos<xMin)
-                fullBubbleGroup.getAt(i).body.velocity.y = 90;
+                childObj.body.velocity.y = 90;
             else
-                fullBubbleGroup.getAt(i).body.velocity.y = -90;
+                childObj.body.velocity.y = -90;
+            
+            if(childObj.y > 750 || childObj.y < 50 || childObj.x > 1000 || childObj.x < 50){
+                childObj.body.sprite.alive = false;
+        		childObj.body.sprite.pendingDestroy = true;
+                fullBubbleGroup.remove(childObj.body);
 
-            if(fullBubbleGroup.getAt(i).y > 750 || fullBubbleGroup.getAt(i).y < 50 || fullBubbleGroup.getAt(i).x > 1000 || fullBubbleGroup.getAt(i).x < 50){
-                numFullBubbles--;
-                numCamels--;
-                fullBubbleGroup.getAt(i).body.sprite.alive = false;
-        		fullBubbleGroup.getAt(i).body.sprite.pendingDestroy = true;
-                fullBubbleGroup.remove(fullBubbleGroup.getAt(i).body);
+                numFullBubbles = fullBubbleGroup.countLiving();
+                numCamels = camelsGroup.countLiving();
             }
-        }
+        },this);
     }	
 
     function moveBubbles() {
@@ -574,7 +575,6 @@ aotb_game.levelbase = function(pgame){
     // body 2 is the full bubble
     // method should destroy fullBubble, and put camel back
     this.bumpFullBubble = function(playerBody, fullBubbleBody){
-
         //create new camel at where fullBubble was
         new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
         numCamels++;
@@ -889,7 +889,7 @@ Bubble.prototype.update = function()
 {
     if (!isTargetValid(this.target))
     {
-        console.log("target camel missing! Looking for next target...");
+        //console.log("target camel missing! Looking for next target...");
         this.target = findNearestInGroup(this.body.x, this.body.y, camelsGroup);
         if (!isTargetValid(this.target)) { return;}
     }
@@ -966,7 +966,7 @@ Companion.prototype.wander = function()
 }
 Companion.prototype.gotoRandom = function()
 {
-    this.pgame.add.tween(this.body).to(bounds.random(), 5000, Phaser.Easing.Sinusoidal.InOut, true);
+    accelerateToObject(this, bounds.random(), this.speed);
 }
 //-------------------------end of Companion class
 
