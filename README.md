@@ -4,7 +4,9 @@
 	https://drive.google.com/drive/folders/0B0QVWVNDpyXyVFYtQWdxTUxRcGs?usp=sharing
 
 ## How to Play The Game
+	Option 1: visit https://xchen389.github.io/cs4483game/ for the github hosted version
 	
+	Option 2: play locally (with local hosting)
 	-download and unzip the game
 	-Open a terminal in the root of this and
 	write in command line for depending on what language you have:

@@ -3,7 +3,8 @@ var music;
 
 var barkSound;
 
-var counterText; //Camel and Bubble Count Text
+var camelCountText;
+var timeCountText;
 var notificationText;
 
 var companion;
@@ -27,6 +28,7 @@ var bounds;
 
 //game object definiton
 aotb_game.levelbase = function(pgame){
+    
     var player;
     var cursors;
     var wasd;
@@ -41,8 +43,12 @@ aotb_game.levelbase = function(pgame){
     //change these depending on how many bubbles and want
     var numBubbles = 0;
 
+    //when camel is taken by bubble object this decrements
     var numCamels = 5;
-    var camelsRemained = numCamels;
+
+    //this will decrement when bubbles are taken away
+    var camelsLeft = 5;
+
     var numFullBubbles = 0;
 
     var time = 120;
@@ -62,6 +68,12 @@ aotb_game.levelbase = function(pgame){
         pauseButton.width = 100;
         pauseButton.height = 35;
         pauseButton.inputEnabled = true;
+
+        var buttonPressSound = pgame.add.audio('buttonClickSound');
+        var buttonHoverSound = pgame.add.audio('buttonHoverSound');
+
+        pauseButton.setDownSound(buttonPressSound);
+        pauseButton.setOverSound(buttonHoverSound);
 
         //pause menu variables 
         var menu;
@@ -87,15 +99,13 @@ aotb_game.levelbase = function(pgame){
 
 
                 choiceLabel = pgame.add.text(w/2,h-150, 'Click Outside the Menu To Continue', 
-                    { font:
-                    '30px Arial', 
-                    fill: '#000'}
+                    { font:'30px Arial', fill: '#000'}
                 );
 
                 choiceLabel.anchor.setTo(0.5,0.5);
 
-                musicText = pgame.add.text(w/2-420, h/2 + 150, "Music Volume: " + playerData.musicVolume*100);
-                fxText = pgame.add.text(w/2-420, h/2 + 180, "FX Volume: " + playerData.fxVolume*100);
+                musicText = pgame.add.text(w/2-450, h/2 + 150, "Music Volume: " + playerData.musicVolume*100);
+                fxText = pgame.add.text(w/2-450, h/2 + 180, "FX Volume: " + playerData.fxVolume*100);
             }
         );
 
@@ -105,7 +115,7 @@ aotb_game.levelbase = function(pgame){
         function unpause(event){
 
             // Only act if paused
-            if(pgame.game.paused){
+            if(pgame.game.paused && isTargetValid(menu)){
 
                 // corners of the pause menu
                 var x1 = 160, x2 = 160 + menuW,
@@ -122,6 +132,8 @@ aotb_game.levelbase = function(pgame){
                     ){
                         pgame.game.paused = false;
                         togglePause(false);
+                        var buttonPressSound = pgame.add.audio('buttonClickSound');
+                        buttonPressSound.play();
                         pgame.state.start('menu');
                    }
 
@@ -197,7 +209,7 @@ aotb_game.levelbase = function(pgame){
         //So far I think it works, but you can remove it it's being dumb
         //pgame.world.setBounds(0,0,w-7, h-7);
         var worldOutline = pgame.add.graphics(0, 0);
-        worldOutline.lineStyle(7, 0x0, 1);
+        worldOutline.lineStyle(7, 0x000000, 1);
         worldOutline.drawRect(0,0, w, h);
 
         //  The bounds of centre camel playground
@@ -271,7 +283,7 @@ aotb_game.levelbase = function(pgame){
         player.body.collides(fullBubbleCollisionGroup, self.bumpFullBubble, this);
 
         // setup companion
-        companion = new Companion(pgame, this, 200, 600, speed=120);
+        companion = new Companion(pgame, this, 300, 600, 120);
         pgame.add.existing(companion);
 
         //bullet group
@@ -319,7 +331,8 @@ aotb_game.levelbase = function(pgame){
         if (bulletEnable)
         {
             pgame.input.mouse.capture = true;
-            fireButton = pgame.input.activePointer.leftButton;
+            //fireButton = pgame.input.activePointer.leftButton;
+            fireButton = pgame.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         }
 
         // setup pause on space key pressed
@@ -332,8 +345,10 @@ aotb_game.levelbase = function(pgame){
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
 
-        counterText = pgame.add.text(0,0,"Time: " + time + " Camels: " + numCamels, {font: '40px Arial', fill:'#fff', boundsAlignH: "center"});
-        counterText.setTextBounds(0, 10, pgame.world.width, 100);
+
+        timeCountText = pgame.add.text(14,10, "Time: " + time, {font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
+        camelCountText = pgame.add.text(0,0, "Camels: " + numCamels, {font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
+        camelCountText.setTextBounds(0, 10, pgame.world.width, 100);
     };
 
     //runs continuously. 
@@ -360,19 +375,12 @@ aotb_game.levelbase = function(pgame){
         }
 
         //winning condition - go to shop
-        if(time == 0 || camelsRemained<2)
-        {
+        if(time <= 0 && camelsRemained>=2) {
             gameOver();
         }
-        	
-
-        /* if camels are ever 0, game over - exit game
-        if(camelsGroup.countLiving() == 0)
-        	//losing condition
-        */
 
         //losing condition
-        if(numCamels <= 0)
+        if(numCamels <= 0 && fullBubbleGroup.countLiving() <= 0)
         	pgame.state.start('gameover');
 
         updateCounterText();
@@ -392,8 +400,7 @@ aotb_game.levelbase = function(pgame){
 
     function fire()
     {
-        if (pgame.time.now > nextFire && bullets.countDead() > 0)
-        {
+        if (pgame.time.now > nextFire && bullets.countDead() > 0){
             var fromX = player.x;
             var fromY = player.y;
 
@@ -438,70 +445,71 @@ aotb_game.levelbase = function(pgame){
 
     function moveCamels() {
 
-        for(var i=0 ; i<numCamels ; i++){
-            camelsGroup.getAt(i).body.setZeroVelocity();
+        camelsGroup.forEachAlive(function(childObj){
+            childObj.body.setZeroVelocity();
             // randomise the movement   
             CamelsMover = pgame.rnd.integerInRange(1, 7);    
             // simple if statement to choose if and which way the baddie moves  
             if (CamelsMover == 1) {
-                if(camelsGroup.getAt(i).x < 450)        
-                camelsGroup.getAt(i).body.velocity.x = 50;
+                if(childObj.x < 450)        
+                    childObj.body.velocity.x = 50;
                 else        
-                    camelsGroup.getAt(i).body.velocity.x = -50;
+                    childObj.body.velocity.x = -50;
                 
             }   
             else if(CamelsMover == 2) 
             {
-                if(camelsGroup.getAt(i).x > 850)        
-                camelsGroup.getAt(i).body.velocity.x = -50;
+                if(childObj.x > 850)        
+                childObj.body.velocity.x = -50;
                 else
-                    camelsGroup.getAt(i).body.velocity.x = 50;
+                    childObj.body.velocity.x = 50;
             }   
             else if (CamelsMover == 3) {
-                if(camelsGroup.getAt(i).y < 350)
-                camelsGroup.getAt(i).body.velocity.y = 50;
+                if(childObj.y < 350)
+                childObj.body.velocity.y = 50;
                 else
-                    camelsGroup.getAt(i).body.velocity.y = -50; 
+                    childObj.body.velocity.y = -50; 
             }   
             else if (CamelsMover == 4) {
-                if(camelsGroup.getAt(i).y > 500)        
-                camelsGroup.getAt(i).body.velocity.y = -50;
+                if(childObj.y > 500)        
+                childObj.body.velocity.y = -50;
                 else
-                    camelsGroup.getAt(i).body.velocity.y = 50;
+                    childObj.body.velocity.y = 50;
             }   
             else {      
-                camelsGroup.getAt(i).body.velocity.x = 0;       
+                childObj.body.velocity.x = 0;       
                 
             }
-        }
+        },this);
     }	
 
 
     function moveFullBubbles() {
-        for(var i=0 ; i<numFullBubbles ; i++){
-            xPos = Math.abs(fullBubbleGroup.getAt(i).x - 1300);
-            xMin = Math.abs(fullBubbleGroup.getAt(i).x - 0);
+        fullBubbleGroup.forEachAlive(function(childObj){
+            xPos = Math.abs(childObj.x - 1300);
+            xMin = Math.abs(childObj.x - 0);
 
-            yPos = Math.abs(fullBubbleGroup.getAt(i).y - 820);
-            yMin = Math.abs(fullBubbleGroup.getAt(i).y - 0);
+            yPos = Math.abs(childObj.y - 820);
+            yMin = Math.abs(childObj.y - 0);
 
             if(xPos<xMin && xPos<yMin && xPos<yPos)
-                fullBubbleGroup.getAt(i).body.velocity.x = 90;
+                childObj.body.velocity.x = 90;
             else if(xMin<yMin && xMin<yPos && xMin<xPos)
-                fullBubbleGroup.getAt(i).body.velocity.x = -90;
+                childObj.body.velocity.x = -90;
             else if(yPos<yMin && yPos<xPos && yPos<xMin)
-                fullBubbleGroup.getAt(i).body.velocity.y = 90;
+                childObj.body.velocity.y = 90;
             else
-                fullBubbleGroup.getAt(i).body.velocity.y = -90;
+                childObj.body.velocity.y = -90;
+            
+            if(childObj.y > 750 || childObj.y < 50 || childObj.x > 1000 || childObj.x < 50){
+                childObj.body.sprite.alive = false;
+        		childObj.body.sprite.pendingDestroy = true;
+                fullBubbleGroup.remove(childObj.body);
 
-            if(fullBubbleGroup.getAt(i).y > 750 || fullBubbleGroup.getAt(i).y < 50 || fullBubbleGroup.getAt(i).x > 1000 || fullBubbleGroup.getAt(i).x < 50){
-                numFullBubbles--;
-                camelsRemained--;
-                fullBubbleGroup.getAt(i).body.sprite.alive = false;
-        		fullBubbleGroup.getAt(i).body.sprite.pendingDestroy = true;
-                fullBubbleGroup.remove(fullBubbleGroup.getAt(i).body);
+                numFullBubbles = fullBubbleGroup.countLiving();
+                numCamels = camelsGroup.countLiving();
             }
-        }
+        },this);
     }	
 
     function moveBubbles() {
@@ -522,7 +530,8 @@ aotb_game.levelbase = function(pgame){
     //call this everytime bubble pops
     function updateCounterText(){
         //add formatting for text later
-        counterText.setText("Time: " + time + " Camels: " + numCamels);
+        camelCountText.setText("Camels: " + numCamels);
+        timeCountText.setText("Time: " + time);
     }
 
     function gameOver()
@@ -566,7 +575,6 @@ aotb_game.levelbase = function(pgame){
     // body 2 is the full bubble
     // method should destroy fullBubble, and put camel back
     this.bumpFullBubble = function(playerBody, fullBubbleBody){
-
         //create new camel at where fullBubble was
         new_camel = createCamel(fullBubbleBody.sprite.position.x, fullBubbleBody.sprite.position.y);
         numCamels++;
@@ -578,8 +586,6 @@ aotb_game.levelbase = function(pgame){
         fullBubbleGroup.remove(fullBubbleBody);
 
         popSound.play();
-
-        //updateCounterText();
     }
 
     function createCamel(x,y){
@@ -681,12 +687,12 @@ aotb_game.levelbase = function(pgame){
         
         if (!pause && pgame.physics.p2.paused)
         {
-            console.log("unpause called");
+            //console.log("unpause called");
             pgame.physics.p2.resume();
         }
         else if (pause && !pgame.physics.p2.paused)
         {
-            console.log("pause called");
+            //console.log("pause called");
             pgame.physics.p2.pause();     
         }      
     }
@@ -831,14 +837,13 @@ function findNearestInGroup(x,y, objGroup)
     }
     var nearestObj;
     var dist;
-    objGroup.forEach(function(childObj, x, y){
+    objGroup.forEachAlive(function(childObj, x, y){
         if (typeof nearestObj === 'undefined')
         {
-            console.log("child undefined");
+           // console.log("child undefined");
             nearestObj = childObj;
             dist = Math.pow(nearestObj.x - x, 2)
                    +Math.pow(nearestObj.y - y, 2);
-            
         }
         else
         {
@@ -884,7 +889,7 @@ Bubble.prototype.update = function()
 {
     if (!isTargetValid(this.target))
     {
-        console.log("target camel missing! Looking for next target...");
+        //console.log("target camel missing! Looking for next target...");
         this.target = findNearestInGroup(this.body.x, this.body.y, camelsGroup);
         if (!isTargetValid(this.target)) { return;}
     }
@@ -898,20 +903,23 @@ Companion = function(pgame, game, x, y, speed)
 {
     Phaser.Sprite.call(this, pgame, x, y, 'companion');
 
+    this.pgame = pgame;
+    pgame.physics.enable(this, Phaser.Physics.P2JS);
+
     this.scale.setTo(0.4);
     this.anchor.setTo(0.5);
     this.speed = speed;
-
-    pgame.physics.enable(this, Phaser.Physics.P2JS);
-
-    this.body.setRectangle(35);
+    
+    this.body.setRectangle(40);
     this.body.fixedRotation = true;
+    //this.body.checkWorldBounds = true;
 
     this.body.setCollisionGroup(companionCollisionGroup);
     this.body.collides(fullBubbleCollisionGroup, game.bumpFullBubble, this);
     
     this.state = 'idle';
     this.target = null;
+    this.wanderloop = null;
 };
 Companion.prototype = Object.create(Phaser.Sprite.prototype);
 Companion.prototype.constructor = Companion;
@@ -919,11 +927,23 @@ Companion.prototype.update = function()
 {
     if (this.state == 'idle' || !isTargetValid(this.target))
     {
-        this.state = 'idle';
         this.findTarget();
+
+        if (!isTargetValid(this.target))
+        {
+            this.state = 'idle';
+            if (this.wanderloop == null)
+                this.wander();
+        }
     }
     else if (this.state == 'chase')
     {
+        if (this.wanderloop != null)
+        {
+            this.pgame.time.events.remove(this.wanderloop);
+            this.wanderloop = null;
+        }
+
         accelerateToObject(this, this.target, this.speed);
     }
 };
@@ -942,7 +962,11 @@ Companion.prototype.findTarget = function()
 }
 Companion.prototype.wander = function()
 {
-    
+    this.wanderloop = this.pgame.time.events.loop(Phaser.Timer.SECOND * 1.5, this.gotoRandom, this);
+}
+Companion.prototype.gotoRandom = function()
+{
+    accelerateToObject(this, bounds.random(), this.speed);
 }
 //-------------------------end of Companion class
 
@@ -1011,6 +1035,13 @@ function accelerateToObject (chaser, chased, speed)
     var angle = Math.atan2(chased.y - chaser.y, chased.x - chaser.x);
     chaser.body.force.x = Math.cos(angle) * speed;
     chaser.body.force.y = Math.sin(angle) * speed;
+}
+function moveToObject (chaser, chased, speed)
+{
+    if (typeof speed === 'undefined') { speed = 50;}
+    var angle = Math.atan2(chased.y - chaser.y, chased.x - chaser.x);
+    chaser.body.velocity.x = Math.cos(angle) * speed;
+    chaser.body.velocity.y = Math.sin(angle) * speed;
 }
 
 function createPreviewBounds(game, x,y,w,h){
