@@ -16,6 +16,10 @@ aotb_game.menu = function(){
 		var loadGameButton = this.add.button(205,370, 'loadGameButton', loadGame, this);
 		var CreditButton = this.add.button(205,470, 'creditsButton', loadCredits,this);
 
+		var howtoPlaybutton = this.add.button(50, 360, 'questionMark', displayTips, this);
+		howtoPlaybutton.height  = 100;
+		howtoPlaybutton.width = 100;
+
 		//add sounds for over and down actions
 		newGameButton.setDownSound(buttonPressSound);
 		loadGameButton.setDownSound(buttonPressSound);
@@ -39,7 +43,8 @@ aotb_game.menu = function(){
 		}
 	}
 
-	function highlight(){
+	//function called when howtoPlayButton is clicked
+	function displayTips(){
 
 	}
 

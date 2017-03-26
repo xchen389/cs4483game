@@ -19,7 +19,6 @@ aotb_game.nameScreen = function(){
 		backButton.setOverSound(buttonHoverSound);
 		nextButton.setOverSound(buttonHoverSound);
 
-
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
 			introMusic.volume = playerData.musicVolume;
@@ -47,7 +46,7 @@ aotb_game.nameScreen = function(){
 		if(input.value == ""){
 			this.instructions = this.add.text(650, 300, 
     		"Please Enter Your Name!", 
-    		{font: '25px monospace', fill: '#000', align: 'center'}
+    		{font: '30px monospace', fill: '#000', align: 'center'}
   			);
   			this.instructions.anchor.setTo(0.5, 0.5);
   			this.time.events.add(1000, this.instructions.destroy, this.instructions);

@@ -37,6 +37,7 @@ aotb_game.preloadStage = function()
 		game.loadAsset('backButton', 'buttons/back_button.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('deleteAllButton', 'buttons/deleteAll_button.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('blankButton', 'buttons/blankLoad_button.png', aotb_game.AssetType.IMAGE);
+    game.loadAsset('questionMark','buttons/question_mark.png', aotb_game.AssetType.IMAGE);
 
     // for gameover
     game.loadAsset('gameoverBackground', 'backgrounds/gameover_screen.png', aotb_game.AssetType.IMAGE);
