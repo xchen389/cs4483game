@@ -28,6 +28,7 @@ var bounds;
 
 //game object definiton
 aotb_game.levelbase = function(pgame){
+    
     var player;
     var cursors;
     var wasd;
@@ -42,8 +43,12 @@ aotb_game.levelbase = function(pgame){
     //change these depending on how many bubbles and want
     var numBubbles = 0;
 
+    //when camel is taken by bubble object this decrements
     var numCamels = 5;
-    var camelsRemained = numCamels;
+
+    //this will decrement when bubbles are taken away
+    var camelsLeft = 5;
+
     var numFullBubbles = 0;
 
     var time = 120;
@@ -94,9 +99,7 @@ aotb_game.levelbase = function(pgame){
 
 
                 choiceLabel = pgame.add.text(w/2,h-150, 'Click Outside the Menu To Continue', 
-                    { font:
-                    '30px Arial', 
-                    fill: '#000'}
+                    { font:'30px Arial', fill: '#000'}
                 );
 
                 choiceLabel.anchor.setTo(0.5,0.5);
@@ -344,8 +347,6 @@ aotb_game.levelbase = function(pgame){
 
         timeCountText = pgame.add.text(14,10, "Time: " + time, {font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
         camelCountText = pgame.add.text(0,0, "Camels: " + numCamels, {font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
-        //counterText = pgame.add.text(0,0,"Time: " + time + " Camels: " + numCamels, 
-            //{font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
         camelCountText.setTextBounds(0, 10, pgame.world.width, 100);
     };
 
@@ -373,16 +374,10 @@ aotb_game.levelbase = function(pgame){
         }
 
         //winning condition - go to shop
-        if(time == 0 || camelsRemained<2)
+        if(time == 0 || numCamels<2)
         {
             gameOver();
         }
-        	
-
-        /* if camels are ever 0, game over - exit game
-        if(camelsGroup.countLiving() == 0)
-        	//losing condition
-        */
 
         //losing condition
         if(numCamels <= 0)
@@ -405,8 +400,7 @@ aotb_game.levelbase = function(pgame){
 
     function fire()
     {
-        if (pgame.time.now > nextFire && bullets.countDead() > 0)
-        {
+        if (pgame.time.now > nextFire && bullets.countDead() > 0){
             var fromX = player.x;
             var fromY = player.y;
 
@@ -509,7 +503,7 @@ aotb_game.levelbase = function(pgame){
 
             if(fullBubbleGroup.getAt(i).y > 750 || fullBubbleGroup.getAt(i).y < 50 || fullBubbleGroup.getAt(i).x > 1000 || fullBubbleGroup.getAt(i).x < 50){
                 numFullBubbles--;
-                camelsRemained--;
+                numCamels--;
                 fullBubbleGroup.getAt(i).body.sprite.alive = false;
         		fullBubbleGroup.getAt(i).body.sprite.pendingDestroy = true;
                 fullBubbleGroup.remove(fullBubbleGroup.getAt(i).body);
@@ -537,7 +531,6 @@ aotb_game.levelbase = function(pgame){
         //add formatting for text later
         camelCountText.setText("Camels: " + numCamels);
         timeCountText.setText("Time: " + time);
-        //counterText.setText("Time: " + time + " Camels: " + numCamels);
     }
 
     function gameOver()
