@@ -8,15 +8,25 @@ aotb_game.menu = function(){
 
 	this.create = function(){
 		this.add.tileSprite(0,0, 1280, 800, 'menuBackground');
+
 		var buttonPressSound = this.add.audio('buttonClickSound');
+		var buttonHoverSound = this.add.audio('buttonHoverSound');
+
 		var newGameButton = this.add.button(205,270,'newGameButton',newGame, this);
 		var loadGameButton = this.add.button(205,370, 'loadGameButton', loadGame, this);
 		var CreditButton = this.add.button(205,470, 'creditsButton', loadCredits,this);
+
+		//add sounds for over and down actions
 		newGameButton.setDownSound(buttonPressSound);
 		loadGameButton.setDownSound(buttonPressSound);
 		CreditButton.setDownSound(buttonPressSound);
-		newGameButton.onInputOver.add(highlight, this);
-		newGameButton.tint = Math.random() * 0xffffff;
+
+		newGameButton.setOverSound(buttonHoverSound);
+		loadGameButton.setOverSound(buttonHoverSound);
+		CreditButton.setOverSound(buttonHoverSound);
+
+		//newGameButton.onInputOver = Phaser.signal 
+		//newGameButton.tint = Math.random() * 0xffffff;
 
 		if(introMusic == null){
 			introMusic = this.add.audio('introMusic');

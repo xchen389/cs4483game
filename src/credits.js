@@ -7,8 +7,12 @@ aotb_game.credits = function(){
 	this.create = function(){
 		pgame.add.tileSprite(0,0, 1280, 800, 'creditsScreen');
 		var buttonPressSound = this.add.audio('buttonClickSound');
+		var buttonHoverSound = this.add.audio('buttonHoverSound');
+
 		var backButton = pgame.add.button(170,480, 'backButton', loadCredits,this);
+
 		backButton.setDownSound(buttonPressSound);
+		backButton.setOverSound(buttonHoverSound);
 
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;

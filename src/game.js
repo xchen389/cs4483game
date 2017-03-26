@@ -63,6 +63,12 @@ aotb_game.levelbase = function(pgame){
         pauseButton.height = 35;
         pauseButton.inputEnabled = true;
 
+        var buttonPressSound = pgame.add.audio('buttonClickSound');
+        var buttonHoverSound = pgame.add.audio('buttonHoverSound');
+
+        pauseButton.setDownSound(buttonPressSound);
+        pauseButton.setOverSound(buttonHoverSound);
+
         //pause menu variables 
         var menu;
         var menuH;
@@ -122,6 +128,8 @@ aotb_game.levelbase = function(pgame){
                     ){
                         pgame.game.paused = false;
                         togglePause(false);
+                        var buttonPressSound = pgame.add.audio('buttonClickSound');
+                        buttonPressSound.play();
                         pgame.state.start('menu');
                    }
 
@@ -681,12 +689,12 @@ aotb_game.levelbase = function(pgame){
         
         if (!pause && pgame.physics.p2.paused)
         {
-            console.log("unpause called");
+            //console.log("unpause called");
             pgame.physics.p2.resume();
         }
         else if (pause && !pgame.physics.p2.paused)
         {
-            console.log("pause called");
+            //console.log("pause called");
             pgame.physics.p2.pause();     
         }      
     }

@@ -9,10 +9,16 @@ aotb_game.nameScreen = function(){
 	this.create = function(){
 		this.add.tileSprite(0,0, 1280, 800, 'nameScreen');
 		var buttonPressSound = this.add.audio('buttonClickSound');
+		var buttonHoverSound = this.add.audio('buttonHoverSound');
+
 		var backButton = this.add.button(200,500, 'backButton', goBackToMenu,this);
 		var nextButton = this.add.button(800,500, 'nextButton', continueToGame, this);
+
 		backButton.setDownSound(buttonPressSound);
 		nextButton.setDownSound(buttonPressSound);
+		backButton.setOverSound(buttonHoverSound);
+		nextButton.setOverSound(buttonHoverSound);
+
 
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
