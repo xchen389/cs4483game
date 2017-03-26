@@ -3,7 +3,8 @@ var music;
 
 var barkSound;
 
-var counterText; //Camel and Bubble Count Text
+var camelCountText;
+var timeCountText;
 var notificationText;
 
 var companion;
@@ -100,8 +101,8 @@ aotb_game.levelbase = function(pgame){
 
                 choiceLabel.anchor.setTo(0.5,0.5);
 
-                musicText = pgame.add.text(w/2-420, h/2 + 150, "Music Volume: " + playerData.musicVolume*100);
-                fxText = pgame.add.text(w/2-420, h/2 + 180, "FX Volume: " + playerData.fxVolume*100);
+                musicText = pgame.add.text(w/2-450, h/2 + 150, "Music Volume: " + playerData.musicVolume*100);
+                fxText = pgame.add.text(w/2-450, h/2 + 180, "FX Volume: " + playerData.fxVolume*100);
             }
         );
 
@@ -341,10 +342,11 @@ aotb_game.levelbase = function(pgame){
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
 
 
-
-        counterText = pgame.add.text(0,0,"Time: " + time + " Camels: " + numCamels, {font: '40px Arial', fill:'#fff', boundsAlignH: "center"});
-        
-        counterText.setTextBounds(0, 10, pgame.world.width, 100);
+        timeCountText = pgame.add.text(14,10, "Time: " + time, {font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
+        camelCountText = pgame.add.text(0,0, "Camels: " + numCamels, {font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
+        //counterText = pgame.add.text(0,0,"Time: " + time + " Camels: " + numCamels, 
+            //{font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
+        camelCountText.setTextBounds(0, 10, pgame.world.width, 100);
     };
 
     //runs continuously. 
@@ -533,7 +535,9 @@ aotb_game.levelbase = function(pgame){
     //call this everytime bubble pops
     function updateCounterText(){
         //add formatting for text later
-        counterText.setText("Time: " + time + " Camels: " + numCamels);
+        camelCountText.setText("Camels: " + numCamels);
+        timeCountText.setText("Time: " + time);
+        //counterText.setText("Time: " + time + " Camels: " + numCamels);
     }
 
     function gameOver()
