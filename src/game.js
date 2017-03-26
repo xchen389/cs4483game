@@ -209,7 +209,7 @@ aotb_game.levelbase = function(pgame){
         //So far I think it works, but you can remove it it's being dumb
         //pgame.world.setBounds(0,0,w-7, h-7);
         var worldOutline = pgame.add.graphics(0, 0);
-        worldOutline.lineStyle(7, 0x0, 1);
+        worldOutline.lineStyle(7, 0x000000, 1);
         worldOutline.drawRect(0,0, w, h);
 
         //  The bounds of centre camel playground
@@ -283,7 +283,7 @@ aotb_game.levelbase = function(pgame){
         player.body.collides(fullBubbleCollisionGroup, self.bumpFullBubble, this);
 
         // setup companion
-        companion = new Companion(pgame, this, 200, 600, speed=120);
+        companion = new Companion(pgame, this, 300, 600, 120);
         pgame.add.existing(companion);
 
         //bullet group
@@ -331,7 +331,8 @@ aotb_game.levelbase = function(pgame){
         if (bulletEnable)
         {
             pgame.input.mouse.capture = true;
-            fireButton = pgame.input.activePointer.leftButton;
+            //fireButton = pgame.input.activePointer.leftButton;
+            fireButton = pgame.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         }
 
         // setup pause on space key pressed
@@ -374,13 +375,12 @@ aotb_game.levelbase = function(pgame){
         }
 
         //winning condition - go to shop
-        if(time == 0 || numCamels<2)
-        {
+        if(time == 0 || numCamels<2){
             gameOver();
         }
 
         //losing condition
-        if(numCamels <= 0)
+        if(numCamels <= 0 && fullBubbleGroup.countLiving() <= 0)
         	pgame.state.start('gameover');
 
         updateCounterText();
@@ -837,14 +837,13 @@ function findNearestInGroup(x,y, objGroup)
     }
     var nearestObj;
     var dist;
-    objGroup.forEach(function(childObj, x, y){
+    objGroup.forEachAlive(function(childObj, x, y){
         if (typeof nearestObj === 'undefined')
         {
-            console.log("child undefined");
+           // console.log("child undefined");
             nearestObj = childObj;
             dist = Math.pow(nearestObj.x - x, 2)
                    +Math.pow(nearestObj.y - y, 2);
-            
         }
         else
         {
@@ -904,20 +903,23 @@ Companion = function(pgame, game, x, y, speed)
 {
     Phaser.Sprite.call(this, pgame, x, y, 'companion');
 
+    this.pgame = pgame;
+    pgame.physics.enable(this, Phaser.Physics.P2JS);
+
     this.scale.setTo(0.4);
     this.anchor.setTo(0.5);
     this.speed = speed;
-
-    pgame.physics.enable(this, Phaser.Physics.P2JS);
-
-    this.body.setRectangle(35);
+    
+    this.body.setRectangle(40);
     this.body.fixedRotation = true;
+    //this.body.checkWorldBounds = true;
 
     this.body.setCollisionGroup(companionCollisionGroup);
     this.body.collides(fullBubbleCollisionGroup, game.bumpFullBubble, this);
     
     this.state = 'idle';
     this.target = null;
+    this.wanderloop = null;
 };
 Companion.prototype = Object.create(Phaser.Sprite.prototype);
 Companion.prototype.constructor = Companion;
@@ -925,11 +927,23 @@ Companion.prototype.update = function()
 {
     if (this.state == 'idle' || !isTargetValid(this.target))
     {
-        this.state = 'idle';
         this.findTarget();
+
+        if (!isTargetValid(this.target))
+        {
+            this.state = 'idle';
+            if (this.wanderloop == null)
+                this.wander();
+        }
     }
     else if (this.state == 'chase')
     {
+        if (this.wanderloop != null)
+        {
+            this.pgame.time.events.remove(this.wanderloop);
+            this.wanderloop = null;
+        }
+
         accelerateToObject(this, this.target, this.speed);
     }
 };
@@ -948,7 +962,11 @@ Companion.prototype.findTarget = function()
 }
 Companion.prototype.wander = function()
 {
-    
+    this.wanderloop = this.pgame.time.events.loop(Phaser.Timer.SECOND * 1.5, this.gotoRandom, this);
+}
+Companion.prototype.gotoRandom = function()
+{
+    this.pgame.add.tween(this.body).to(bounds.random(), 5000, Phaser.Easing.Sinusoidal.InOut, true);
 }
 //-------------------------end of Companion class
 
@@ -1017,6 +1035,13 @@ function accelerateToObject (chaser, chased, speed)
     var angle = Math.atan2(chased.y - chaser.y, chased.x - chaser.x);
     chaser.body.force.x = Math.cos(angle) * speed;
     chaser.body.force.y = Math.sin(angle) * speed;
+}
+function moveToObject (chaser, chased, speed)
+{
+    if (typeof speed === 'undefined') { speed = 50;}
+    var angle = Math.atan2(chased.y - chaser.y, chased.x - chaser.x);
+    chaser.body.velocity.x = Math.cos(angle) * speed;
+    chaser.body.velocity.y = Math.sin(angle) * speed;
 }
 
 function createPreviewBounds(game, x,y,w,h){
