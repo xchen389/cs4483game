@@ -23,19 +23,25 @@ aotb_game.preloadStage = function()
     //------------ load all the assets
     //for menu IMAGES
     game.loadAsset('menuBackground','backgrounds/mainMenu_screen.png', aotb_game.AssetType.IMAGE);
+    game.loadAsset('howToPlayImage', 'backgrounds/howToPlay_Screen.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('newGameButton','buttons/newGame_button.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('loadGameButton','buttons/loadGame_button.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('creditsButton','buttons/credits_button.png', aotb_game.AssetType.IMAGE);
+    game.loadAsset('xButton', 'buttons/xButton.png', aotb_game.AssetType.IMAGE);
 
-		game.loadAsset('hoverSound', 'button_hover.mp3', aotb_game.AssetType.AUDIO);
+		game.loadAsset('buttonClickSound', 'button_hover.mp3', aotb_game.AssetType.AUDIO);
+    game.loadAsset('buttonHoverSound', 'hoverSound.mp3', aotb_game.AssetType.AUDIO);
 		game.loadAsset('buttonClickedSound','button_clicked.mp3', aotb_game.AssetType.AUDIO);
-		game.loadAsset('introMusic', 'introMusic.ogg', aotb_game.AssetType.AUDIO); 
+		game.loadAsset('introMusic', 'introMusic.mp3', aotb_game.AssetType.AUDIO); 
+
 
     // for loadgame 
     game.loadAsset('loadGameBackground','backgrounds/loadGame_screen.png', aotb_game.AssetType.IMAGE);
 		game.loadAsset('backButton', 'buttons/back_button.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('deleteAllButton', 'buttons/deleteAll_button.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('blankButton', 'buttons/blankLoad_button.png', aotb_game.AssetType.IMAGE);
+    game.loadAsset('questionMark','buttons/question_mark.png', aotb_game.AssetType.IMAGE);
+    
 
     // for gameover
     game.loadAsset('gameoverBackground', 'backgrounds/gameover_screen.png', aotb_game.AssetType.IMAGE);

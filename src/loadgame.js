@@ -12,9 +12,18 @@ aotb_game.loadGame = function(){
 
 	this.create = function(){
 		pgame.add.tileSprite(0,0, 1280, 800, 'loadGameBackground');
-		pgame.add.button(50,690, 'backButton', goBack, pgame);
-		pgame.add.button(960,690, 'deleteAllButton', deleteAllPressed, pgame);
+
+		var buttonPressSound = this.add.audio('buttonClickSound');
+		var buttonHoverSound = this.add.audio('buttonHoverSound');
+
+		var backButton = pgame.add.button(50,690, 'backButton', goBack, pgame);
+		var deleteAllButton = pgame.add.button(960,690, 'deleteAllButton', deleteAllPressed, pgame);
 		
+		backButton.setDownSound(buttonPressSound);
+		deleteAllButton.setDownSound(buttonPressSound);
+		backButton.setOverSound(buttonHoverSound);
+		deleteAllButton.setOverSound(buttonHoverSound);
+
 		//music settings
 		if(!introMusic.isPlaying){
 			introMusic.loop = true;
@@ -77,6 +86,8 @@ aotb_game.loadGame = function(){
   	}
 
   	function load(name){
+  		var buttonPressSound = pgame.add.audio('buttonClickSound');
+        buttonPressSound.play();
 		loadData(name);
 		introMusic.stop();
 		pgame.state.start('shop');

@@ -3,7 +3,8 @@ var music;
 
 var barkSound;
 
-var counterText; //Camel and Bubble Count Text
+var camelCountText;
+var timeCountText;
 var notificationText;
 
 var companion;
@@ -27,6 +28,7 @@ var bounds;
 
 //game object definiton
 aotb_game.levelbase = function(pgame){
+    
     var player;
     var cursors;
     var wasd;
@@ -41,8 +43,12 @@ aotb_game.levelbase = function(pgame){
     //change these depending on how many bubbles and want
     var numBubbles = 0;
 
+    //when camel is taken by bubble object this decrements
     var numCamels = 5;
-    var camelsRemained = numCamels;
+
+    //this will decrement when bubbles are taken away
+    var camelsLeft = 5;
+
     var numFullBubbles = 0;
 
     var time = 120;
@@ -62,6 +68,12 @@ aotb_game.levelbase = function(pgame){
         pauseButton.width = 100;
         pauseButton.height = 35;
         pauseButton.inputEnabled = true;
+
+        var buttonPressSound = pgame.add.audio('buttonClickSound');
+        var buttonHoverSound = pgame.add.audio('buttonHoverSound');
+
+        pauseButton.setDownSound(buttonPressSound);
+        pauseButton.setOverSound(buttonHoverSound);
 
         //pause menu variables 
         var menu;
@@ -87,15 +99,13 @@ aotb_game.levelbase = function(pgame){
 
 
                 choiceLabel = pgame.add.text(w/2,h-150, 'Click Outside the Menu To Continue', 
-                    { font:
-                    '30px Arial', 
-                    fill: '#000'}
+                    { font:'30px Arial', fill: '#000'}
                 );
 
                 choiceLabel.anchor.setTo(0.5,0.5);
 
-                musicText = pgame.add.text(w/2-420, h/2 + 150, "Music Volume: " + playerData.musicVolume*100);
-                fxText = pgame.add.text(w/2-420, h/2 + 180, "FX Volume: " + playerData.fxVolume*100);
+                musicText = pgame.add.text(w/2-450, h/2 + 150, "Music Volume: " + playerData.musicVolume*100);
+                fxText = pgame.add.text(w/2-450, h/2 + 180, "FX Volume: " + playerData.fxVolume*100);
             }
         );
 
@@ -122,6 +132,8 @@ aotb_game.levelbase = function(pgame){
                     ){
                         pgame.game.paused = false;
                         togglePause(false);
+                        var buttonPressSound = pgame.add.audio('buttonClickSound');
+                        buttonPressSound.play();
                         pgame.state.start('menu');
                    }
 
@@ -333,8 +345,10 @@ aotb_game.levelbase = function(pgame){
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
 
-        counterText = pgame.add.text(0,0,"Time: " + time + " Camels: " + numCamels, {font: '40px Arial', fill:'#fff', boundsAlignH: "center"});
-        counterText.setTextBounds(0, 10, pgame.world.width, 100);
+
+        timeCountText = pgame.add.text(14,10, "Time: " + time, {font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
+        camelCountText = pgame.add.text(0,0, "Camels: " + numCamels, {font: '40px monospace', fill:'#fff', boundsAlignH: "center"});
+        camelCountText.setTextBounds(0, 10, pgame.world.width, 100);
     };
 
     //runs continuously. 
@@ -361,16 +375,9 @@ aotb_game.levelbase = function(pgame){
         }
 
         //winning condition - go to shop
-        if(time <= 0 && camelsRemained>=2)
-        {
+        if(time == 0 || numCamels<2){
             gameOver();
         }
-        	
-
-        /* if camels are ever 0, game over - exit game
-        if(camelsGroup.countLiving() == 0)
-        	//losing condition
-        */
 
         //losing condition
         if(numCamels <= 0 && fullBubbleGroup.countLiving() <= 0)
@@ -393,8 +400,7 @@ aotb_game.levelbase = function(pgame){
 
     function fire()
     {
-        if (pgame.time.now > nextFire && bullets.countDead() > 0)
-        {
+        if (pgame.time.now > nextFire && bullets.countDead() > 0){
             var fromX = player.x;
             var fromY = player.y;
 
@@ -497,7 +503,7 @@ aotb_game.levelbase = function(pgame){
 
             if(fullBubbleGroup.getAt(i).y > 750 || fullBubbleGroup.getAt(i).y < 50 || fullBubbleGroup.getAt(i).x > 1000 || fullBubbleGroup.getAt(i).x < 50){
                 numFullBubbles--;
-                camelsRemained--;
+                numCamels--;
                 fullBubbleGroup.getAt(i).body.sprite.alive = false;
         		fullBubbleGroup.getAt(i).body.sprite.pendingDestroy = true;
                 fullBubbleGroup.remove(fullBubbleGroup.getAt(i).body);
@@ -523,7 +529,8 @@ aotb_game.levelbase = function(pgame){
     //call this everytime bubble pops
     function updateCounterText(){
         //add formatting for text later
-        counterText.setText("Time: " + time + " Camels: " + numCamels);
+        camelCountText.setText("Camels: " + numCamels);
+        timeCountText.setText("Time: " + time);
     }
 
     function gameOver()
@@ -579,8 +586,6 @@ aotb_game.levelbase = function(pgame){
         fullBubbleGroup.remove(fullBubbleBody);
 
         popSound.play();
-
-        //updateCounterText();
     }
 
     function createCamel(x,y){
@@ -682,12 +687,12 @@ aotb_game.levelbase = function(pgame){
         
         if (!pause && pgame.physics.p2.paused)
         {
-            console.log("unpause called");
+            //console.log("unpause called");
             pgame.physics.p2.resume();
         }
         else if (pause && !pgame.physics.p2.paused)
         {
-            console.log("pause called");
+            //console.log("pause called");
             pgame.physics.p2.pause();     
         }      
     }
