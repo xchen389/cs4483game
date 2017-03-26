@@ -340,7 +340,10 @@ aotb_game.levelbase = function(pgame){
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
         pgame.input.keyboard.removeKeyCapture(Phaser.Keyboard.S);
 
+
+
         counterText = pgame.add.text(0,0,"Time: " + time + " Camels: " + numCamels, {font: '40px Arial', fill:'#fff', boundsAlignH: "center"});
+        
         counterText.setTextBounds(0, 10, pgame.world.width, 100);
     };
 
@@ -586,8 +589,6 @@ aotb_game.levelbase = function(pgame){
         fullBubbleGroup.remove(fullBubbleBody);
 
         popSound.play();
-
-        //updateCounterText();
     }
 
     function createCamel(x,y){
