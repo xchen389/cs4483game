@@ -60,7 +60,7 @@ aotb_game.preloadStage = function()
     game.loadAsset('background', 'backgrounds/gamebackground_screen.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('pauseScreen', 'backgrounds/pause_screen.png', aotb_game.AssetType.IMAGE);
     game.loadAsset('mainMenuButton', 'buttons/mainMenu_button.png', aotb_game.AssetType.IMAGE);
-    game.loadAsset('bullet', 'bullet.GIF', aotb_game.AssetType.IMAGE);
+    game.loadAsset('bullet', 'bullet.png', aotb_game.AssetType.IMAGE);
 
     game.loadAsset('pop', 'bubble_pop.mp3', aotb_game.AssetType.AUDIO);
     game.loadAsset('camel_ouch', 'camel_ouch.mp3', aotb_game.AssetType.AUDIO);
