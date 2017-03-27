@@ -531,9 +531,11 @@ aotb_game.levelbase = function(pgame){
     function updateCounterText(){
         //add formatting for text later
         camelCountText.setText("Camels: " + numCamels);
+        if(time == -1)
+            time = 0;
         timeCountText.setText("Time: " + time);
-    }
-
+    
+}
     function gameOver()
     {
         self.displayText("You Win!", 2, function(){
