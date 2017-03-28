@@ -309,7 +309,7 @@ aotb_game.levelbase = function(pgame){
         }
 
         //  Create a new custom sized bounds, within the world bounds
-        customBounds = { left: null, right: null, top: ndsull, bottom: null };
+        customBounds = { left: null, right: null, top: null, bottom: null };
 
         createPreviewBounds(pgame, bounds.x, bounds.y, bounds.width, bounds.height);
 
