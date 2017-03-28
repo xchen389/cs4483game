@@ -309,14 +309,14 @@ aotb_game.levelbase = function(pgame){
         }
 
         //  Create a new custom sized bounds, within the world bounds
-        customBounds = { left: null, right: null, top: null, bottom: null };
+        customBounds = { left: null, right: null, top: ndsull, bottom: null };
 
         createPreviewBounds(pgame, bounds.x, bounds.y, bounds.width, bounds.height);
 
         //  Just to display the inner bounds
-        var graphics = pgame.add.graphics(bounds.x, bounds.y);
-        graphics.lineStyle(4, 0xff0000, 1);
-        graphics.drawRect(0, 0, bounds.width, bounds.height);
+        //var graphics = pgame.add.graphics(bounds.x, bounds.y);
+        //graphics.lineStyle(4, 0xff0000, 1);
+        //graphics.drawRect(0, 0, bounds.width, bounds.height);
 
         // controls
         cursors = pgame.input.keyboard.createCursorKeys();
@@ -534,8 +534,8 @@ aotb_game.levelbase = function(pgame){
         if(time == -1)
             time = 0;
         timeCountText.setText("Time: " + time);
+    }
     
-}
     function gameOver()
     {
         self.displayText("You Win!", 2, function(){
